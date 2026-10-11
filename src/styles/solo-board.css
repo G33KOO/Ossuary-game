@@ -587,9 +587,15 @@
 }
 
 .gb-slot {
+  border: 2px solid transparent;
+  border-radius: 10px;
   display: grid;
   gap: 4px;
   justify-items: center;
+  padding: 3px;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .gb-slot-label {
@@ -849,6 +855,16 @@ body.solo-playing footer {
   justify-content: space-between;
 }
 
+.gb-log-btn {
+  margin-top: auto;
+}
+
+.gb-log-full {
+  max-height: 55dvh;
+  overflow-y: auto;
+  text-align: left;
+}
+
 .gb-full .gb-log-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -1034,4 +1050,72 @@ body.solo-playing footer {
   .gb-die.is-rolling .gb-die-face {
     animation: none;
   }
+}
+
+/* Thème clair : table de parchemin et bois clair */
+:root[data-theme='light'] .gb {
+  --gb-wood: linear-gradient(145deg, #b58a55, #7a5530 55%, #a47a48);
+}
+
+:root[data-theme='light'] .gb-full {
+  background: var(--background);
+}
+
+:root[data-theme='light'] .gb-table {
+  background:
+    radial-gradient(ellipse at 50% 35%, rgb(255 246 220 / 75%), transparent 62%),
+    radial-gradient(ellipse at 50% 50%, #e6d6b0, #cdb98c 80%);
+  box-shadow:
+    inset 0 0 50px rgb(90 60 25 / 35%),
+    0 14px 34px rgb(60 35 10 / 35%);
+  color: var(--bone);
+}
+
+:root[data-theme='light'] .gb-board {
+  background: linear-gradient(160deg, #f1e6cb, #dfcea5);
+  border-color: #a47a48;
+  color: var(--bone);
+}
+
+:root[data-theme='light'] .gb-pile-count {
+  background: #f1e6cb;
+  color: #5a3a10;
+}
+
+:root[data-theme='light'] .gb-pile-label,
+:root[data-theme='light'] .gb-dock-label,
+:root[data-theme='light'] .gb-idle-title,
+:root[data-theme='light'] .gb-playzone-hint {
+  color: #5a3a10;
+}
+
+:root[data-theme='light'] .gb-score.you strong {
+  color: #6b4410;
+}
+
+:root[data-theme='light'] .gb-score.foe strong {
+  color: #a3281a;
+}
+
+:root[data-theme='light'] .gb-dock {
+  background: linear-gradient(180deg, transparent, rgb(232 219 189 / 92%) 40%);
+}
+
+:root[data-theme='light'] .gb-discard-empty,
+:root[data-theme='light'] .gb-slot-empty,
+:root[data-theme='light'] .gb-playzone {
+  border-color: rgb(90 60 25 / 45%);
+}
+
+:root[data-theme='light'] .gb-reveal {
+  background: rgb(232 219 189 / 70%);
+}
+
+:root[data-theme='light'] .gb-reveal-title {
+  color: #5a2a10;
+  text-shadow: none;
+}
+
+:root[data-theme='light'] .sim-modal-backdrop {
+  background: rgb(60 40 20 / 55%);
 }

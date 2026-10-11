@@ -225,6 +225,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const [reveal, setReveal] = useState<Reveal | null>(null)
   const [drag, setDrag] = useState<Drag | null>(null)
   const [over, setOver] = useState<string | null>(null)
+  const [slotOver, setSlotOver] = useState<string | null>(null)
+  const [logOpen, setLogOpen] = useState(false)
   const [bossPicker, setBossPicker] = useState(false)
   const [klass, setKlass] = useState<ClassName>('Guerrier')
   const [race, setRace] = useState<RaceName>('Humain')
@@ -419,6 +421,11 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const lootTop = game.lootDiscard[game.lootDiscard.length - 1]
   const hero = (type: 'Classe' | 'Race', name: string) => heroCard(type, name)
 
+  const slotClass = (key: string, slot: string) => {
+    if (!fromHand || locked || !canEquip(game, fromHand) || !slotAccepts(slot, fromHand)) return ''
+    return ` is-target${slotOver === key ? ' is-over' : ''}`
+  }
+
   const renderEquipped = (id: string | null | undefined, slot: string) =>
     id ? (
       <GameCard
@@ -436,7 +443,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         }
       />
     ) : (
-      <span className={`gb-slot-empty${fromHand && slotAccepts(slot, fromHand) ? ' is-target' : ''}`}>{TYPE_ICON[slot.startsWith('hand') ? 'Arme' : slot === 'artifact' ? 'Artefact de classe' : 'Armure']}</span>
+      <span className="gb-slot-empty">{TYPE_ICON[slot.startsWith('hand') ? 'Arme' : slot === 'artifact' ? 'Artefact de classe' : 'Armure']}</span>
     )
 
   return (
@@ -579,7 +586,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </section>
 
         <section
-          className={`gb-board${equipZone.className}`}
+          className="gb-board"
           onDragLeave={equipZone.onDragLeave}
           onDragOver={equipZone.onDragOver}
           onDrop={equipZone.onDrop}
@@ -587,16 +594,20 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <h3>{sim.equipment}</h3>
           <div className="gb-board-body">
             <div className="gb-heroes">
-              {hero('Race', game.race) ? (
-                <GameCard id={(hero('Race', game.race) as { id: string }).id} locale={locale} onInspect={(el) => inspect((hero('Race', game.race) as { id: string }).id, el)} size="sm" />
-              ) : null}
-              {hero('Classe', game.klass) ? (
-                <GameCard id={(hero('Classe', game.klass) as { id: string }).id} locale={locale} onInspect={(el) => inspect((hero('Classe', game.klass) as { id: string }).id, el)} size="sm" />
-              ) : null}
+              {(['Race', 'Classe'] as const).map((kind) => {
+                const entry = hero(kind, kind === 'Race' ? game.race : game.klass) as { id: string } | undefined
+                if (!entry) return null
+                return (
+                  <div className="gb-slot" key={kind}>
+                    <span className="gb-slot-label">{kind === 'Race' ? sim.raceLabel : sim.classLabel}</span>
+                    <GameCard id={entry.id} locale={locale} onInspect={(el) => inspect(entry.id, el)} size="sm" />
+                  </div>
+                )
+              })}
             </div>
             <div className="gb-slots">
               {ARMOR_SLOTS.map((slot) => (
-                <div className="gb-slot" key={slot}>
+                <div className={`gb-slot${slotClass(slot, slot)}`} key={slot} onDragEnter={() => setSlotOver(slot)} onDragOver={() => setSlotOver(slot)}>
                   <span className="gb-slot-label">{slot}</span>
                   {renderEquipped(game.equipment.armors[slot], slot)}
                 </div>
@@ -604,7 +615,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               {[0, 1].map((index) => {
                 const twoHanded = game.equipment.hands.length === 1 && card(game.equipment.hands[0]).subtype === 'Deux mains'
                 return (
-                  <div className="gb-slot" key={`hand-${index}`}>
+                  <div className={`gb-slot${slotClass(`hand-${index}`, 'hand')}`} key={`hand-${index}`} onDragEnter={() => setSlotOver(`hand-${index}`)} onDragOver={() => setSlotOver(`hand-${index}`)}>
                     <span className="gb-slot-label">
                       {sim.weapons} {index + 1}
                     </span>
@@ -612,7 +623,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   </div>
                 )
               })}
-              <div className="gb-slot">
+              <div className={`gb-slot${slotClass('artifact', 'artifact')}`} onDragEnter={() => setSlotOver('artifact')} onDragOver={() => setSlotOver('artifact')}>
                 <span className="gb-slot-label">{sim.artifact}</span>
                 {renderEquipped(game.equipment.artifact, 'artifact')}
               </div>
@@ -632,16 +643,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             onClick={() => send({ t: 'drawLoot' })}
           />
           <Discard count={game.lootDiscard.length} label={sim.tableLoot} locale={locale} onInspect={inspect} top={lootTop} />
-          <section className="gb-log-panel">
-            <h3>{sim.log}</h3>
-            <ol className="sim-log">
-              {logLines.map((entry, index) => (
-                <li className={index === 0 ? 'is-latest' : undefined} key={game.log.length - index}>
-                  {formatLog(entry)}
-                </li>
-              ))}
-            </ol>
-          </section>
+          <button className="button gb-log-btn" onClick={() => setLogOpen(true)} type="button">
+            📜 {sim.showLog}
+          </button>
         </div>
       </div>
 
@@ -703,6 +707,24 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 <GameCard id={id} locale={locale} onInspect={() => undefined} size="lg" />
               </div>
             ))}
+          </div>
+        </div>
+      ) : null}
+
+      {logOpen ? (
+        <div className="sim-modal-backdrop" onClick={() => setLogOpen(false)}>
+          <div aria-modal="true" className="sim-modal" onClick={(event) => event.stopPropagation()} role="dialog">
+            <p className="sim-modal-title">{sim.log}</p>
+            <ol className="sim-log gb-log-full">
+              {logLines.map((entry, index) => (
+                <li className={index === 0 ? 'is-latest' : undefined} key={game.log.length - index}>
+                  {formatLog(entry)}
+                </li>
+              ))}
+            </ol>
+            <button className="button" onClick={() => setLogOpen(false)} type="button">
+              {sim.close}
+            </button>
           </div>
         </div>
       ) : null}
