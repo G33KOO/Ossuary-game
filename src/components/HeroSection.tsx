@@ -1,12 +1,28 @@
 import { Link } from 'react-router-dom'
+import cardsData from '../data/cards.json'
+import { useCardDialog } from '../hooks/useCardDialog'
 import { useLocale } from '../i18n/LocaleProvider'
 import { paths } from '../routes/paths'
+import type { Card } from '../types/card'
+import { getIllustrationByKey } from '../utils/cardIllustration'
+import { slugify } from '../utils/slugify'
+
+const fanKeys = ['lenvers', 'linvaincu', 'le-createur', 'le-martyr', 'le-parfait'] as const
+const cards = cardsData as Card[]
+const fanCards = fanKeys.flatMap((key) => {
+  const card = cards.find((entry) => slugify(entry.name) === key)
+  const illustration = getIllustrationByKey(key)
+  return card && illustration ? [{ card, illustration }] : []
+})
+const backdrop = getIllustrationByKey('la-suzeraine')
 
 export function HeroSection() {
   const { t } = useLocale()
+  const { openCard } = useCardDialog()
 
   return (
     <section className="hero" id="accueil">
+      {backdrop && <img alt="" aria-hidden="true" className="hero-backdrop" src={backdrop.src} />}
       <div className="hero-copy">
         <p className="eyebrow"><span /> {t('hero.eyebrow')}</p>
         <h1>
@@ -31,27 +47,24 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="hero-art" aria-label={t('hero.artLabel')} role="img">
-        <div className="moon" />
-        <div className="hero-rune rune-one" aria-hidden="true">✳</div>
-        <div className="hero-rune rune-two" aria-hidden="true">✦</div>
-        <div className="dungeon-gate" aria-hidden="true">
-          <div className="gate-arch">
-            <div className="gate-inner">
-              <div className="gate-stone gate-stone-one" />
-              <div className="gate-stone gate-stone-two" />
-              <div className="gate-stone gate-stone-three" />
-              <div className="gate-stone gate-stone-four" />
-              <div className="gate-door"><span className="gate-seal">✳</span></div>
-            </div>
-          </div>
-          <div className="gate-base" />
+      <div className="hero-art" aria-label={t('hero.artLabel')} role="group">
+        <div className="hero-fan">
+          {fanCards.map(({ card, illustration }) => (
+            <button
+              aria-label={`${t('catalog.openCard')} ${card.name}`}
+              className="fan-card"
+              key={card.id}
+              onClick={(event) => openCard(card, fanCards.map((entry) => entry.card), event.currentTarget)}
+              type="button"
+            >
+              <img alt="" src={illustration.src} />
+            </button>
+          ))}
         </div>
         <div className="art-caption">
           <span>{t('hero.depths')}</span>
           <span>{t('hero.levelsBosses')}</span>
         </div>
-        <div className="art-vertical" aria-hidden="true">AD INFEROS</div>
       </div>
     </section>
   )

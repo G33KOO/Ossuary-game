@@ -2,29 +2,30 @@ import { Link } from 'react-router-dom'
 import { SectionLabel } from './SectionLabel'
 import { useLocale } from '../i18n/LocaleProvider'
 import { paths } from '../routes/paths'
+import { assetUrl } from '../utils/assetUrl'
 
 const steps = [
   {
     number: 'I',
-    symbol: '⌘',
+    icon: 'classe-guerrier',
     title: 'mechanics.stepOneTitle',
     description: 'mechanics.stepOneDescription',
   },
   {
     number: 'II',
-    symbol: '⌖',
+    icon: 'prise-main-une-main',
     title: 'mechanics.stepTwoTitle',
     description: 'mechanics.stepTwoDescription',
   },
   {
     number: 'III',
-    symbol: '⚔',
+    icon: 'indicateur-puissance',
     title: 'mechanics.stepThreeTitle',
     description: 'mechanics.stepThreeDescription',
   },
   {
     number: 'IV',
-    symbol: '✳',
+    icon: 'monstre-demon',
     title: 'mechanics.stepFourTitle',
     description: 'mechanics.stepFourDescription',
   },
@@ -51,14 +52,14 @@ export function MechanicsSection() {
           {steps.map((step) => (
             <article className="step-card" key={step.number}>
               <span className="step-number">{step.number}</span>
-              <span aria-hidden="true" className="step-icon">{step.symbol}</span>
+              <img alt="" className="step-icon" height="64" src={assetUrl(`images/icons/${step.icon}.webp`)} width="64" />
               <h3>{t(step.title)}</h3>
               <p>{t(step.description)}</p>
             </article>
           ))}
         </div>
         <div className="boss-callout">
-          <div aria-hidden="true" className="boss-emblem">✳</div>
+          <img alt="" className="boss-emblem" height="64" src={assetUrl('images/icons/monstre-demon.webp')} width="64" />
           <div>
             <p className="eyebrow">{t('mechanics.goalEyebrow')}</p>
             <h3>{t('mechanics.goalTitle')}</h3>

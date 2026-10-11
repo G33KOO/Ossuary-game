@@ -23,14 +23,11 @@ export function SiteHeader({ theme, onToggleTheme }: SiteHeaderProps) {
         <NavLink end to={paths.home}>{t('nav.home')}</NavLink>
         <NavLink to={paths.mechanics}>{t('nav.mechanics')}</NavLink>
         <NavLink to={paths.cards}>{t('nav.cards')}</NavLink>
+        <NavLink to={paths.solo}>{t('nav.solo')}</NavLink>
       </nav>
       <div className="header-actions">
         <ThemeToggle onToggle={onToggleTheme} theme={theme} />
         <LanguageToggle />
-        <Link className="header-cta" to={paths.solo}>
-          <span>{t('nav.solo')}</span>
-          <span aria-hidden="true">↗</span>
-        </Link>
       </div>
     </header>
   )

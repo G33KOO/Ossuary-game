@@ -8,7 +8,7 @@ import { useLocale } from '../i18n/LocaleProvider'
 type CardTileProps = {
   card: Card
   locale: Locale
-  onSelect: (card: Card) => void
+  onSelect: (card: Card, element: HTMLElement) => void
 }
 
 export function CardTile({ card, locale, onSelect }: CardTileProps) {
@@ -20,7 +20,7 @@ export function CardTile({ card, locale, onSelect }: CardTileProps) {
     <button
       aria-label={`${t('catalog.openCard')} ${localizedCard.name}, ${localizedCard.type}`}
       className={`lore-card type-${slugify(card.type)}`}
-      onClick={() => onSelect(card)}
+      onClick={(event) => onSelect(card, event.currentTarget)}
       type="button"
     >
       <span aria-hidden="true" className="card-art">
@@ -29,10 +29,6 @@ export function CardTile({ card, locale, onSelect }: CardTileProps) {
         ) : (
           <span className="card-symbol">{symbolFor(card.type)}</span>
         )}
-      </span>
-      <span className="card-topline">
-        <span>{localizedCard.type}</span>
-        <span>{card.id.replace('OSS-CARD-', '#')}</span>
       </span>
       <span className="card-name">{localizedCard.name}</span>
       <span className="card-subtype">{localizedCard.subtype || localizedCard.deck}</span>

@@ -120,6 +120,15 @@
     'solo.description':
       'Une aventure solo est prévue : une version épurée, pensée pour affronter le jeu et atteindre le Boss. Son adaptation des règles sera conçue dans une étape dédiée.',
     'solo.status': 'Mode solo · en préparation',
+    'showcase.cta': 'Voir toutes les cartes',
+    'showcase.classesEyebrow': 'Six voies, six destins',
+    'showcase.classesTitle': 'Choisis ta Classe',
+    'showcase.classesDescription':
+      'Guerrier, Mage, Chasseur, Druide, Nécromancien ou Voleur : chaque Classe a son Actif et sa façon de survivre aux profondeurs.',
+    'showcase.bossesEyebrow': 'Au fond de l’Ossuaire',
+    'showcase.bossesTitle': 'Six Boss t’attendent',
+    'showcase.bossesDescription':
+      'Une seule victoire compte : terrasser l’un d’eux. Chacun a sa puissance, ses pièges et son propre cauchemar.',
     'footer.tagline': 'Descends. Survis. Terrasse un Boss.',
     'footer.version': 'Base de référence · V1.0-PT-R10',
     'document.title': 'Ossuaire — Descends. Survis. Terrasse un Boss.',
@@ -247,6 +256,15 @@
     'solo.description':
       'A solo adventure is planned: a streamlined version built around taking on the game and reaching the Boss. Its adapted rules will be designed in a dedicated stage.',
     'solo.status': 'Solo mode · in development',
+    'showcase.cta': 'Browse all cards',
+    'showcase.classesEyebrow': 'Six paths, six fates',
+    'showcase.classesTitle': 'Choose your Class',
+    'showcase.classesDescription':
+      'Warrior, Mage, Hunter, Druid, Necromancer, or Thief: each Class has its own Active and its own way to survive the depths.',
+    'showcase.bossesEyebrow': 'Deep in the Ossuary',
+    'showcase.bossesTitle': 'Six Bosses await',
+    'showcase.bossesDescription':
+      'Only one victory counts: slay one of them. Each has its own Power, its own traps, and its own nightmare.',
     'footer.tagline': 'Descend. Survive. Slay a Boss.',
     'footer.version': 'Reference set · V1.0-PT-R10',
     'document.title': 'Ossuary — Descend. Survive. Slay a Boss.',

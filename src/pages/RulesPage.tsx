@@ -1,3 +1,4 @@
+import { PageHeading } from '../components/PageHeading'
 import { RuleBlocks } from '../components/RuleBlocks'
 import { getRules } from '../content/rules'
 import { useLocale } from '../i18n/LocaleProvider'
@@ -8,12 +9,16 @@ export function RulesPage() {
 
   return (
     <div className="page-wrap rules-page">
-      <header className="page-heading">
-        <p className="eyebrow"><span /> {t('rules.eyebrow')}</p>
-        <h1>
-          {t('rules.titleOne')} <em>{t('rules.titleTwo')}</em>
-        </h1>
-        <p>{t('rules.description')}</p>
+      <PageHeading
+        artKey="vitrail"
+        description={t('rules.description')}
+        eyebrow={t('rules.eyebrow')}
+        title={
+          <>
+            {t('rules.titleOne')} <em>{t('rules.titleTwo')}</em>
+          </>
+        }
+      >
         <dl className="rule-facts">
           {rules.facts.map((fact) => (
             <div key={fact.label}>
@@ -22,7 +27,7 @@ export function RulesPage() {
             </div>
           ))}
         </dl>
-      </header>
+      </PageHeading>
       <div className="rules-layout">
         <nav aria-label={t('rules.tocLabel')} className="rules-toc">
           <p className="eyebrow">{t('rules.toc')}</p>

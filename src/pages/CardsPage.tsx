@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation, useMatch, useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import cardsData from '../data/cards.json'
-import { CardDetailsDialog } from '../components/CardDetailsDialog'
 import { CardFilterBar } from '../components/CardFilterBar'
 import type { FilterOption } from '../components/CardFilterBar'
 import { CardTile } from '../components/CardTile'
 import { SectionLabel } from '../components/SectionLabel'
+import { useCardDialog } from '../hooks/useCardDialog'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { useLocale } from '../i18n/LocaleProvider'
 import { localizeCard } from '../i18n/cardTranslations'
-import { paths } from '../routes/paths'
 import type { Card } from '../types/card'
 import {
   buildSearchIndex,
@@ -36,10 +35,8 @@ function countOptions(entries: Card[], pick: (card: Card) => string): FilterOpti
 
 export function CardsPage() {
   const { locale, t } = useLocale()
-  const navigate = useNavigate()
-  const { search } = useLocation()
+  const { openCard } = useCardDialog()
   const [searchParams, setSearchParams] = useSearchParams()
-  const cardMatch = useMatch(`${paths.cards}/:cardId`)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const filters = useMemo(() => readFilters(searchParams), [searchParams])
@@ -108,14 +105,6 @@ export function CardsPage() {
   const hasMore = visibleCount < results.length
   const sentinelRef = useInfiniteScroll({ enabled: hasMore, onReachEnd: loadMore })
 
-  const selectedIndex = cardMatch?.params.cardId
-    ? results.findIndex((card) => card.id === cardMatch.params.cardId)
-    : -1
-  const selectedCard =
-    selectedIndex >= 0
-      ? results[selectedIndex]
-      : cards.find((card) => card.id === cardMatch?.params.cardId) ?? null
-
   useEffect(() => {
     function focusSearchShortcut(event: KeyboardEvent) {
       const target = event.target
@@ -148,18 +137,6 @@ export function CardsPage() {
     })
   }
 
-  function openCard(card: Card, replace = false) {
-    navigate({ pathname: paths.card(card.id), search }, { replace })
-  }
-
-  function closeCard() {
-    navigate({ pathname: paths.cards, search }, { replace: true })
-  }
-
-  const previousCard = selectedIndex > 0 ? results[selectedIndex - 1] : null
-  const nextCard =
-    selectedIndex >= 0 && selectedIndex < results.length - 1 ? results[selectedIndex + 1] : null
-
   return (
     <section className="catalog-section section-wrap">
       <SectionLabel number="03">{t('catalog.section')}</SectionLabel>
@@ -190,7 +167,7 @@ export function CardsPage() {
       {results.length > 0 ? (
         <div className="card-grid">
           {results.slice(0, visibleCount).map((card) => (
-            <CardTile card={card} key={card.id} locale={locale} onSelect={openCard} />
+            <CardTile card={card} key={card.id} locale={locale} onSelect={(selected, element) => openCard(selected, results, element)} />
           ))}
         </div>
       ) : (
@@ -212,12 +189,6 @@ export function CardsPage() {
         results.length > 0 && <p className="scroll-end">{t('catalog.end')}</p>
       )}
 
-      <CardDetailsDialog
-        card={selectedCard}
-        onClose={closeCard}
-        onNext={nextCard ? () => openCard(nextCard, true) : undefined}
-        onPrevious={previousCard ? () => openCard(previousCard, true) : undefined}
-      />
     </section>
   )
 }
