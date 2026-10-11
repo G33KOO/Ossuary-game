@@ -1001,3 +1001,389 @@ h2 em {
   border-color: var(--gold);
   color: #fbeed2;
 }
+
+/* ---- Simulateur solo ---- */
+.solo-simulator,
+.solo-rules {
+  margin-top: 48px;
+}
+
+.solo-simulator h2,
+.solo-rules h2 {
+  font-family: var(--display);
+  letter-spacing: 0.06em;
+}
+
+.sim,
+.sim-setup {
+  display: grid;
+  gap: 20px;
+}
+
+.sim-intro,
+.sim-note {
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 17px;
+  margin: 0;
+}
+
+.sim-choice-grid,
+.sim-cards,
+.sim-actions,
+.sim-equipment,
+.sim-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sim-choice {
+  align-items: center;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  color: var(--bone);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--display);
+  font-size: 13px;
+  gap: 8px;
+  padding: 8px;
+  width: 120px;
+}
+
+.sim-choice img {
+  aspect-ratio: 3 / 4;
+  border-radius: 6px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.sim-choice.is-active {
+  border-color: var(--gold);
+  box-shadow: 0 0 22px rgb(212 87 42 / 45%);
+}
+
+.sim-status {
+  align-items: stretch;
+}
+
+.sim-stat {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 2px;
+  min-width: 92px;
+  padding: 8px 12px;
+}
+
+.sim-stat span {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sim-stat strong {
+  font-family: var(--display);
+  font-size: 20px;
+}
+
+.sim-stat.is-danger {
+  border-color: var(--ember);
+}
+
+.sim-stat.is-danger strong {
+  color: var(--ember);
+}
+
+.sim-link {
+  background: none;
+  border: 0;
+  color: var(--gold);
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  margin-left: auto;
+  text-decoration: underline;
+}
+
+.sim-hero-line {
+  color: var(--gold-light);
+  font-family: var(--display);
+  letter-spacing: 0.08em;
+}
+
+.sim-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.sim-panel h3,
+.sim-panel h4,
+.sim-setup h3 {
+  font-family: var(--display);
+  margin: 0;
+}
+
+.sim-card {
+  background: #120d0a;
+  border: 3px solid var(--gold);
+  border-radius: 10px;
+  color: #f3e8cf;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto auto;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  width: 120px;
+}
+
+.sim-card.is-small {
+  width: 84px;
+}
+
+.sim-card:hover {
+  box-shadow: 0 10px 24px rgb(212 87 42 / 45%);
+  transform: translateY(-4px);
+}
+
+.sim-card.type-monstre {
+  border-color: var(--red);
+}
+
+.sim-card.type-boss {
+  border-color: var(--ember);
+}
+
+.sim-card-art {
+  aspect-ratio: 3 / 4;
+  background: #1a1411;
+  display: grid;
+  place-items: center;
+}
+
+.sim-card-art img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.sim-card-name {
+  background: rgb(12 9 7 / 90%);
+  font-family: var(--display);
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 6px 4px;
+}
+
+.sim-card-power {
+  background: var(--red);
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  height: 28px;
+  line-height: 26px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 28px;
+}
+
+.sim-pick {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
+.sim-pick .button {
+  padding: 8px 12px;
+}
+
+.sim-versus {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.sim-side {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.sim-power {
+  border-collapse: collapse;
+  max-width: 280px;
+  width: 100%;
+}
+
+.sim-power th,
+.sim-power td {
+  border-bottom: 1px solid var(--line);
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.sim-power td {
+  font-family: var(--display);
+  text-align: right;
+}
+
+.sim-power .is-total th,
+.sim-power .is-total td {
+  color: var(--gold-light);
+  font-size: 20px;
+}
+
+.sim-busy {
+  animation: sim-pulse 0.9s ease-in-out infinite;
+  color: var(--ember);
+  font-family: var(--display);
+  margin: 0;
+}
+
+@keyframes sim-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.sim-slot {
+  background: var(--surface-strong);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  min-height: 150px;
+  min-width: 110px;
+  padding: 8px;
+}
+
+.sim-slot-label {
+  color: var(--muted);
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sim-empty {
+  align-self: center;
+  color: var(--muted);
+}
+
+.sim-log {
+  display: grid;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.sim-log li {
+  border-bottom: 1px solid var(--line);
+  font-family: var(--serif);
+  font-size: 16px;
+  padding: 3px 0;
+}
+
+.sim-log li.is-latest {
+  color: var(--gold-light);
+  font-weight: 700;
+}
+
+.sim-end {
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.sim-end.won {
+  background: rgb(201 164 92 / 14%);
+}
+
+.sim-end.lost {
+  background: rgb(155 47 37 / 18%);
+}
+
+.sim-end h3 {
+  font-family: var(--display);
+  font-size: 30px;
+  margin: 0 0 8px;
+}
+
+.sim-modal-backdrop {
+  align-items: center;
+  background: rgb(0 0 0 / 75%);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 16px;
+  position: fixed;
+  z-index: 60;
+}
+
+.sim-modal {
+  background: var(--surface);
+  border: 2px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgb(0 0 0 / 70%);
+  display: grid;
+  gap: 16px;
+  max-height: 90vh;
+  max-width: 900px;
+  overflow-y: auto;
+  padding: 22px;
+}
+
+.sim-modal-title {
+  font-family: var(--display);
+  font-size: 18px;
+  margin: 0;
+}
+
+.solo-rules-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.solo-rule {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.solo-rule h3 {
+  color: var(--gold-light);
+  font-family: var(--display);
+  margin-top: 0;
+}
+
+.solo-rule li {
+  font-family: var(--serif);
+  font-size: 17px;
+  margin-bottom: 8px;
+}

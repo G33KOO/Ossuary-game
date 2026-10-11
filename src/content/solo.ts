@@ -15,7 +15,7 @@ export type SoloCopy = {
 const fr: SoloCopy = {
   rulesTitle: 'Règles du mode solo',
   rulesIntro:
-    'Ces règles sont une variante maison : elles ne font pas partie du jeu multijoueur d’origine. Le moteur du simulateur ci-dessous les applique à la lettre.',
+    'Ces règles sont une variante maison : elles ne font pas partie du jeu multijoueur d’origine. Le moteur du simulateur ci-dessus les applique à la lettre.',
   rules: [
     {
       title: 'Préparation',
@@ -123,6 +123,15 @@ const fr: SoloCopy = {
     bossHandCount: 'Main du Boss',
     cards: 'cartes',
     discardPile: 'Défausse',
+    rolling: 'Le dé roule…',
+    resolving: 'Le sort du combat se décide…',
+    pressure: 'Pression du Boss',
+    pressureHint: '+{n} carte(s) dans sa main de départ',
+    bossWaits: 'Le Boss vous attend au niveau 10.',
+    opponent: 'Adversaire',
+    you: 'Vous',
+    close: 'Fermer',
+    selectClass: 'Choisir',
   },
   prompts: {
     'discard-excess': 'Fin de tour : défaussez {count} carte(s) pour respecter votre limite de main.',
@@ -224,7 +233,7 @@ const fr: SoloCopy = {
 const en: SoloCopy = {
   rulesTitle: 'Solo mode rules',
   rulesIntro:
-    'These rules are a house variant: they are not part of the original multiplayer game. The simulator below applies them exactly.',
+    'These rules are a house variant: they are not part of the original multiplayer game. The simulator above applies them exactly.',
   rules: [
     {
       title: 'Setup',
@@ -332,6 +341,15 @@ const en: SoloCopy = {
     bossHandCount: 'Boss hand',
     cards: 'cards',
     discardPile: 'Discard',
+    rolling: 'The die rolls…',
+    resolving: 'The fate of the fight is decided…',
+    pressure: 'Boss pressure',
+    pressureHint: '+{n} card(s) in its starting hand',
+    bossWaits: 'The Boss awaits you at level 10.',
+    opponent: 'Opponent',
+    you: 'You',
+    close: 'Close',
+    selectClass: 'Choose',
   },
   prompts: {
     'discard-excess': 'End of turn: discard {count} card(s) to respect your hand limit.',

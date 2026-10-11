@@ -1317,7 +1317,10 @@ export function reduce(state: GameState, action: GameAction): GameState {
       break
     case 'bossStep': {
       const c = s.combat
-      if (c && c.kind === 'boss' && !bossReact(s, c)) resolveCombat(s)
+      if (c && c.kind === 'boss') {
+        if (c.bossDie === null) rollBossDie(s, c)
+        else if (!bossReact(s, c)) resolveCombat(s)
+      }
       break
     }
     case 'flee':
