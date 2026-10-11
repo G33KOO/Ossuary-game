@@ -1,0 +1,201 @@
+/* ---- Couche d'immersion : thème sombre, pierre, os, braises ----
+   Chargée après fantasy.css et solo-board.css, elle ne touche que le thème sombre. */
+:root:not([data-theme='light']) {
+  --background: #0a0706;
+  --surface: #15100d;
+  --surface-strong: #1c1511;
+  --line: rgb(201 164 92 / 20%);
+  --stone: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='s' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.045 .06' numOctaves='5' seed='7' result='n'/><feDiffuseLighting in='n' lighting-color='%23b9a88a' surfaceScale='2.4'><feDistantLight azimuth='235' elevation='52'/></feDiffuseLighting></filter><rect width='100%' height='100%' filter='url(%23s)'/></svg>");
+  --cracks: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420' fill='none' stroke='%23000' stroke-linecap='round'><g stroke-opacity='.55'><path d='M40 0l18 70-22 52 30 66-12 60' stroke-width='1.4'/><path d='M58 70l60 14 38-20' stroke-width='1'/><path d='M300 420l-14-84 40-60-18-70 34-96' stroke-width='1.4'/><path d='M326 276l56 10' stroke-width='1'/><path d='M150 188l-60 40-18 54' stroke-width='.9'/></g></svg>");
+  --ember-glow: radial-gradient(ellipse at 50% 110%, rgb(212 87 42 / 20%), transparent 62%);
+}
+
+/* Fond général : pierre sombre, fissures, vignette et lueur de braise */
+:root:not([data-theme='light']) body {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgb(155 47 37 / 22%), transparent 55%),
+    radial-gradient(ellipse at 50% 120%, rgb(212 87 42 / 10%), transparent 50%),
+    var(--background);
+}
+
+:root:not([data-theme='light']) body::after {
+  background:
+    radial-gradient(ellipse at center, transparent 45%, rgb(0 0 0 / 70%) 100%),
+    var(--cracks) 0 0 / 420px,
+    var(--stone) 0 0 / 260px;
+  background-blend-mode: normal, normal, soft-light;
+  content: '';
+  inset: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  pointer-events: none;
+  position: fixed;
+  z-index: 49;
+}
+
+/* En-tête : pierre noire et liseré doré */
+:root:not([data-theme='light']) .site-header {
+  background:
+    var(--stone) 0 0 / 220px,
+    linear-gradient(180deg, #060403, #120d0a);
+  background-blend-mode: soft-light, normal;
+}
+
+:root:not([data-theme='light']) .brand-name,
+:root:not([data-theme='light']) h1,
+:root:not([data-theme='light']) h2 {
+  text-shadow:
+    0 2px 0 #000,
+    0 0 22px rgb(212 87 42 / 22%);
+}
+
+/* Panneaux du site : dalles de pierre sculptées */
+:root:not([data-theme='light']) .step-card,
+:root:not([data-theme='light']) .step-card:first-child,
+:root:not([data-theme='light']) .showcase-boss,
+:root:not([data-theme='light']) .solo-rule,
+:root:not([data-theme='light']) .sim-modal {
+  background:
+    var(--stone) 0 0 / 240px,
+    linear-gradient(160deg, #1d1511, #0d0907);
+  background-blend-mode: soft-light, normal;
+  box-shadow:
+    inset 0 0 0 4px #0d0907,
+    inset 0 0 0 5px var(--line),
+    inset 0 0 60px rgb(0 0 0 / 70%),
+    0 18px 38px rgb(0 0 0 / 65%);
+}
+
+:root:not([data-theme='light']) .site-footer {
+  background:
+    var(--stone) 0 0 / 220px,
+    linear-gradient(180deg, #0e0907, #060403);
+  background-blend-mode: soft-light, normal;
+}
+
+/* Boutons : métal sombre et braise */
+:root:not([data-theme='light']) .button-primary {
+  box-shadow:
+    inset 0 1px 0 rgb(255 220 170 / 25%),
+    0 0 18px rgb(212 87 42 / 30%),
+    0 6px 14px rgb(0 0 0 / 60%);
+  text-shadow: 0 1px 2px #000;
+}
+
+:root:not([data-theme='light']) .button-primary:hover {
+  box-shadow:
+    inset 0 1px 0 rgb(255 220 170 / 35%),
+    0 0 28px rgb(212 87 42 / 55%),
+    0 6px 14px rgb(0 0 0 / 60%);
+}
+
+/* ---- Simulateur ---- */
+:root:not([data-theme='light']) .gb-full {
+  background:
+    radial-gradient(ellipse at 50% 0, rgb(155 47 37 / 16%), transparent 55%),
+    #070403;
+}
+
+:root:not([data-theme='light']) .gb {
+  --gb-wood: linear-gradient(145deg, #5a4630, #1b130c 45%, #46341f 70%, #120c07);
+}
+
+/* Table : dalle d'ossuaire avec fissures, braises et vignette profonde */
+:root:not([data-theme='light']) .gb-table {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgb(140 45 28 / 26%), transparent 58%),
+    radial-gradient(ellipse at 50% 100%, rgb(212 87 42 / 12%), transparent 55%),
+    var(--cracks) 50% 50% / 420px,
+    var(--stone) 0 0 / 260px,
+    radial-gradient(ellipse at 50% 50%, #1a110c, #070403 80%);
+  background-blend-mode: normal, normal, normal, soft-light, normal;
+  box-shadow:
+    inset 0 0 110px rgb(0 0 0 / 92%),
+    inset 0 0 0 1px rgb(201 164 92 / 30%),
+    0 22px 56px rgb(0 0 0 / 75%);
+}
+
+/* Plateau du joueur et journal : pierre gravée, cadre de bronze */
+:root:not([data-theme='light']) .gb-board,
+:root:not([data-theme='light']) .gb-log-panel {
+  background:
+    var(--stone) 0 0 / 220px,
+    linear-gradient(160deg, #1a120d, #0a0605);
+  background-blend-mode: soft-light, normal;
+  border: 2px solid #4a3520;
+  box-shadow:
+    inset 0 0 0 1px rgb(201 164 92 / 22%),
+    inset 0 0 50px rgb(0 0 0 / 70%),
+    0 10px 26px rgb(0 0 0 / 60%);
+}
+
+/* Emplacements : creux dans la pierre */
+:root:not([data-theme='light']) .gb-slot-empty {
+  background: radial-gradient(ellipse at 50% 40%, rgb(0 0 0 / 55%), rgb(0 0 0 / 25%));
+  border-color: rgb(201 164 92 / 28%);
+  box-shadow:
+    inset 0 4px 14px rgb(0 0 0 / 85%),
+    0 1px 0 rgb(201 164 92 / 12%);
+}
+
+/* HUD : pastilles de pierre */
+:root:not([data-theme='light']) .gb-hud > div:not(.gb-level) {
+  background:
+    var(--stone) 0 0 / 200px,
+    linear-gradient(160deg, #1c1410, #0b0705);
+  background-blend-mode: soft-light, normal;
+  border: 1px solid rgb(201 164 92 / 35%);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 14px rgb(0 0 0 / 75%),
+    0 3px 8px rgb(0 0 0 / 55%);
+}
+
+:root:not([data-theme='light']) .gb-level {
+  background:
+    radial-gradient(ellipse at 50% 120%, rgb(212 87 42 / 35%), transparent 70%),
+    linear-gradient(145deg, #2a1c10, #0e0907);
+  box-shadow:
+    inset 0 0 14px rgb(0 0 0 / 70%),
+    0 0 20px rgb(212 87 42 / 28%);
+}
+
+/* Titre d'aventure : lueur de braise */
+:root:not([data-theme='light']) .gb-idle-title {
+  text-shadow:
+    0 2px 0 #000,
+    0 0 18px rgb(212 87 42 / 45%);
+}
+
+/* Cartes : ombre portée plus lourde et liseré chaud au survol */
+:root:not([data-theme='light']) .gb-card {
+  box-shadow:
+    0 10px 22px rgb(0 0 0 / 75%),
+    0 0 0 1px rgb(0 0 0 / 80%);
+}
+
+/* Zone de jeu : braises qui respirent */
+@keyframes gb-embers {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+:root:not([data-theme='light']) .gb-table::after {
+  animation: gb-embers 5s ease-in-out infinite;
+  background: var(--ember-glow);
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+:root:not([data-theme='light']) .gb-table {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-theme='light']) .gb-table::after {
+    animation: none;
+  }
+}

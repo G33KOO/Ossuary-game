@@ -10,6 +10,7 @@ import { RulesPage } from './pages/RulesPage'
 import { SoloPage } from './pages/SoloPage'
 import './App.css'
 import './styles/fantasy.css'
+import './styles/immersion.css'
 
 function App() {
   const { theme, toggleTheme } = useTheme()

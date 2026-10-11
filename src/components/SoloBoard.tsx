@@ -15,6 +15,7 @@ import { useLocale } from '../i18n/LocaleProvider'
 import { getCardIllustration } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
 import '../styles/solo-board.css'
+import '../styles/immersion.css'
 
 const ROLL_DELAY = 1100
 const RESOLVE_DELAY = 1300
