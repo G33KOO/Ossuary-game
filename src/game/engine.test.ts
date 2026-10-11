@@ -72,7 +72,7 @@ describe('solo engine', () => {
           state.monsterDiscard.length +
           state.strongMonsters.length * (state.strongAdded ? 0 : 1) +
           (state.combat?.monsters.length ?? 0) +
-          state.promptQueue.reduce((sum, p) => sum + (Array.isArray(p.ctx.choices) && p.purpose !== 'thief-pick' && p.purpose !== 'tavern' ? p.ctx.choices.length : 0), 0)
+          state.promptQueue.reduce((sum, p) => sum + (Array.isArray(p.ctx.choices) && p.purpose !== 'thief-pick' && p.purpose !== 'tavern' && p.purpose !== 'oath' ? p.ctx.choices.length : 0), 0)
         expect(monsters).toBe(66)
         expect(total).toBeLessThanOrEqual(CARDS.length)
         expect(state.level).toBeGreaterThanOrEqual(1)
@@ -85,6 +85,9 @@ describe('solo engine', () => {
 
   it('computes combat power with mastery and the Orc bonus', () => {
     let state = newGame('Guerrier', 'Orc', 5)
+    expect(state.promptQueue[0]?.purpose).toBe('oath')
+    state = reduce(state, { t: 'answer', option: state.promptQueue[0].options[0].id })
+    expect(state.oaths).toHaveLength(1)
     const weapon = CARDS.find((entry) => entry.type === 'Arme' && (entry.requirement ?? '').includes('Maîtrise Guerrier'))!
     state.hand.push(weapon.id)
     state = reduce(state, { t: 'equip', id: weapon.id })

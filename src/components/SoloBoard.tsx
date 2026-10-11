@@ -238,16 +238,19 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const [over, setOver] = useState<string | null>(null)
   const [slotOver, setSlotOver] = useState<string | null>(null)
   const [logOpen, setLogOpen] = useState(false)
+  const [fleeNote, setFleeNote] = useState<string | null>(null)
   const [bossPicker, setBossPicker] = useState(false)
   const [klass, setKlass] = useState<ClassName>('Guerrier')
   const [race, setRace] = useState<RaceName>('Humain')
   const timer = useRef<number | undefined>(undefined)
   const revealTimer = useRef<number | undefined>(undefined)
+  const fleeNoteTimer = useRef<number | undefined>(undefined)
 
   useEffect(
     () => () => {
       window.clearTimeout(timer.current)
       window.clearTimeout(revealTimer.current)
+      window.clearTimeout(fleeNoteTimer.current)
     },
     [],
   )
@@ -301,6 +304,20 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       send(action)
       setBusy(null)
     }, delay)
+  }
+
+  const flee = () => {
+    setBusy('rolling')
+    setFleeNote(null)
+    timer.current = window.setTimeout(() => {
+      send({ t: 'flee' })
+      setBusy(null)
+      const last = gameRef.current?.log.at(-1)
+      if (last?.code === 'fleeFailed') setFleeNote(fill(sim.fleeFailedNote, { value: Number(last.params?.value ?? 0) }))
+      else if (last?.code === 'fled') setFleeNote(Number(last.params?.value) > 0 ? fill(sim.fleeOkNote, { value: Number(last.params?.value) }) : sim.fleeAuto)
+      window.clearTimeout(fleeNoteTimer.current)
+      fleeNoteTimer.current = window.setTimeout(() => setFleeNote(null), 3500)
+    }, ROLL_DELAY)
   }
 
   const runBossSequence = () => {
@@ -464,7 +481,17 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   return (
     <div className="gb gb-full">
       <div className="gb-hud">
-        <Stat label={sim.level} value={`${game.level}/10`} />
+        {fleeNote ? <div className="gb-toast">{fleeNote}</div> : null}
+        <div className="gb-level" title={sim.level}>
+          <span className="gb-level-label">{sim.level}</span>
+          <strong>{game.level}</strong>
+          <span className="gb-level-max">/10</span>
+        </div>
+        {(game.oaths ?? []).map((id) => (
+          <button className="gb-oath" key={id} onClick={(event) => inspect(id, event.currentTarget)} type="button">
+            ✳ {localizeCard(card(id), locale).name}
+          </button>
+        ))}
         <Stat label={sim.turn} value={game.turn} />
         <Stat label={sim.die} value={`D${game.dieSides}`} />
         <Stat label={sim.hand} value={`${game.hand.length}/${limit}`} />
@@ -564,8 +591,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                     {combat.playerDie === null ? sim.resolveNoDie : sim.resolve}
                   </button>
                   {!fleeBlocked(game) ? (
-                    <button className="button" disabled={locked} onClick={() => send({ t: 'flee' })} type="button">
-                      {sim.flee}
+                    <button className="button" disabled={locked} onClick={flee} title={sim.fleeHint} type="button">
+                      {sim.flee} · D6 4+
                     </button>
                   ) : null}
                   <button

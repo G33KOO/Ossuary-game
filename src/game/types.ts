@@ -28,6 +28,7 @@ export type PromptPurpose =
   | 'mimic'
   | 'envers'
   | 'tavern'
+  | 'oath'
   | 'tavern-give'
 
 export type Prompt = {
@@ -78,6 +79,7 @@ export type GameState = {
   level: number
   turn: number
   hand: string[]
+  oaths: string[]
   equipment: Equipment
   lootDeck: string[]
   lootDiscard: string[]

@@ -12,6 +12,70 @@
   gap: 10px;
 }
 
+.gb-toast {
+  background: var(--surface);
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 55%);
+  color: var(--gold-light);
+  font-family: var(--display);
+  left: 50%;
+  letter-spacing: 0.06em;
+  padding: 10px 22px;
+  pointer-events: none;
+  position: fixed;
+  top: 96px;
+  transform: translateX(-50%);
+  z-index: 70;
+}
+
+.gb-level {
+  align-items: baseline;
+  background: linear-gradient(145deg, rgb(212 160 74 / 28%), rgb(212 160 74 / 8%));
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 0 14px rgb(212 160 74 / 25%);
+  display: flex;
+  gap: 6px;
+  padding: 2px 16px;
+}
+
+.gb-level-label {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.gb-level strong {
+  color: var(--gold-light);
+  font-family: var(--display);
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.gb-level-max {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.gb-oath {
+  align-self: center;
+  background: transparent;
+  border: 1px dashed var(--gold);
+  border-radius: 6px;
+  color: var(--gold-light);
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 6px 10px;
+}
+
+.gb-oath:hover {
+  background: rgb(212 160 74 / 14%);
+}
+
 .gb-hero-line {
   align-self: center;
   color: var(--gold-light);
@@ -1017,10 +1081,12 @@ body.solo-playing footer {
 
 .gb-reveal-card.from-loot {
   --fx: 45vw;
+  --exit-y: 36vh;
 }
 
 .gb-reveal-card.from-monster {
   --fx: -45vw;
+  --exit-y: -30vh;
 }
 
 .gb-reveal-card .gb-card-wrap {
@@ -1057,7 +1123,7 @@ body.solo-playing footer {
 
   100% {
     opacity: 0;
-    transform: translate(0, 36vh) scale(0.4) rotateY(0deg);
+    transform: translate(0, var(--exit-y, 36vh)) scale(0.4) rotateY(0deg);
   }
 }
 

@@ -91,6 +91,20 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.drawSeq = 0
   drawLoot(s, 5)
   s.draws = []
+  s.oaths = []
+  const oathPool = shuffle(
+    s,
+    CARDS.filter((entry) => entry.type === 'Serment').map((entry) => entry.id),
+  )
+  const oathChoices = oathPool.slice(0, 3)
+  if (oathChoices.length > 0) {
+    queue(s, {
+      purpose: 'oath',
+      options: oathChoices.map((id) => ({ id, cardId: id })),
+      optional: false,
+      ctx: { choices: oathChoices, keep: race === 'Revenant' ? 2 : 1 },
+    })
+  }
   log(s, 'start', { klass, race })
   return s
 }
@@ -1194,6 +1208,22 @@ function answerPrompt(s: GameState, option: string | null) {
       if (option) {
         s.mimic = option as ClassName
         log(s, 'mimic', { klass: option })
+      }
+      break
+    case 'oath':
+      if (option) {
+        s.oaths = [...(s.oaths ?? []), option]
+        log(s, 'oathKept', { card: option })
+        const keep = Number(prompt.ctx.keep ?? 1) - 1
+        const rest = choices.filter((id) => id !== option)
+        if (keep > 0 && rest.length > 0) {
+          queue(s, {
+            purpose: 'oath',
+            options: rest.map((id) => ({ id, cardId: id })),
+            optional: false,
+            ctx: { choices: rest, keep },
+          })
+        }
       }
       break
     case 'tavern':
