@@ -608,8 +608,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               </div>
             </>
           ) : (
-            <div className="gb-idle">
+            <div className={`gb-idle${playZone.className}`} onDragLeave={playZone.onDragLeave} onDragOver={playZone.onDragOver} onDrop={playZone.onDrop}>
               <p className="gb-idle-title">{sim.adventure}</p>
+              <span className="gb-playzone-hint">{sim.dropPlay}</span>
               <div className="gb-idle-actions">
                 <button className="button button-primary" disabled={locked} onClick={() => send({ t: 'fightMonster' })} type="button">
                   {sim.fight}

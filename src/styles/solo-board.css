@@ -578,9 +578,16 @@
 }
 
 .gb-idle {
+  border: 2px dashed transparent;
+  border-radius: 14px;
   display: grid;
   gap: 14px;
   justify-items: center;
+  padding: 6px 14px;
+}
+
+.gb-idle.is-target {
+  border-color: var(--gold-light);
 }
 
 .gb-idle-title {
