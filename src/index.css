@@ -1,0 +1,79 @@
+:root {
+  --page-pad: clamp(24px, 7vw, 104px);
+  --sans: 'Manrope', 'Segoe UI', sans-serif;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --background: #171512;
+  --surface: #1c1915;
+  --surface-strong: #211c17;
+  --bone: #ece4d5;
+  --muted: #a19a8d;
+  --gold: #c0a36a;
+  --gold-light: #dfc999;
+  --red: #8d342b;
+  --line: rgb(224 210 181 / 13%);
+  --card-surface: #1e1a15;
+  --card-border: #38332b;
+  --card-foreground: #ece4d5;
+  --card-overlay: linear-gradient(180deg, rgb(14 12 10 / 4%), rgb(14 12 10 / 90%));
+  --placeholder: #746f65;
+
+  background: var(--background);
+  color: var(--bone);
+  color-scheme: dark;
+  font-family: var(--sans);
+  font-synthesis: none;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+:root[data-theme='light'] {
+  --background: #f2eee4;
+  --surface: #e8e2d7;
+  --surface-strong: #e2dacd;
+  --bone: #29251f;
+  --muted: #625d54;
+  --gold: #806231;
+  --gold-light: #735727;
+  --red: #8d342b;
+  --line: rgb(71 57 36 / 18%);
+  --card-surface: #ece7dc;
+  --card-border: #c8bdac;
+  --card-foreground: #29251f;
+  --card-overlay: linear-gradient(180deg, rgb(242 238 228 / 3%), rgb(242 238 228 / 97%));
+  --placeholder: #756c5d;
+
+  background: var(--background);
+  color: var(--bone);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--bone);
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--background);
+}
