@@ -209,7 +209,14 @@
 }
 
 .gb-card-wrap.is-dragging {
-  opacity: 0.35;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gb-card-wrap.is-dragging .gb-card,
+.gb-card-wrap.is-dragging .gb-card-actions {
+  pointer-events: none;
+  transform: none !important;
 }
 
 .gb-card {
@@ -764,8 +771,66 @@ body.solo-playing footer {
 }
 
 .gb-full .gb-arena {
-  gap: 8px;
+  align-content: stretch;
+  gap: 6px;
+  grid-template-rows: minmax(0, 1fr) auto auto;
   min-height: 0;
+}
+
+.gb-full .gb-arena > :first-child {
+  align-self: center;
+}
+
+.gb-full .gb-arena .gb-foe {
+  align-items: center;
+  min-height: 0;
+}
+
+.gb-full .gb-arena .gb-foe-gear .gb-card-wrap.size-sm {
+  --w: clamp(44px, 8dvh, 70px);
+}
+
+.gb-full .gb-arena .gb-card-wrap.size-lg {
+  --w: clamp(56px, 9dvh, 84px);
+}
+
+.gb-full .gb-arena .gb-card-wrap.size-sm {
+  --w: clamp(40px, 6dvh, 58px);
+}
+
+.gb-full .gb-arena .gb-back.size-lg {
+  height: clamp(80px, 13dvh, 118px);
+  width: clamp(57px, 9.3dvh, 84px);
+}
+
+.gb-full .gb-arena .gb-idle {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+.gb-full .gb-arena .gb-idle-title {
+  margin: 0;
+}
+
+.gb-full .gb-arena .gb-die-face {
+  font-size: 16px;
+  height: 32px;
+  width: 32px;
+}
+
+.gb-full .gb-arena .gb-score strong {
+  font-size: clamp(22px, 4dvh, 36px);
+}
+
+.gb-full .gb-board .gb-card-wrap.size-sm {
+  --w: clamp(56px, min(10.5dvh, 5.6vw), 100px);
+}
+
+.gb-full .gb-board .gb-slot-empty {
+  width: clamp(56px, min(10.5dvh, 5.6vw), 100px);
 }
 
 .gb-full .gb-side {

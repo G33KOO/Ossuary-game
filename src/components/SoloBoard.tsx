@@ -4,6 +4,7 @@ import { fill, soloCopy } from '../content/solo'
 import { ARMOR_SLOTS, CARDS, CLASS_NAMES, RACE_NAMES, card } from '../game/data'
 import type { ClassName, RaceName } from '../game/data'
 import { BOSS_IDS, activeStatus, canEquip, canPlayAction, fleeBlocked, newGame, reduce } from '../game/engine'
+import { loadGame, saveGame } from '../game/save'
 import { computePower, handLimit } from '../game/power'
 import type { PowerBreakdown } from '../game/power'
 import type { GameAction, GameState, Prompt } from '../game/types'
@@ -211,7 +212,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const sim = copy.sim
   const { openCard } = useCardDialog()
 
-  const [game, setGame] = useState<GameState | null>(null)
+  const [game, setGame] = useState<GameState | null>(loadGame)
   const playing = game !== null
 
   useEffect(() => {
@@ -220,7 +221,17 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     if (playing) window.scrollTo(0, 0)
     return () => document.body.classList.remove('solo-playing')
   }, [playing, onPlayingChange])
-  const gameRef = useRef<GameState | null>(null)
+  const gameRef = useRef<GameState | null>(game)
+
+  useEffect(() => {
+    const id = window.setTimeout(() => saveGame(game), 250)
+    const flush = () => saveGame(gameRef.current)
+    window.addEventListener('pagehide', flush)
+    return () => {
+      window.clearTimeout(id)
+      window.removeEventListener('pagehide', flush)
+    }
+  }, [game])
   const [busy, setBusy] = useState<Busy>(null)
   const [reveal, setReveal] = useState<Reveal | null>(null)
   const [drag, setDrag] = useState<Drag | null>(null)
@@ -374,8 +385,11 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     onDragEnd: () => {
       setDrag(null)
       setOver(null)
+      setSlotOver(null)
     },
-    onDragStart: () => setDrag({ id, from }),
+    onDragStart: () => {
+      window.setTimeout(() => setDrag({ id, from }), 0)
+    },
   })
   const handDraggable = busy === null && reveal === null && !ended && (!prompt || tavern)
 
@@ -417,6 +431,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   }
 
   const labels = { level: sim.levelPart, equip: sim.equipPart, bonus: sim.bonusPart, die: sim.diePart }
+  const foeLabels = { ...labels, equip: combat?.kind === 'boss' ? sim.equipPart : sim.powerPart }
   const monsterTop = game.monsterDiscard[game.monsterDiscard.length - 1]
   const lootTop = game.lootDiscard[game.lootDiscard.length - 1]
   const hero = (type: 'Classe' | 'Race', name: string) => heroCard(type, name)
@@ -528,7 +543,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                       <Die label={sim.opponent} rolling={false} sides={combat.kind === 'boss' ? combat.bossSides : 6} value={power.opponent.die} />
                     ) : null}
                   </div>
-                  <Score label={sim.opponent} parts={breakdownText(power.opponent, labels)} side="foe" total={power.opponent.total} />
+                  <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />
                 </div>
               ) : null}
 
@@ -553,11 +568,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                       {sim.flee}
                     </button>
                   ) : null}
-                  {status.available ? (
-                    <button className="button" disabled={locked} onClick={() => send({ t: 'useActive' })} type="button">
-                      {sim.active} · {heroName('Classe', status.klass)}
-                    </button>
-                  ) : null}
+                  <button
+                    className="button"
+                    disabled={locked || !status.available}
+                    onClick={() => send({ t: 'useActive' })}
+                    title={sim[`needs_${status.klass}`]}
+                    type="button"
+                  >
+                    {sim.active} · {heroName('Classe', status.klass)}
+                  </button>
                 </div>
               </div>
             </>
@@ -570,6 +589,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 </button>
                 <button className="button button-primary" disabled={locked} onClick={() => send({ t: 'drawLoot' })} type="button">
                   {game.race === 'Nain' ? sim.drawLootNain : sim.drawLoot}
+                </button>
+                <button
+                  className="button"
+                  disabled={locked || !status.available}
+                  onClick={() => send({ t: 'useActive' })}
+                  title={sim[`needs_${status.klass}`]}
+                  type="button"
+                >
+                  {sim.active} · {heroName('Classe', status.klass)}
                 </button>
               </div>
               <Pile
@@ -662,23 +690,18 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         <div className="gb-hand">
           {game.hand.map((id, index) => {
             const entry = card(id)
+            const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
             const equipable = !locked && canEquip(game, id)
             const playable = !locked && entry.type === 'Action' && canPlayAction(game, id)
-            const actions =
-              equipable || playable ? (
-                <>
-                  {equipable ? (
-                    <button className="button" onClick={() => send({ t: 'equip', id })} type="button">
-                      {sim.equipBtn}
-                    </button>
-                  ) : null}
-                  {playable ? (
-                    <button className="button" onClick={() => send({ t: 'playAction', id })} type="button">
-                      {sim.play}
-                    </button>
-                  ) : null}
-                </>
-              ) : undefined
+            const actions = isGear ? (
+              <button className="button" disabled={!equipable} onClick={() => send({ t: 'equip', id })} type="button">
+                {sim.equipBtn}
+              </button>
+            ) : entry.type === 'Action' ? (
+              <button className="button" disabled={!playable} onClick={() => send({ t: 'playAction', id })} type="button">
+                {sim.play}
+              </button>
+            ) : undefined
             return (
               <GameCard
                 className={drag?.id === id ? 'is-dragging' : ''}

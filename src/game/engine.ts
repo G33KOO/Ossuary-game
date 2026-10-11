@@ -1197,7 +1197,12 @@ function answerPrompt(s: GameState, option: string | null) {
       }
       break
     case 'tavern':
-      if (option) {
+      if (!option) {
+        s.lootDiscard.push(...choices)
+        log(s, 'tavernSkip')
+        break
+      }
+      {
         s.lootDiscard.push(...choices.filter((id) => id !== option))
         const give = handOptions(s)
         if (give.length === 0) {
@@ -1250,7 +1255,7 @@ function endTurnNow(s: GameState) {
         queue(s, {
           purpose: 'tavern',
           options: choices.map((id) => ({ id, cardId: id })),
-          optional: false,
+          optional: true,
           ctx: { choices },
         })
         return
