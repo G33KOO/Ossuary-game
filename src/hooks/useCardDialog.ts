@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import type { ReactNode } from 'react'
 import type { Card } from '../types/card'
 
 export type CardDialogContextValue = {
@@ -6,7 +7,7 @@ export type CardDialogContextValue = {
    * Ouvre la modale sur place. `siblings` active la navigation précédente/suivante,
    * `origin` (élément cliqué) sert de point de départ à l'animation de zoom.
    */
-  openCard: (card: Card, siblings?: readonly Card[], origin?: Element | null) => void
+  openCard: (card: Card, siblings?: readonly Card[], origin?: Element | null, actions?: ReactNode) => void
   closeCard: () => void
 }
 

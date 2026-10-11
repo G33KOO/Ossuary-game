@@ -87,7 +87,10 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.victoryBoss = null
   s.equipment = { armors: { Plastron: null, Bottes: null, Gants: null, Casque: null }, hands: [], artifact: null }
   s.hand = []
+  s.draws = []
+  s.drawSeq = 0
   drawLoot(s, 5)
+  s.draws = []
   log(s, 'start', { klass, race })
   return s
 }
@@ -106,6 +109,7 @@ function drawLoot(s: GameState, count: number) {
     const id = drawFromLoot(s)
     if (!id) break
     s.hand.push(id)
+    s.draws.push({ id, kind: 'loot' })
   }
 }
 
@@ -115,7 +119,9 @@ function drawMonster(s: GameState) {
     s.monsterDiscard = []
     log(s, 'monstersReshuffled')
   }
-  return s.monsterDeck.shift()
+  const id = s.monsterDeck.shift()
+  if (id) s.draws.push({ id, kind: 'monster' })
+  return id
 }
 
 function rollRaw(s: GameState) {
@@ -1191,12 +1197,25 @@ function answerPrompt(s: GameState, option: string | null) {
       }
       break
     case 'tavern':
-      if (option === 'decline') {
-        s.lootDiscard.push(...choices)
-      } else if (option) {
+      if (option) {
         s.lootDiscard.push(...choices.filter((id) => id !== option))
+        const give = handOptions(s)
+        if (give.length === 0) {
+          s.hand.push(option)
+          break
+        }
         s.hand.push(option)
-        log(s, 'tavernTake', { card: option })
+        queue(
+          s,
+          { purpose: 'tavern-give', options: give, optional: false, ctx: { taken: option } },
+          true,
+        )
+      }
+      break
+    case 'tavern-give':
+      if (option) {
+        discardFromHand(s, option)
+        log(s, 'tavernSwap', { card: prompt.ctx.taken as string, give: option })
       }
       break
     case 'envers':
@@ -1219,20 +1238,23 @@ function answerPrompt(s: GameState, option: string | null) {
 function endTurnNow(s: GameState) {
   if (!s.tavernDone) {
     s.tavernDone = true
-    const choices: string[] = []
-    for (let index = 0; index < TAVERN_SIZE; index += 1) {
-      const id = drawFromLoot(s)
-      if (id) choices.push(id)
-    }
-    if (choices.length > 0) {
-      log(s, 'tavernOpen')
-      queue(s, {
-        purpose: 'tavern',
-        options: [...choices.map((id) => ({ id, cardId: id })), { id: 'decline' }],
-        optional: false,
-        ctx: { choices },
-      })
-      return
+    // The Tavern is a trade: with an empty hand there is nothing to swap, so it stays closed.
+    if (s.hand.length > 0) {
+      const choices: string[] = []
+      for (let index = 0; index < TAVERN_SIZE; index += 1) {
+        const id = drawFromLoot(s)
+        if (id) choices.push(id)
+      }
+      if (choices.length > 0) {
+        log(s, 'tavernOpen')
+        queue(s, {
+          purpose: 'tavern',
+          options: choices.map((id) => ({ id, cardId: id })),
+          optional: false,
+          ctx: { choices },
+        })
+        return
+      }
     }
   }
   const limit = handLimit(s)
@@ -1260,13 +1282,19 @@ function settle(s: GameState) {
 export function reduce(state: GameState, action: GameAction): GameState {
   if (state.phase === 'won' || state.phase === 'lost') return state
   const s = structuredClone(state)
+  s.draws = []
+  const result = apply(s, action)
+  if (result.draws.length > 0) result.drawSeq += 1
+  return result
+}
 
+function apply(s: GameState, action: GameAction): GameState {
   if (action.t === 'answer') {
     answerPrompt(s, action.option)
     settle(s)
     return s
   }
-  if (s.promptQueue.length > 0) return state
+  if (s.promptQueue.length > 0) return s
 
   const main = s.phase === 'main' && !s.combat
   switch (action.t) {

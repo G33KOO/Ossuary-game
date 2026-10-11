@@ -28,6 +28,7 @@ export type PromptPurpose =
   | 'mimic'
   | 'envers'
   | 'tavern'
+  | 'tavern-give'
 
 export type Prompt = {
   purpose: PromptPurpose
@@ -96,6 +97,8 @@ export type GameState = {
   log: LogEntry[]
   stats: { monsters: number; defeats: number; flees: number }
   victoryBoss: string | null
+  draws: { id: string; kind: 'loot' | 'monster' }[]
+  drawSeq: number
 }
 
 export type GameAction =

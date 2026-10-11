@@ -5,15 +5,15 @@ import type { CardDialogContextValue } from '../hooks/useCardDialog'
 import type { Card } from '../types/card'
 import { CardDetailsDialog } from './CardDetailsDialog'
 
-type DialogState = { card: Card; siblings: readonly Card[]; origin: DOMRect | null }
+type DialogState = { card: Card; siblings: readonly Card[]; origin: DOMRect | null; actions: ReactNode }
 
 export function CardDialogProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DialogState | null>(null)
 
   const value = useMemo<CardDialogContextValue>(
     () => ({
-      openCard: (card, siblings = [], origin) =>
-        setState({ card, siblings, origin: origin?.getBoundingClientRect() ?? null }),
+      openCard: (card, siblings = [], origin, actions) =>
+        setState({ card, siblings, origin: origin?.getBoundingClientRect() ?? null, actions }),
       closeCard: () => setState(null),
     }),
     [],
@@ -31,6 +31,7 @@ export function CardDialogProvider({ children }: { children: ReactNode }) {
     <CardDialogContext.Provider value={value}>
       {children}
       <CardDetailsDialog
+        actions={state?.actions}
         card={state?.card ?? null}
         onClose={value.closeCard}
         onNext={next ? () => goTo(next) : undefined}

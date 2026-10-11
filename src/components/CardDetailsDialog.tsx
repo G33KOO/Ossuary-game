@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import type { Card } from '../types/card'
 import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
 import type { CardGender } from '../utils/cardIllustration'
@@ -36,9 +37,10 @@ type CardDetailsDialogProps = {
   onPrevious?: () => void
   onNext?: () => void
   origin?: DOMRect | null
+  actions?: ReactNode
 }
 
-export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin }: CardDetailsDialogProps) {
+export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, actions }: CardDetailsDialogProps) {
   const { locale, t } = useLocale()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [genderChoice, setGenderChoice] = useState<{ cardId: string; gender: CardGender }>({
@@ -136,6 +138,11 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin }:
           {card.value && (
             <span className="dialog-value">{t('card.printedValue')} · {card.value}</span>
           )}
+          {actions ? (
+            <div className="dialog-actions" onClick={onClose}>
+              {actions}
+            </div>
+          ) : null}
           <div className="dialog-nav">
             <button disabled={!onPrevious} onClick={onPrevious} type="button">
               ← {t('card.previous')}
