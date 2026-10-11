@@ -21,7 +21,10 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext }: CardDet
 
   useEffect(() => {
     const dialog = dialogRef.current
-    if (dialog && !dialog.open) dialog.showModal()
+    if (dialog && !dialog.open) {
+      dialog.showModal()
+      dialog.querySelector<HTMLElement>('.dialog-close')?.focus({ preventScroll: true })
+    }
   }, [isOpen])
 
   useEffect(() => {

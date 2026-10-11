@@ -1821,6 +1821,8 @@ h2 em {
   max-height: min(92vh, 860px);
   max-width: min(1040px, 94vw);
   padding: 0;
+  position: fixed;
+  width: 100%;
 }
 
 .dialog-layout {
