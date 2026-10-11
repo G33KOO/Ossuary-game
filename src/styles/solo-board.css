@@ -877,9 +877,19 @@ body.solo-playing footer {
 .gb-full .gb-arena .gb-idle {
   align-items: center;
   display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
+  flex-direction: column;
+  gap: 8px;
   justify-content: center;
+  padding: 4px 18px;
+}
+
+.gb-full .gb-arena .gb-idle .gb-playzone-hint {
+  font-size: 11px;
+  margin-top: -4px;
+}
+
+.gb-full .gb-arena .gb-idle-actions {
+  gap: 12px;
 }
 
 .gb-full .gb-arena .gb-idle-title {
