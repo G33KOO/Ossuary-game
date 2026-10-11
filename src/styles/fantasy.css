@@ -976,3 +976,28 @@ h2 em {
     opacity: 0;
   }
 }
+
+.variant-switch {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.variant-switch button {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 9px 14px;
+  text-transform: uppercase;
+}
+
+.variant-switch button[aria-pressed='true'] {
+  background: linear-gradient(180deg, #b93c2d, #7a2119);
+  border-color: var(--gold);
+  color: #fbeed2;
+}

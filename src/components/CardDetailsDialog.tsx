@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Card } from '../types/card'
-import { getCardIllustration } from '../utils/cardIllustration'
+import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
+import type { CardGender } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
 import { useLocale } from '../i18n/LocaleProvider'
 import { localizeCard } from '../i18n/cardTranslations'
@@ -40,7 +41,13 @@ type CardDetailsDialogProps = {
 export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin }: CardDetailsDialogProps) {
   const { locale, t } = useLocale()
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const illustration = card ? getCardIllustration(card.name) : undefined
+  const [genderChoice, setGenderChoice] = useState<{ cardId: string; gender: CardGender }>({
+    cardId: '',
+    gender: 'male',
+  })
+  const gender = card && genderChoice.cardId === card.id ? genderChoice.gender : 'male'
+  const illustration = card ? getCardIllustration(card, gender) : undefined
+  const canSwitchGender = card ? hasFemaleVariant(card) : false
   const localizedCard = card ? localizeCard(card, locale) : null
   const isOpen = card !== null
 
@@ -91,6 +98,20 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin }:
             <img alt="" className="dialog-art" src={illustration.src} />
           ) : (
             <span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span>
+          )}
+          {canSwitchGender && (
+            <div aria-label={t('card.variants')} className="variant-switch" role="group">
+              {(['male', 'female'] as const).map((option) => (
+                <button
+                  aria-pressed={gender === option}
+                  key={option}
+                  onClick={() => setGenderChoice({ cardId: card.id, gender: option })}
+                  type="button"
+                >
+                  {t(option === 'male' ? 'card.variantMale' : 'card.variantFemale')}
+                </button>
+              ))}
+            </div>
           )}
         </div>
         <div className="dialog-body">

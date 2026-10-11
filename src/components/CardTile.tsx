@@ -14,7 +14,7 @@ type CardTileProps = {
 export function CardTile({ card, locale, onSelect }: CardTileProps) {
   const { t } = useLocale()
   const localizedCard = localizeCard(card, locale)
-  const illustration = getCardIllustration(card.name)
+  const illustration = getCardIllustration(card)
 
   return (
     <button

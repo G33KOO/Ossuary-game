@@ -34,7 +34,7 @@ export function CardShowcase({ cardType, eyebrow, title, description }: CardShow
         <ul className="showcase-grid">
           {showcased.map((card) => {
             const localized = localizeCard(card, locale)
-            const illustration = getCardIllustration(card.name)
+            const illustration = getCardIllustration(card)
             return (
               <li key={card.id}>
                 <button
