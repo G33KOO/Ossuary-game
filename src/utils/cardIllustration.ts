@@ -11,6 +11,7 @@ export function getCardIllustration(name: string) {
   const key = slugify(name)
   return (
     illustrations.find((illustration) => illustration.key === key) ??
+    illustrations.find((illustration) => illustration.key === `${key}-male`) ??
     illustrations.find((illustration) => new RegExp(`^${key}-?\\d+$`).test(illustration.key))
   )
 }
