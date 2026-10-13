@@ -1120,6 +1120,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             {tavern ? <p className="sim-note">{sim.tavernHint}</p> : null}
             <div className="sim-cards">
               {prompt.options.map((option, index) => {
+                if (option.id === 'tavern-back') return null
                 const cardId = option.cardId ?? (option.id.startsWith('OSS-CARD-') ? option.id : undefined)
                 if (cardId) {
                   const target = tavern
@@ -1153,6 +1154,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 )
               })}
             </div>
+            {prompt.purpose === 'tavern-give' && prompt.options.some((option) => option.id === 'tavern-back') ? (
+              <button className="button" onClick={() => send({ t: 'answer', option: 'tavern-back' })} type="button">{sim.tavernBack}</button>
+            ) : null}
             {prompt.optional ? (
               <button className="sim-link" onClick={() => send({ t: 'answer', option: null })} type="button">
                 {tavern ? sim.noThanks : sim.skip}

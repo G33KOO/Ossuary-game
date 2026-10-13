@@ -67,13 +67,13 @@ describe('solo engine', () => {
           (state.equipment.extraArmor?.id ? 1 : 0) +
           (state.combat?.bossHand.length ?? 0) +
           (state.combat?.bossEquip.length ?? 0) +
-          state.promptQueue.reduce((sum, p) => sum + (p.purpose === 'thief-pick' || p.purpose === 'tavern' ? (p.ctx.choices as string[]).length : 0), 0)
+          state.promptQueue.reduce((sum, p) => sum + (p.purpose === 'thief-pick' || p.purpose === 'tavern' || p.purpose === 'tavern-give' ? (p.ctx.choices as string[]).length : 0), 0)
         const monsters =
           state.monsterDeck.length +
           state.monsterDiscard.length +
           state.strongMonsters.length * (state.strongAdded ? 0 : 1) +
           (state.combat?.monsters.length ?? 0) +
-          state.promptQueue.reduce((sum, p) => sum + (Array.isArray(p.ctx.choices) && p.purpose !== 'thief-pick' && p.purpose !== 'tavern' && p.purpose !== 'oath' ? p.ctx.choices.length : 0), 0)
+          state.promptQueue.reduce((sum, p) => sum + (Array.isArray(p.ctx.choices) && p.purpose !== 'thief-pick' && p.purpose !== 'tavern' && p.purpose !== 'tavern-give' && p.purpose !== 'oath' ? p.ctx.choices.length : 0), 0)
         expect(monsters).toBe(66)
         expect(total).toBeLessThanOrEqual(CARDS.length)
         expect(state.level).toBeGreaterThanOrEqual(1)
@@ -222,6 +222,27 @@ describe('solo engine', () => {
     expect(canEquip(state, armor.id)).toBe(false)
     state = reduce(state, { t: 'equip', id: armor.id })
     expect(state.hand).toContain(armor.id)
+  })
+
+  it('returns to the same tavern offers without changing cards, then completes a different trade', () => {
+    let state = newGame('Mage', 'Humain', 3)
+    const choices = state.lootDeck.splice(0, 3)
+    const originalHand = [...state.hand]
+    const originalDiscard = [...state.lootDiscard]
+    state.promptQueue = [{ purpose: 'tavern', options: choices.map((id) => ({ id, cardId: id })), optional: true, ctx: { choices } }]
+    state = reduce(state, { t: 'answer', option: choices[0] })
+    expect(state.promptQueue[0].purpose).toBe('tavern-give')
+    expect(state.hand).toEqual(originalHand)
+    expect(state.lootDiscard).toEqual(originalDiscard)
+    state = reduce(state, { t: 'answer', option: 'tavern-back' })
+    expect(state.promptQueue[0].purpose).toBe('tavern')
+    expect(state.promptQueue[0].options.map((option) => option.id)).toEqual(choices)
+    expect(state.hand).toEqual(originalHand)
+    expect(state.lootDiscard).toEqual(originalDiscard)
+    state = reduce(state, { t: 'answer', option: choices[1] })
+    state = reduce(state, { t: 'answer', option: originalHand[0] })
+    expect(state.hand).toEqual([...originalHand.slice(1), choices[1]])
+    expect(state.lootDiscard).toEqual([...originalDiscard, originalHand[0], choices[0], choices[2]])
   })
 
   it('plays one Boss reaction per step and waits before resolving', () => {

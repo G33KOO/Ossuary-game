@@ -1305,23 +1305,30 @@ function answerPrompt(s: GameState, option: string | null) {
         break
       }
       {
-        s.lootDiscard.push(...choices.filter((id) => id !== option))
         const give = handOptions(s)
         if (give.length === 0) {
+          s.lootDiscard.push(...choices.filter((id) => id !== option))
           s.hand.push(option)
           break
         }
-        s.hand.push(option)
         queue(
           s,
-          { purpose: 'tavern-give', options: give, optional: false, ctx: { taken: option } },
+          { purpose: 'tavern-give', options: [...give, { id: 'tavern-back' }], optional: false, ctx: { taken: option, choices } },
           true,
         )
       }
       break
     case 'tavern-give':
+      if (option === 'tavern-back') {
+        queue(s, { purpose: 'tavern', options: choices.map((id) => ({ id, cardId: id })), optional: true, ctx: { choices } }, true)
+        break
+      }
       if (option) {
         discardFromHand(s, option)
+        if (choices.length > 0) {
+          s.hand.push(prompt.ctx.taken as string)
+          s.lootDiscard.push(...choices.filter((id) => id !== prompt.ctx.taken))
+        }
         log(s, 'tavernSwap', { card: prompt.ctx.taken as string, give: option })
       }
       break
