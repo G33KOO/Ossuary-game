@@ -1,10 +1,10 @@
 /* ---- Plateau de jeu solo ---- */
-.gb-controls .gb-flee-button { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 6px; background: linear-gradient(160deg, var(--surface-strong), var(--surface)); color: var(--bone); font-family: var(--display); font-size: 12px; letter-spacing: .05em; box-shadow: inset 0 1px 0 rgb(201 164 92 / 15%), 0 4px 12px rgb(0 0 0 / 25%); transition: border-color 180ms, box-shadow 180ms, color 180ms; }
+.gb-flee-button { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 6px; background: linear-gradient(160deg, var(--surface-strong), var(--surface)); color: var(--bone); font-family: var(--display); font-size: 12px; letter-spacing: .05em; box-shadow: inset 0 1px 0 rgb(201 164 92 / 15%), 0 4px 12px rgb(0 0 0 / 25%); transition: border-color 180ms, box-shadow 180ms, color 180ms; }
 .gb-flee-button svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--gold); transition: transform 180ms ease; }
 .gb-flee-button .gb-flee-threshold { padding: 3px 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); font-family: var(--sans); font-size: 10px; letter-spacing: .03em; }
-.gb-controls .gb-flee-button:not(:disabled):hover { border-color: var(--gold-light); color: var(--gold-light); box-shadow: inset 0 1px 0 rgb(201 164 92 / 20%), 0 0 18px rgb(201 164 92 / 20%); }
+.gb-flee-button:not(:disabled):hover { border-color: var(--gold-light); color: var(--gold-light); box-shadow: inset 0 1px 0 rgb(201 164 92 / 20%), 0 0 18px rgb(201 164 92 / 20%); }
 .gb-flee-button:not(:disabled):hover svg { transform: translateX(-3px); }
-.gb-controls .gb-flee-button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.gb-flee-button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { .gb-flee-button svg { transition: none; } .gb-flee-button:not(:disabled):hover svg { transform: none; } }
 .gb-action-animation { --effect-color: #c9a45c; position: fixed; inset: 0; pointer-events: none; z-index: 74; }
 .gb-action-animation.effect-weaken, .gb-action-animation.effect-destroy, .gb-action-animation.effect-strike { --effect-color: #da6550; }
@@ -1449,6 +1449,32 @@ body.solo-playing footer {
 }
 
 /* Fenêtres de choix */
+/* Keep the complete desktop board visible, including full equipment and boss hands. */
+@media (min-width: 1400px) and (min-height: 900px) {
+  .gb-full { --hand-card-width: 100px; }
+  .gb-full .gb-hand { height: calc(var(--hand-card-width) * 1.4 + 40px); padding-bottom: 12px; }
+  .gb-full .gb-table { grid-template-rows: minmax(0, 1fr) max-content; }
+  .gb-full .gb-center { height: 100%; }
+  .gb-full .gb-arena { height: 100%; grid-template-rows: minmax(0, 1fr) auto auto; padding: 4px; }
+  .gb-full .gb-arena .gb-foe { flex-wrap: nowrap; padding: 4px; gap: 12px; }
+  .gb-full .gb-monster-encounter { flex: 1 1 0; justify-content: center; gap: 10px; }
+  .gb-full .gb-monster-effect { flex: 1 1 0; min-width: 0; width: auto; max-width: 300px; max-height: none; overflow: visible; padding: 10px; }
+  .gb-full .gb-monster-effect p { font-size: 12px; line-height: 1.4; }
+  .gb-full .gb-foe-hand { max-width: 380px; }
+  .gb-full .gb-foe-hand .gb-back + .gb-back { margin-left: calc(-40px + min(14px, 340px / max(1, var(--boss-hand-count)))); }
+  .gb-full .gb-arena .gb-card-wrap.size-lg { --w: 120px; }
+  .gb-full .gb-arena .gb-foe-gear .gb-card-wrap.size-sm { --w: 60px; }
+  .gb-full .gb-arena .gb-foe-gear { gap: 4px; }
+  .gb-full .gb-scoreboard { gap: 6px; }
+  .gb-full .gb-score strong { font-size: 28px; }
+  .gb-full .gb-playzone { min-height: 60px; padding: 6px 12px; }
+  .gb-full .gb-board { width: 96%; padding: 6px 10px; }
+  .gb-full .gb-board-body { padding: 2px; }
+  .gb-full .gb-board .gb-card-wrap.size-sm { --w: clamp(46px, calc((100cqw - 100px) / var(--board-card-count) - 10px), 100px); }
+  .gb-full .gb-board .gb-slot-empty { width: clamp(46px, calc((100cqw - 100px) / var(--board-card-count) - 10px), 100px); }
+  .gb-full .gb-hero-level-row { min-height: 44px; }
+}
+
 .sim-modal-backdrop.is-tavern {
   align-items: flex-start;
   padding-bottom: 250px;

@@ -850,7 +850,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                         <GameCard id={id} key={id} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
                       ))}
                     </div>
-                    <div className="gb-foe-hand" title={`${sim.bossHandCount} : ${combat.bossHand.length}`}>
+                    <div className="gb-foe-hand" style={{ '--boss-hand-count': combat.bossHand.length } as CSSProperties} title={`${sim.bossHandCount} : ${combat.bossHand.length}`}>
                       {combat.bossHand.map((id, index) => (
                         <CardBack key={`${id}-${index}`} kind="boss" size="sm" />
                       ))}
@@ -888,7 +888,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   </button>
                   {!fleeBlocked(game) ? (
                     <button className="button gb-flee-button" disabled={locked} onClick={flee} title={sim.fleeHint} type="button">
-                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 20h6V4h-6M3 12h12M7 8l-4 4 4 4" /><path d="M17 8v8" /></svg>
+                      <FleeIcon />
                       <span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span>
                     </button>
                   ) : null}
@@ -1146,8 +1146,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   copy.options[option.id] ??
                   ((CLASS_NAMES as readonly string[]).includes(option.id) ? heroName('Classe', option.id) : option.id)
                 return (
-                  <button className="button" key={`${option.id}-${index}`} onClick={() => send({ t: 'answer', option: option.id })} type="button">
-                    {label}
+                  <button className={`button${option.id === 'flee' ? ' gb-flee-button' : ''}`} key={`${option.id}-${index}`} onClick={() => send({ t: 'answer', option: option.id })} type="button">
+                    {option.id === 'flee' ? <FleeIcon /> : null}
+                    <span>{label}</span>
                   </button>
                 )
               })}
@@ -1162,6 +1163,10 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       ) : null}
     </div>
   )
+}
+
+function FleeIcon() {
+  return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 20h6V4h-6M3 12h12M7 8l-4 4 4 4" /><path d="M17 8v8" /></svg>
 }
 
 function HeroChoice({
