@@ -1,0 +1,20 @@
+.app-modal.sim-modal { position: fixed; inset: 0; margin: auto; width: max-content; max-width: min(900px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); height: max-content; color: var(--bone); grid-auto-rows: max-content; align-content: start; }
+.app-modal::backdrop { background: rgb(0 0 0 / 75%); backdrop-filter: blur(3px); }
+.app-modal:not([open]) { display: none; }
+.app-modal .app-modal-header { flex-shrink: 0; }
+.gb-information-modal.app-modal { width: min(850px, calc(100vw - 32px)); }
+.gb-information-modal .gb-level-timeline { display: flex !important; min-width: 0; flex-wrap: wrap; }
+.gb-information-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.gb-information-actions .button { flex: 1; }
+.gb-tavern-hand { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.gb-tavern-hand .gb-card-wrap.size-sm { --w: 70px; flex-shrink: 0; }
+@media (max-width: 760px) {
+  .solo-playing .app-modal.sim-modal { width: calc(100vw - 24px); max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); padding: 14px; }
+  .gb-tavern-hand .gb-card-wrap.size-sm { --w: 42px; }
+  .gb-tavern-modal .gb-tavern-hand, .gb-tavern-modal > .sim-note { display: none; }
+  .gb-information-modal .gb-level-timeline { display: grid !important; grid-template-columns: minmax(0, 1fr); }
+  .gb-information-modal .gb-level-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px 6px; }
+  .gb-information-modal .gb-level-track-base { display: none; }
+  .gb-information-modal .gb-level-node { min-height: 40px; }
+  .gb-information-modal .gb-enrage-meter { width: 100%; justify-content: center; }
+}

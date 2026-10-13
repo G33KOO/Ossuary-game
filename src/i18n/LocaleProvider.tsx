@@ -1,18 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import { messages } from './messages'
-import type { MessageKey } from './messages'
-
-export type Locale = 'fr' | 'en'
-
-type LocaleContextValue = {
-  locale: Locale
-  toggleLocale: () => void
-  t: (key: MessageKey) => string
-}
-
+import { LocaleContext } from './localeContext'
+import type { Locale, LocaleContextValue } from './localeContext'
+export type { Locale } from './localeContext'
 const localeStorageKey = 'ossuaire-locale'
-const LocaleContext = createContext<LocaleContextValue | null>(null)
 
 function getInitialLocale(): Locale {
   try {
@@ -54,13 +46,4 @@ export function LocaleProvider({ children }: PropsWithChildren) {
   )
 
   return <LocaleContext.Provider value={contextValue}>{children}</LocaleContext.Provider>
-}
-
-export function useLocale() {
-  const context = useContext(LocaleContext)
-  if (!context) {
-    throw new Error('useLocale must be used within a LocaleProvider.')
-  }
-
-  return context
 }

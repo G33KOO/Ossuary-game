@@ -7,7 +7,7 @@ import { CardTile } from '../components/CardTile'
 import { SectionLabel } from '../components/SectionLabel'
 import { useCardDialog } from '../hooks/useCardDialog'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import { localizeCard } from '../i18n/cardTranslations'
 import type { Card } from '../types/card'
 import {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { SectionLabel } from './SectionLabel'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import { paths } from '../routes/paths'
 import { assetUrl } from '../utils/assetUrl'
 

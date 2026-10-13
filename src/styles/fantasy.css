@@ -120,6 +120,9 @@ h2 em {
 
 /* ---- Boutons ---- */
 .button {
+  background: linear-gradient(160deg, var(--surface-strong), var(--surface));
+  border-radius: 6px;
+  color: var(--bone);
   font-family: var(--display);
   font-size: 12px;
   font-weight: 700;

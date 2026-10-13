@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { PageHeading } from '../components/PageHeading'
 import { SoloBoard } from '../components/SoloBoard'
 import { soloCopy } from '../content/solo'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 
 export function SoloPage() {
   const { t, locale } = useLocale()

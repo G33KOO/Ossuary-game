@@ -18,7 +18,8 @@
   .gb-full .gb-hud .sim-stat > span { font-size: 10px; }
   .gb-full .gb-hud > .sim-link { margin-left: auto; min-height: 32px; padding: 6px 8px; font-size: 10px; }
   .gb-full .gb-level-timeline { flex-basis: 100%; padding: 4px 6px; }
-  .gb-full .gb-mobile-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; width: 100%; }
+  .gb-full .gb-mobile-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
+  .gb-full .gb-hud > .gb-level-timeline, .gb-full .gb-side .gb-discard { display: none; }
   .gb-mobile-nav button { min-height: 44px; padding: 8px 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: var(--bone); font-family: var(--display); font-size: 11px; }
   .gb-mobile-nav button:active { border-color: var(--gold); background: var(--surface-strong); }
 
@@ -104,8 +105,6 @@
   .solo-playing .sim-modal { width: 100%; max-width: 100%; max-height: calc(100dvh - 24px); padding: 18px; gap: 14px; border-radius: 12px; }
   .solo-playing .sim-modal > .app-modal-header { padding-bottom: 12px; }
   .solo-playing .sim-modal .button { min-height: 44px; }
-  .solo-playing .sim-modal-backdrop.is-tavern { padding-top: 12px; padding-bottom: 210px; }
-  .solo-playing .sim-modal-backdrop.is-tavern .sim-modal { max-height: calc(100dvh - 230px); }
   .solo-playing .sim-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; }
   .solo-playing .sim-pick { min-width: 0; }
   .solo-playing .sim-pick .gb-card-wrap.size-md { --w: 100%; width: 100%; font-size: 9px; }
@@ -115,19 +114,13 @@
   .solo-playing .gb-oath-celebration { bottom: 215px; right: 12px; width: calc(100vw - 24px); max-height: 50dvh; padding: 14px; }
   .solo-playing .gb-reveal-title { font-size: 18px; text-align: center; padding: 0 16px; }
   .solo-playing .gb-reveal-cards { gap: 8px; }
-  .solo-playing .gb-reveal-card { width: 100px; height: 140px; }
-  .solo-playing .gb-reveal-card .gb-card-wrap.size-lg { --w: 100px; }
-  .solo-playing .gb-reveal-card .gb-back.size-lg { width: 100px; height: 140px; }
+  .solo-playing .gb-reveal-card { width: min(100px, 20vw, 20dvh); height: calc(min(100px, 20vw, 20dvh) * 1.4); }
+  .solo-playing .gb-reveal-card .gb-card-wrap.size-lg { --w: min(100px, 20vw, 20dvh); }
+  .solo-playing .gb-reveal-card .gb-back.size-lg { width: min(100px, 20vw, 20dvh); height: calc(min(100px, 20vw, 20dvh) * 1.4); }
   .solo-playing .gb-toast { top: 72px; width: calc(100vw - 32px); padding: 12px; font-size: 13px; text-align: center; }
   .gb-action-announcement { top: 65px; padding: 10px 12px; }
 
-  .card-dialog .dialog-layout { grid-template-columns: minmax(0, 1fr); }
-  .card-dialog .dialog-visual { padding: 20px 24px 12px; }
-  .card-dialog .dialog-art { max-height: 34dvh; width: auto; }
-  .card-dialog .dialog-body { padding: 18px 20px 24px; }
-  .card-dialog .dialog-body h2 { font-size: 26px; margin-bottom: 10px; }
-  .card-dialog .dialog-rule { font-size: 17px; line-height: 1.65; }
-  .card-dialog .dialog-actions .button { min-height: 46px; flex: 1; justify-content: center; }
+
 }
 
 @media (max-width: 760px) and (max-height: 650px) {
@@ -145,8 +138,6 @@
   .gb-full .gb-hud .sim-stat strong { font-size: 16px; }
   .gb-full .gb-dock { padding-top: 4px; }
   .gb-full .gb-hand { height: 108px; padding-top: 6px; }
-  .solo-playing .sim-modal-backdrop.is-tavern { padding-top: 12px; padding-bottom: 130px; }
-  .solo-playing .sim-modal-backdrop.is-tavern .sim-modal { max-height: calc(100dvh - 154px); }
 }
 
 .solo-playing .sim-modal { grid-auto-rows: max-content; align-content: start; }

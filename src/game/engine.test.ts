@@ -73,6 +73,7 @@ describe('solo engine', () => {
           state.monsterDiscard.length +
           state.strongMonsters.length * (state.strongAdded ? 0 : 1) +
           (state.combat?.monsters.length ?? 0) +
+          (state.retainedMonsters?.length ?? 0) +
           state.promptQueue.reduce((sum, p) => sum + (Array.isArray(p.ctx.choices) && p.purpose !== 'thief-pick' && p.purpose !== 'tavern' && p.purpose !== 'tavern-give' && p.purpose !== 'oath' ? p.ctx.choices.length : 0), 0)
         expect(monsters).toBe(66)
         expect(total).toBeLessThanOrEqual(CARDS.length)
@@ -119,7 +120,7 @@ describe('solo engine', () => {
     expect(activeStatus(mage).reasons).toContainEqual({ code: 'cards-cost', required: 1, current: 0 })
     mage.combat!.flags.push('noActive')
     mage.combat!.used.push('Mage')
-    expect(activeStatus(mage).reasons.map((reason) => reason.code)).toEqual(expect.arrayContaining(['monster-block', 'used-combat']))
+    expect(activeStatus(mage).reasons.map((reason) => reason.code)).toEqual(expect.arrayContaining(['monster-block', 'roll-first', 'cards-cost']))
     mage.combat!.flags = []
     mage.combat!.used = []
     mage.combat!.playerDie = 3

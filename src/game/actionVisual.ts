@@ -5,7 +5,7 @@ export function actionVisual(name: string, cancelled = false): { effect: ActionE
   if (cancelled) return { effect: 'cancelled', target: 'foe' }
   switch (name) {
     case 'Force': case 'Éveil': case 'Renoncement': return { effect: 'boost', target: 'hero' }
-    case 'Chance': return { effect: 'dice', target: 'player-die' }
+    case 'Chance': case 'Baguette Brasier': return { effect: 'dice', target: 'player-die' }
     case 'Malchance': return { effect: 'dice', target: 'foe-die' }
     case 'Faiblesse': case 'Apaiser': case 'Dépossession': case 'Brise-armure': return { effect: 'weaken', target: 'foe' }
     case 'Frénésie': return { effect: 'boost', target: 'foe' }

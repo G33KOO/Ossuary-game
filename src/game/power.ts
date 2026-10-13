@@ -46,7 +46,16 @@ type Item = { id: string; kind: 'armor' | 'weapon'; power: number }
 
 export function equipmentCardPower(state: GameState, id: string, combat: Combat | null = state.combat) {
   const entry = card(id)
-  if (entry.type === 'Arme') return weaponPower(state, id)
+  if (entry.type === 'Arme') {
+    let power = weaponPower(state, id)
+    if (entry.name === 'Masse Mille-Clous' && state.equipment.hands.length === 1) power += printedPower(id)
+    if (entry.name === 'Hache Brise-Enclume à deux mains' && combat?.kind === 'boss') power += 2
+    if (combat?.kind === 'monster') {
+      if (entry.name === 'Masse Nautile' && combat.monsters.some((monster) => [4, 6, 7].includes(printedPower(monster)))) power += 1
+      if (entry.name === 'Hache Léviathan à deux mains' && combat.monsters.some((monster) => printedPower(monster) >= 15)) power += 1
+    }
+    return power
+  }
   if (entry.type === 'Armure') return printedPower(id) * (combat?.doubledArmors.includes(id) ? 2 : 1)
   return printedPower(id)
 }
@@ -67,12 +76,13 @@ function equipmentItems(state: GameState, combat: Combat | null): Item[] {
 }
 
 export function strongestEquipmentPower(state: GameState) {
-  return Math.max(0, ...equipmentItems(state, null).map((item) => item.power))
+  return Math.max(0, ...equipmentItems(state, state.combat).map((item) => item.power))
 }
 
 export function playerEquipmentPower(state: GameState, combat: Combat | null) {
   if (combat && hasFlag(combat, 'ignoreAll')) return 0
   let items = equipmentItems(state, combat)
+  if (combat?.ignoredEquipment?.length) items = items.filter((item) => !combat.ignoredEquipment!.includes(item.id))
   if (combat && hasFlag(combat, 'ignoreArmors')) {
     items = items.filter((item) => item.kind !== 'armor')
   }
@@ -97,9 +107,17 @@ export function bossEquipmentPower(combat: Combat) {
     const type = card(id).type
     if (type === 'Armure' && hasFlag(combat, 'bossIgnoreArmors')) continue
     if (type === 'Arme' && hasFlag(combat, 'bossIgnoreWeapons')) continue
-    total += printedPower(id)
+    total += bossEquipmentCardPower(combat, id)
   }
   return total
+}
+
+export function bossEquipmentCardPower(combat: Combat, id: string) {
+  const entry = card(id)
+  let power = printedPower(id)
+  if (entry.name === 'Masse Mille-Clous' && combat.bossEquip.filter((id) => card(id).type === 'Arme').length === 1) power *= 2
+  if (entry.name === 'Hache Brise-Enclume à deux mains') power += 2
+  return power
 }
 
 export type PowerBreakdown = {

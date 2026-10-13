@@ -1,4 +1,4 @@
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import {
   localizeCardRequirement,
   localizeCardSubtype,

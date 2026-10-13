@@ -84,7 +84,7 @@
 @keyframes gb-oath-earned { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: none; } }
 @keyframes gb-oath-card { 0% { transform: rotateY(-35deg) scale(.8); filter: brightness(1.7); } 60% { transform: rotateY(4deg) scale(1.04); filter: brightness(1.2); } 100% { transform: none; filter: none; } }
 @media (prefers-reduced-motion: reduce) { .gb-oath-celebration, .gb-oath-reward-card { animation: none; } }
-.gb-card .gb-orb.is-boosted { color: var(--gold-light); background: radial-gradient(circle at 35% 30%, #42331c, #140e07); border-color: var(--gold-light); text-shadow: 0 0 8px rgb(235 210 146 / 45%); box-shadow: 0 0 12px rgb(201 164 92 / 35%); animation: gb-power-boost 450ms ease; }
+.gb-card .gb-orb.is-boosted { color: #f4d889; background: radial-gradient(circle at 35% 30%, #42331c, #140e07); border-color: #e2bc70; text-shadow: 0 0 8px rgb(235 210 146 / 45%); box-shadow: 0 0 12px rgb(201 164 92 / 35%); animation: gb-power-boost 450ms ease; }
 @keyframes gb-power-boost { from { transform: scale(1.25); filter: brightness(1.6); } to { transform: scale(1); filter: none; } }
 @media (prefers-reduced-motion: reduce) { .gb-card .gb-orb.is-boosted { animation: none; } }
 .gb-two-handed-copy { position: relative; }
@@ -1384,6 +1384,8 @@ body.solo-playing footer {
 }
 
 .gb-reveal-cards {
+  flex-wrap: wrap;
+  max-width: calc(100vw - 32px);
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
@@ -1490,6 +1492,9 @@ body.solo-playing footer {
 }
 
 .gb-foe .gb-art img { object-fit: contain; }
+.gb-power-change { animation: gb-power-change 500ms ease-out; }
+@keyframes gb-power-change { from { color: var(--gold-light); filter: brightness(1.7); text-shadow: 0 0 14px currentColor; } to { filter: brightness(1); } }
+@media (prefers-reduced-motion: reduce) { .gb-power-change { animation: none; } }
 
 .gb-full .gb-table { grid-template-rows: minmax(max-content, 1fr) auto max-content; row-gap: 6px; }
 .gb-full .gb-board { grid-row: 3; }
@@ -1501,6 +1506,12 @@ body.solo-playing footer {
 .gb-full .gb-combat-panel .gb-score-parts { font-size: 12px; }
 @media (min-width: 1400px) and (min-height: 760px) {
   .gb-full .gb-table { grid-template-rows: minmax(0, 1fr) 82px max-content; }
+  .gb-full .gb-side { min-height: 0; gap: 6px; }
+  .gb-full .gb-side .gb-pile-stack { width: clamp(44px, 9cqh, 72px); height: calc(clamp(44px, 9cqh, 72px) * 1.4 + 8px); }
+  .gb-full .gb-side .gb-pile-stack .gb-back { width: clamp(44px, 9cqh, 72px); height: calc(clamp(44px, 9cqh, 72px) * 1.4); }
+  .gb-full .gb-side .gb-discard .gb-card-wrap.size-sm { --w: clamp(40px, 7cqh, 60px); }
+  .gb-full .gb-side .gb-discard-empty { width: clamp(40px, 7cqh, 60px); }
+  .gb-full .gb-side .gb-pile-label, .gb-full .gb-side .gb-discard-label { font-size: 10px; }
 }
 @media (max-width: 760px) {
   .solo-page .gb-full .gb-table { grid-template-rows: repeat(4, max-content); }

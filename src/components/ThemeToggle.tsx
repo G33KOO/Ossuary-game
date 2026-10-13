@@ -1,5 +1,5 @@
 import type { Theme } from '../hooks/useTheme'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 
 type ThemeToggleProps = {
   theme: Theme

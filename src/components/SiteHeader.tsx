@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import type { Theme } from '../hooks/useTheme'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import { paths } from '../routes/paths'
 import { LanguageToggle } from './LanguageToggle'
 import { ThemeToggle } from './ThemeToggle'
@@ -32,4 +32,3 @@ export function SiteHeader({ theme, onToggleTheme }: SiteHeaderProps) {
     </header>
   )
 }
-

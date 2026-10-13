@@ -1,9 +1,10 @@
+import { symbolFor } from '../utils/cardSymbols'
 import type { Card } from '../types/card'
 import { getCardIllustration } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
 import { localizeCard } from '../i18n/cardTranslations'
 import type { Locale } from '../i18n/LocaleProvider'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 
 type CardTileProps = {
   card: Card
@@ -38,15 +39,4 @@ export function CardTile({ card, locale, onSelect }: CardTileProps) {
       </span>
     </button>
   )
-}
-
-function symbolFor(type: string) {
-  if (type === 'Arme') return '⚔'
-  if (type === 'Armure') return '⬡'
-  if (type === 'Action' || type === 'Artefact de classe') return '✧'
-  if (type === 'Monstre') return '☠'
-  if (type === 'Boss') return '♜'
-  if (type === 'Serment') return '✳'
-  if (type === 'Classe' || type === 'Race') return '◈'
-  return '✦'
 }

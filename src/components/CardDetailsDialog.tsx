@@ -1,3 +1,4 @@
+import { symbolFor } from '../utils/cardSymbols'
 import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { CSSProperties, ReactNode } from 'react'
@@ -5,12 +6,14 @@ import type { Card } from '../types/card'
 import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
 import type { CardGender } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import { localizeCard } from '../i18n/cardTranslations'
 import { getCardClass, getClassIcon } from '../utils/cardClass'
 import { ModalHeader } from './ModalHeader'
 import { CARDS } from '../game/data'
 import { soloCopy } from '../content/solo'
+import './card-details-mobile.css'
+import { CardClassBadge } from './CardClassBadge'
 
 function zoomFromOrigin(dialog: HTMLDialogElement, origin: DOMRect | null) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -177,9 +180,8 @@ function ClassAbilityPreview({ name, icon, effect, title, duration }: { name: st
 }
 
 function CardFaceBadges({ card, powerLabel }: { card: Card; powerLabel: string }) {
-  const cardClass = getCardClass(card)
   return <>
-    {cardClass ? <span className="dialog-class-badge" title={cardClass}><img alt={cardClass} src={getClassIcon(cardClass)} /></span> : null}
+    <CardClassBadge card={card} className="dialog-class-badge" />
     {card.value ? <span className="dialog-power-badge" title={`${powerLabel} : ${card.value}`} aria-label={`${powerLabel} : ${card.value}`}>{card.value}</span> : null}
   </>
 }
@@ -211,6 +213,10 @@ function TiltableCard({ src, label, children }: { src: string; label: string; ch
       onPointerUp={(event) => { if (pointer.current?.id === event.pointerId) { event.currentTarget.releasePointerCapture(event.pointerId); reset() } }}
       onPointerCancel={reset} onLostPointerCapture={reset} onBlur={reset}
       onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          if (pointer.current || tilt.x || tilt.y) { event.preventDefault(); event.stopPropagation(); reset() }
+          return
+        }
         if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', ' ', 'Escape'].includes(event.key)) {
           event.preventDefault()
           event.stopPropagation()
@@ -237,15 +243,4 @@ function Detail({ label, value }: DetailProps) {
       {value}
     </p>
   )
-}
-
-function symbolFor(type: string) {
-  if (type === 'Arme') return '⚔'
-  if (type === 'Armure') return '⬡'
-  if (type === 'Action' || type === 'Artefact de classe') return '✧'
-  if (type === 'Monstre') return '☠'
-  if (type === 'Boss') return '♜'
-  if (type === 'Serment') return '✳'
-  if (type === 'Classe' || type === 'Race') return '◈'
-  return '✦'
 }

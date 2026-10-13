@@ -32,6 +32,12 @@ export type PromptPurpose =
   | 'oath-armor-slot'
   | 'oath-boss-action'
   | 'tavern-give'
+  | 'weapon-loot'
+  | 'druid-pick'
+  | 'hunter-target'
+  | 'hunter-boss-pick'
+  | 'ignore-equipment'
+  | 'boss-destroy'
 
 export type Prompt = {
   purpose: PromptPurpose
@@ -64,6 +70,7 @@ export type Combat = {
   bossDie: number | null
   flags: string[]
   ignoredStrongest: number
+  ignoredEquipment?: string[]
   armorMalus: number
   stolenArmor: string | null
   doubledArmors: string[]
@@ -78,6 +85,8 @@ export type Combat = {
 }
 
 export type GameState = {
+  retainedMonsters?: string[]
+  forcedMonsterId?: string | null
   seed: number
   phase: Phase
   klass: ClassName
@@ -123,6 +132,7 @@ export type GameAction =
   | { t: 'useActive' }
   | { t: 'roll' }
   | { t: 'oathReroll' }
+  | { t: 'weaponReroll'; id: string }
   | { t: 'resolve' }
   | { t: 'bossStep' }
   | { t: 'flee' }

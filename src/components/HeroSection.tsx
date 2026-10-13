@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import cardsData from '../data/cards.json'
 import { useCardDialog } from '../hooks/useCardDialog'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import { paths } from '../routes/paths'
 import type { Card } from '../types/card'
 import { getIllustrationByKey } from '../utils/cardIllustration'

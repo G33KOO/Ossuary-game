@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import type { CSSProperties } from 'react'
 import type { GameState } from '../game/types'
 import { fill, soloCopy } from '../content/solo'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 import './level-timeline.css'
 
 function MilestoneIcon({ boss = false }: { boss?: boolean }) {
@@ -11,6 +11,7 @@ function MilestoneIcon({ boss = false }: { boss?: boolean }) {
 }
 
 export function LevelTimeline({ game }: { game: GameState }) {
+  const [portalRoot, setPortalRoot] = useState<Element | null>(null)
   const { locale } = useLocale()
   const sim = soloCopy[locale].sim
   const previous = useRef(game.level)
@@ -32,9 +33,10 @@ export function LevelTimeline({ game }: { game: GameState }) {
     return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
   }, [hover])
   const show = (level: number, element: HTMLElement) => {
+    setPortalRoot(element.closest('dialog'))
     const rect = element.getBoundingClientRect()
     const width = Math.min(360, window.innerWidth * .88)
-    setHover({ level, left: Math.max(12, Math.min(rect.left + rect.width / 2 - width / 2, window.innerWidth - width - 12)), top: rect.bottom + 12 })
+    setHover({ level, left: Math.max(12, Math.min(rect.left + rect.width / 2 - width / 2, window.innerWidth - width - 12)), top: rect.bottom + 260 < window.innerHeight ? rect.bottom + 12 : Math.max(12, rect.top - 250) })
   }
   const active = game.level >= 10
   return <div className={`gb-level-timeline${burst ? ` is-${burst}-up` : ''}`} aria-label={sim.timelineTitle}>
@@ -52,6 +54,6 @@ export function LevelTimeline({ game }: { game: GameState }) {
     {hover ? createPortal(<div className="gb-timeline-tooltip" id="level-timeline-tooltip" role="tooltip" style={{ left: hover.left, top: hover.top }}>
       <strong>{hover.level === 11 ? sim.timelineEnrage : `${fill(sim.timelineNodeLabel, { level: hover.level })}${hover.level === 5 ? ` · ${sim.timelineAwakening}` : hover.level === 10 ? ` · ${sim.timelineBoss}` : ''}`}</strong>
       {hover.level === 5 ? <><p>{sim.timelineLevel5}</p><ul><li className={game.strongAdded ? 'is-unlocked' : ''}>{game.strongAdded ? '✓ ' : '◇ '}{sim.timelineStrongMonsters}</li><li className={game.dieSides === 8 || game.level >= 5 ? 'is-unlocked' : ''}>{game.dieSides === 8 ? `✓ ${sim.timelineAwakened}` : `${game.level >= 5 ? '✓' : '◇'} ${sim.timelineCanAwaken}`}</li></ul></> : hover.level === 10 ? <><p>{sim.timelineLevel10}</p><ul><li className={active ? 'is-unlocked' : ''}>{active ? '✓ ' : '◇ '}{sim.timelineArtifact}</li><li className={active ? 'is-unlocked' : ''}>{active ? '✓ ' : '◇ '}{sim.timelineCanBoss}</li><li className={active ? 'is-unlocked' : ''}>{active ? '✓ ' : '◇ '}{sim.timelineEnrageRule}</li></ul></> : hover.level === 11 ? <><p>{sim.timelineEnrageRule}</p><p className="gb-timeline-enrage-count">{fill(sim.timelineBossHand, { n: 5 + game.bossPressure, extra: game.bossPressure })}</p><p>{active ? sim.timelineEnrageActive : sim.timelineEnrageInactive}</p></> : <><p>{sim.timelineLevelRule}</p><p>{hover.level === game.level ? sim.timelineCurrent : hover.level < game.level ? sim.timelinePassed : fill(sim.timelineNext, { n: hover.level - game.level })}</p></>}
-    </div>, document.body) : null}
+    </div>, portalRoot ?? document.body) : null}
   </div>
 }

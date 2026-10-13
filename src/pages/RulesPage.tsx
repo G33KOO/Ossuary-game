@@ -1,7 +1,7 @@
 import { PageHeading } from '../components/PageHeading'
 import { RuleBlocks } from '../components/RuleBlocks'
 import { getRules } from '../content/rules'
-import { useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../hooks/useLocale'
 
 export function RulesPage() {
   const { locale, t } = useLocale()
