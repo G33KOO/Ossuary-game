@@ -122,6 +122,7 @@ export type GameState = {
   turnFlags: string[]
   nextMonsterPenalty: number
   bossPressure: number
+  bossEnrageArmed?: boolean
   tavernDone: boolean
   combat: Combat | null
   promptQueue: Prompt[]

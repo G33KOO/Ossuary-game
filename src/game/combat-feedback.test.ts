@@ -21,6 +21,43 @@ function suzeraine() {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('visible combat consequences', () => {
+  it('adds no enrage on the first turn at level 10, then one per later turn', () => {
+    let state = monster('Tranchebec')
+    state.level = 9; state.hand = []; state.lootDeck = []; state.combat!.playerBonus = 100
+    state = reduce(state, { t: 'resolve' })
+    expect(state.level).toBe(10)
+    expect(state.bossPressure).toBe(0)
+    expect(state.bossEnrageArmed).toBe(true)
+    expect(state.log.some((entry) => entry.code === 'bossGrows')).toBe(false)
+    for (const expected of [1, 2]) {
+      state = reduce(state, { t: 'drawLoot' })
+      expect(state.bossPressure).toBe(expected)
+    }
+  })
+  it('waits for all Tavern choices before arming or incrementing enrage', () => {
+    let state = monster('Tranchebec')
+    state.level = 9; state.combat!.playerBonus = 100; state.hand = [id('Force')]
+    state = reduce(state, { t: 'resolve' })
+    expect(state.promptQueue[0].purpose).toBe('tavern')
+    expect(state.bossPressure).toBe(0)
+    expect(state.bossEnrageArmed).toBe(false)
+    state = reduce(state, { t: 'answer', option: null })
+    expect(state.bossEnrageArmed).toBe(true)
+    expect(state.bossPressure).toBe(0)
+    state = reduce(state, { t: 'drawLoot' })
+    expect(state.bossPressure).toBe(0)
+    state = reduce(state, { t: 'answer', option: null })
+    expect(state.bossPressure).toBe(1)
+  })
+  it('keeps accumulated enrage on an older save, without granting another grace turn', () => {
+    const state = newGame('Mage', 'Humain', 42)
+    state.promptQueue = []; state.level = 10; state.hand = []; state.lootDeck = []
+    delete state.bossEnrageArmed
+    state.bossPressure = 2
+    const next = reduce(state, { t: 'drawLoot' })
+    expect(next.bossPressure).toBe(3)
+    expect(next.bossEnrageArmed).toBe(true)
+  })
   it.each(['Humain', 'Vesskar'] as const)('blocks natural escape after a combat roll for %s', (race) => {
     let state = monster('Tranchebec', race)
     expect(fleeBlocked(state)).toBe(false)
