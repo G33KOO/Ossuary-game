@@ -862,6 +862,26 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 ) : null}
               </div>
 
+
+            </>
+          ) : (
+            <div className={`gb-idle${playZone.className}`} onDragLeave={playZone.onDragLeave} onDragOver={playZone.onDragOver} onDrop={playZone.onDrop}>
+              <p className="gb-idle-title">{sim.adventure}</p>
+              <Pile
+                count={BOSS_IDS.length}
+                disabled={locked || !bossUnlocked}
+                hint={bossUnlocked ? sim.boss : sim.bossLocked}
+                kind="boss"
+                label={bossUnlocked ? sim.boss : sim.bossLocked}
+                onClick={() => send({ t: 'drawBoss' })}
+              />
+              {!bossUnlocked ? <p className="sim-note">{sim.bossWaits}</p> : null}
+            </div>
+          )}
+        </section>
+        </div>
+        {!ended ? <section className="gb-combat-panel" aria-label={sim.mobileCombat}>
+          {combat ? <>
               {power ? (
                 <div className="gb-scoreboard">
                   <Score label={sim.you} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} />
@@ -894,23 +914,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   ) : null}
                 </div>
               </div>
-            </>
-          ) : (
-            <div className={`gb-idle${playZone.className}`} onDragLeave={playZone.onDragLeave} onDragOver={playZone.onDragOver} onDrop={playZone.onDrop}>
-              <p className="gb-idle-title">{sim.adventure}</p>
-              <Pile
-                count={BOSS_IDS.length}
-                disabled={locked || !bossUnlocked}
-                hint={bossUnlocked ? sim.boss : sim.bossLocked}
-                kind="boss"
-                label={bossUnlocked ? sim.boss : sim.bossLocked}
-                onClick={() => send({ t: 'drawBoss' })}
-              />
-              {!bossUnlocked ? <p className="sim-note">{sim.bossWaits}</p> : null}
+          </> : <>
+            <div className="gb-scoreboard">
+              <Score label={sim.you} parts={breakdownText(computePlayerPower(game), labels)} side="you" total={computePlayerPower(game).total} />
+              <div className="gb-dice" />
+              <div className="gb-score foe"><span className="gb-score-label">{sim.opponent}</span><strong>?</strong><span className="gb-score-parts">{sim.pickMonster}</span></div>
             </div>
-          )}
-        </section>
-        </div>
+            <div className="gb-playzone"><div className="gb-controls"><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 ? 4+</span></button></div></div>
+          </>}
+        </section> : null}
         <section className="gb-board" style={{ '--board-card-count': 9 + (game.oaths?.length ?? 0) + (game.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (game.oaths?.length ?? 0) } as CSSProperties}>
           <h3>{sim.equipment}</h3>
           <div className="gb-board-body">

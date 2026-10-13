@@ -65,7 +65,7 @@
   .gb-full .gb-arena .gb-idle .gb-pile-stack { width: 72px; height: 100px; }
   .gb-full .gb-arena .gb-idle .gb-pile-stack .gb-back { width: 67px; height: 94px; }
 
-  .solo-page .gb-full .gb-board { grid-column: 1 / -1; grid-row: 3; width: 100%; padding: 10px; border-radius: 12px; }
+  .solo-page .gb-full .gb-board { grid-column: 1 / -1; grid-row: 4; width: 100%; padding: 10px; border-radius: 12px; }
   .gb-full .gb-board .gb-board-body { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding: 0; }
   .gb-full .gb-board .gb-board-group { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
   .gb-full .gb-board .gb-hero-level-row { min-height: 40px; }

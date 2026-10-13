@@ -1491,6 +1491,23 @@ body.solo-playing footer {
 
 .gb-foe .gb-art img { object-fit: contain; }
 
+.gb-full .gb-table { grid-template-rows: minmax(max-content, 1fr) auto max-content; row-gap: 6px; }
+.gb-full .gb-board { grid-row: 3; }
+.gb-full .gb-arena { grid-template-rows: minmax(0, 1fr); }
+.gb-full .gb-combat-panel { grid-column: 1 / -1; grid-row: 2; width: 96%; justify-self: center; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 20px; min-height: 82px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.gb-full .gb-combat-panel .gb-playzone { min-height: 64px; padding: 6px 12px; }
+.gb-full .gb-combat-panel .gb-scoreboard { min-height: 64px; }
+.gb-full .gb-combat-panel .gb-score strong { font-size: 28px; }
+.gb-full .gb-combat-panel .gb-score-parts { font-size: 12px; }
+@media (min-width: 1400px) and (min-height: 760px) {
+  .gb-full .gb-table { grid-template-rows: minmax(0, 1fr) 82px max-content; }
+}
+@media (max-width: 760px) {
+  .solo-page .gb-full .gb-table { grid-template-rows: repeat(4, max-content); }
+  .gb-full .gb-combat-panel { grid-row: 3; width: 100%; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .solo-page .gb-full .gb-board { grid-row: 4; }
+}
+
 .sim-modal-backdrop.is-tavern {
   align-items: flex-start;
   padding-bottom: 250px;
