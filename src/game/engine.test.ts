@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CARDS, CLASS_NAMES, RACE_NAMES, card } from './data'
-import { BOSS_IDS, activeStatus, canPlayAction, newGame, reduce } from './engine'
-import { computePower } from './power'
+import { BOSS_IDS, activeStatus, canChangeEquipment, canEquip, canPlayAction, newGame, reduce } from './engine'
+import { computePlayerPower, computePower, equipmentCardPower, weaponPower } from './power'
 import type { GameAction, GameState } from './types'
 
 function bot(state: GameState, rng: () => number): GameAction {
@@ -64,6 +64,7 @@ describe('solo engine', () => {
           state.equipment.hands.length +
           Object.values(state.equipment.armors).filter(Boolean).length +
           (state.equipment.artifact ? 1 : 0) +
+          (state.equipment.extraArmor?.id ? 1 : 0) +
           (state.combat?.bossHand.length ?? 0) +
           (state.combat?.bossEquip.length ?? 0) +
           state.promptQueue.reduce((sum, p) => sum + (p.purpose === 'thief-pick' || p.purpose === 'tavern' ? (p.ctx.choices as string[]).length : 0), 0)
@@ -101,5 +102,147 @@ describe('solo engine', () => {
     const state = newGame('Mage', 'Humain', 3)
     const next = reduce(state, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
     expect(next.combat).toBeNull()
+  })
+
+  it('reports all reasons preventing class abilities and clears them when requirements are met', () => {
+    const warrior = newGame('Guerrier', 'Humain', 3)
+    warrior.promptQueue = []
+    warrior.hand = []
+    expect(activeStatus(warrior).reasons.map((reason) => reason.code)).toEqual(['combat-only', 'weapon-cost'])
+    let mage = newGame('Mage', 'Humain', 3)
+    mage.promptQueue = []
+    mage.level = 10
+    mage = reduce(mage, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
+    mage.promptQueue = []
+    mage.hand = []
+    expect(activeStatus(mage).reasons).toContainEqual({ code: 'roll-first' })
+    expect(activeStatus(mage).reasons).toContainEqual({ code: 'cards-cost', required: 1, current: 0 })
+    mage.combat!.flags.push('noActive')
+    mage.combat!.used.push('Mage')
+    expect(activeStatus(mage).reasons.map((reason) => reason.code)).toEqual(expect.arrayContaining(['monster-block', 'used-combat']))
+    mage.combat!.flags = []
+    mage.combat!.used = []
+    mage.combat!.playerDie = 3
+    mage.hand = [CARDS.find((entry) => entry.type === 'Action')!.id]
+    expect(activeStatus(mage)).toEqual({ klass: 'Mage', available: true, reasons: [] })
+  })
+
+  it('explains the Rogue cost including the Artifact discount', () => {
+    const state = newGame('Voleur', 'Humain', 2)
+    state.promptQueue = []
+    state.hand = [CARDS.find((entry) => entry.type === 'Action')!.id]
+    expect(activeStatus(state).reasons).toContainEqual({ code: 'cards-cost', required: 2, current: 1 })
+    state.equipment.artifact = CARDS.find((entry) => entry.type === 'Artefact de classe' && (entry.requirement ?? '').includes('Classe : Voleur'))!.id
+    expect(activeStatus(state).available).toBe(true)
+    state.turnFlags.push('thief')
+    expect(activeStatus(state).reasons).toContainEqual({ code: 'used-turn' })
+  })
+
+  it('shows boosted equipment values for mastery, Orc weapons and doubled armor', () => {
+    const state = newGame('Guerrier', 'Orc', 5)
+    state.promptQueue = []
+    const weapon = CARDS.find((entry) => entry.type === 'Arme' && (entry.requirement ?? '').includes('Maîtrise Guerrier'))!
+    const armor = CARDS.find((entry) => entry.type === 'Armure' && Number(entry.value) > 0)!
+    expect(equipmentCardPower(state, weapon.id)).toBe(Number(weapon.value) * 2 + 1)
+    state.race = 'Humain'
+    state.klass = 'Mage'
+    expect(equipmentCardPower(state, weapon.id)).toBe(Number(weapon.value))
+    state.level = 10
+    const next = reduce(state, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
+    next.combat!.doubledArmors = [armor.id]
+    expect(equipmentCardPower(next, armor.id)).toBe(Number(armor.value) * 2)
+    next.combat = null
+    expect(equipmentCardPower(next, armor.id)).toBe(Number(armor.value))
+  })
+
+  it('shows player power outside combat and uses the same calculation during combat', () => {
+    const state = newGame('Guerrier', 'Orc', 5)
+    state.promptQueue = []
+    const weapon = CARDS.find((entry) => entry.type === 'Arme' && (entry.requirement ?? '').includes('Maîtrise Guerrier'))!
+    state.equipment.hands = [weapon.id]
+    const equipment = weaponPower(state, weapon.id)
+    expect(computePlayerPower(state)).toEqual({ level: 1, equipment, bonus: 0, die: null, total: 1 + equipment })
+    state.level = 10
+    const next = reduce(state, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
+    next.combat!.playerBonus = 2
+    next.combat!.playerDie = 4
+    expect(computePlayerPower(next)).toEqual(computePower(next)!.player)
+    expect(computePlayerPower(next).total).toBe(10 + equipment + 2 + 4)
+  })
+
+  it('draws a reproducible random Boss from the existing Bosses at level 10', () => {
+    const drawn = new Set<string>()
+    for (let seed = 1; seed <= 48; seed += 1) {
+      const state = newGame('Mage', 'Humain', seed)
+      state.promptQueue = []
+      expect(reduce(state, { t: 'drawBoss' }).combat).toBeNull()
+      state.level = 10
+      const next = reduce(state, { t: 'drawBoss' })
+      expect(next.combat?.kind).toBe('boss')
+      expect(BOSS_IDS).toContain(next.combat?.bossId)
+      expect(reduce(state, { t: 'drawBoss' })).toEqual(next)
+      expect(reduce(next, { t: 'drawBoss' }).combat?.bossId).toBe(next.combat?.bossId)
+      drawn.add(next.combat!.bossId!)
+    }
+    expect(drawn.size).toBe(BOSS_IDS.length)
+  })
+
+  it('allows equipment changes during combat only before dice are rolled', () => {
+    let state = newGame('Mage', 'Humain', 3)
+    state.promptQueue = []
+    state.level = 10
+    state = reduce(state, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
+    state.promptQueue = []
+    const weapon = CARDS.find((entry) => entry.type === 'Arme')!
+    state.hand.push(weapon.id)
+    expect(canEquip(state, weapon.id)).toBe(true)
+    state = reduce(state, { t: 'equip', id: weapon.id })
+    expect(state.equipment.hands).toContain(weapon.id)
+    expect(state.hand).not.toContain(weapon.id)
+    state = reduce(state, { t: 'unequip', id: weapon.id })
+    expect(state.hand).toContain(weapon.id)
+    state = reduce(state, { t: 'equip', id: weapon.id })
+    state = reduce(state, { t: 'roll' })
+    expect(canChangeEquipment(state)).toBe(false)
+    const equipment = structuredClone(state.equipment)
+    state = reduce(state, { t: 'unequip', id: weapon.id })
+    expect(state.equipment).toEqual(equipment)
+  })
+
+  it('blocks equipping once Boss resolution begins, even without a player roll', () => {
+    let state = newGame('Mage', 'Humain', 3)
+    state.promptQueue = []
+    state.level = 10
+    state = reduce(state, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
+    state.promptQueue = []
+    const armor = CARDS.find((entry) => entry.type === 'Armure')!
+    state.hand.push(armor.id)
+    state = reduce(state, { t: 'bossStep' })
+    expect(state.combat?.playerDie).toBeNull()
+    expect(canEquip(state, armor.id)).toBe(false)
+    state = reduce(state, { t: 'equip', id: armor.id })
+    expect(state.hand).toContain(armor.id)
+  })
+
+  it('plays one Boss reaction per step and waits before resolving', () => {
+    let state = newGame('Mage', 'Humain', 3)
+    state.promptQueue = []
+    state.level = 10
+    state = reduce(state, { t: 'challengeBoss', bossId: BOSS_IDS[0] })
+    state.promptQueue = []
+    const weakness = CARDS.find((entry) => entry.name === 'Faiblesse')!
+    const chance = CARDS.find((entry) => entry.name === 'Chance')!
+    state.combat!.bossHand = [weakness.id, chance.id]
+    state.combat!.bossDie = 3
+    const before = state.log.length
+    state = reduce(state, { t: 'bossStep' })
+    expect(state.log.slice(before).filter((entry) => entry.code === 'bossPlays')).toEqual([{ code: 'bossPlays', params: { card: weakness.id } }])
+    expect(state.combat?.bossHand).toEqual([chance.id])
+    expect(state.phase).toBe('combat')
+    state = reduce(state, { t: 'bossStep' })
+    expect(state.combat?.bossHand).toEqual([])
+    expect(state.phase).toBe('combat')
+    state = reduce(state, { t: 'bossStep' })
+    expect(['won', 'lost']).toContain(state.phase)
   })
 })

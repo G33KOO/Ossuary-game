@@ -29,6 +29,8 @@ export type PromptPurpose =
   | 'envers'
   | 'tavern'
   | 'oath'
+  | 'oath-armor-slot'
+  | 'oath-boss-action'
   | 'tavern-give'
 
 export type Prompt = {
@@ -39,12 +41,16 @@ export type Prompt = {
 }
 
 export type Equipment = {
+  extraArmor?: { slot: string; id: string | null }
   armors: Record<string, string | null>
   hands: string[]
   artifact: string | null
 }
 
 export type Combat = {
+  resolvedActions?: number
+  hasRolled?: boolean
+  oathRerollUsed?: boolean
   kind: 'monster' | 'boss'
   monsters: string[]
   bossId: string | null
@@ -80,6 +86,9 @@ export type GameState = {
   turn: number
   hand: string[]
   oaths: string[]
+  completedOaths?: string[]
+  excessDiscarded?: number
+  arcanaRewardUsed?: boolean
   equipment: Equipment
   lootDeck: string[]
   lootDiscard: string[]
@@ -109,9 +118,11 @@ export type GameAction =
   | { t: 'fightMonster' }
   | { t: 'drawLoot' }
   | { t: 'challengeBoss'; bossId: string }
+  | { t: 'drawBoss' }
   | { t: 'playAction'; id: string }
   | { t: 'useActive' }
   | { t: 'roll' }
+  | { t: 'oathReroll' }
   | { t: 'resolve' }
   | { t: 'bossStep' }
   | { t: 'flee' }

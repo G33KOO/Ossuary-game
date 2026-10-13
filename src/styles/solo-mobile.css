@@ -1,0 +1,152 @@
+/* This layout is scoped to phones; the desktop board keeps its existing layout. */
+.gb-mobile-nav { display: none; }
+.gb-mobile-card-actions { display: none; }
+
+@media (max-width: 760px) {
+  body.solo-playing .site-header { display: flex; align-items: center; justify-content: space-between; height: 56px; min-height: 56px; padding: 8px 12px; }
+  body.solo-playing .site-header .main-nav { display: none; }
+  body.solo-playing .site-header .brand-name { font-size: 12px; }
+  body.solo-playing .site-header .brand-mark { width: 30px; height: 30px; font-size: 19px; }
+  body.solo-playing .site-header .header-actions { gap: 6px; }
+  body.solo-playing .site-header .header-actions button { min-width: 36px; min-height: 36px; }
+
+  .solo-page .gb-full { height: calc(100dvh - 56px); grid-template-columns: minmax(0, 1fr); padding: 8px 8px 0; gap: 8px; }
+  .gb-full .gb-hud { min-width: 0; align-items: center; gap: 6px; }
+  .gb-full .gb-dock, .gb-full .gb-hand, .gb-full .gb-table { min-width: 0; }
+  .gb-full .gb-hud .sim-stat { display: flex; align-items: baseline; gap: 6px; padding: 5px 9px; border-radius: 6px; }
+  .gb-full .gb-hud .sim-stat strong { font-size: 16px; }
+  .gb-full .gb-hud .sim-stat > span { font-size: 10px; }
+  .gb-full .gb-hud > .sim-link { margin-left: auto; min-height: 32px; padding: 6px 8px; font-size: 10px; }
+  .gb-full .gb-level-timeline { flex-basis: 100%; padding: 4px 6px; }
+  .gb-full .gb-mobile-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; width: 100%; }
+  .gb-mobile-nav button { min-height: 44px; padding: 8px 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: var(--bone); font-family: var(--display); font-size: 11px; }
+  .gb-mobile-nav button:active { border-color: var(--gold); background: var(--surface-strong); }
+
+  .solo-page .gb-full .gb-table { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: max-content max-content max-content; gap: 12px; padding: 12px 8px 20px; border-width: 2px; border-radius: 12px; overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: 8px; }
+  .gb-full .gb-side-left { grid-column: 1; grid-row: 1; }
+  .gb-full .gb-side-right { grid-column: 2; grid-row: 1; }
+  .solo-page .gb-full .gb-side { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; gap: 6px; padding: 10px 6px; border: 1px solid var(--line); border-radius: 10px; background: rgb(0 0 0 / 12%); }
+  .gb-full .gb-side .gb-pile { min-width: 0; gap: 4px; }
+  .gb-full .gb-pile-stack { width: 57px; height: 80px; }
+  .gb-full .gb-pile-stack .gb-back { width: 52px; height: 73px; border-radius: 6px; }
+  .gb-full .gb-pile-stack .gb-back span { font-size: 23px; }
+  .gb-full .gb-pile-stack .gb-back .gb-pile-action { padding: 4px; }
+  .gb-full .gb-pile-stack .gb-back .gb-pile-action-label { font-size: 9px; line-height: 1.35; }
+  .gb-full .gb-pile-count { min-width: 22px; height: 22px; font-size: 11px; padding: 3px; }
+  .gb-full .gb-side .gb-discard { width: 52px; min-width: 0; }
+  .gb-full .gb-side .gb-discard .gb-card-wrap.size-sm { --w: 44px; }
+  .gb-full .gb-side .gb-discard-empty { width: 44px; min-height: 62px; }
+  .gb-full .gb-side .gb-discard .gb-pile-label { max-width: 52px; overflow-wrap: anywhere; }
+  .gb-full .gb-side .gb-pile-label { font-size: 8px; line-height: 1.4; letter-spacing: 0; }
+  .gb-full .gb-side .gb-log-btn { display: none; }
+
+  .gb-full .gb-center { grid-column: 1 / -1; grid-row: 2; display: block; min-height: 0; }
+  .solo-page .gb-full .gb-arena { display: flex; flex-direction: column; align-items: stretch; gap: 14px; overflow: visible; padding: 8px 0; }
+  .gb-full .gb-arena .gb-foe { width: 100%; gap: 12px; padding: 8px; }
+  .gb-full .gb-arena .gb-monster-encounter { width: 100%; justify-content: center; align-items: flex-start; gap: 12px; }
+  .gb-full .gb-arena .gb-card-wrap.size-lg { --w: clamp(86px, 25vw, 124px); flex-shrink: 0; }
+  .gb-full .gb-monster-effect { flex: 1; width: auto; max-width: 240px; max-height: none; padding: 12px; }
+  .gb-full .gb-monster-effect p { font-size: 12px; line-height: 1.65; }
+  .gb-full .gb-monster-effect strong { font-size: 13px; }
+  .gb-full .gb-arena .gb-foe-gear { max-width: 100%; gap: 10px; }
+  .gb-full .gb-arena .gb-foe-gear .gb-card-wrap.size-sm { --w: 48px; }
+  .gb-full .gb-foe-equip { flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .gb-full .gb-scoreboard { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); width: 100%; gap: 8px; }
+  .gb-full .gb-score { padding: 10px 6px; }
+  .gb-full .gb-arena .gb-score strong { font-size: 30px; }
+  .gb-full .gb-score-parts { font-size: 10px; line-height: 1.5; }
+  .solo-page .gb-full .gb-playzone { min-height: 80px; padding: 12px; border-radius: 10px; }
+  .gb-full .gb-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+  .gb-full .gb-controls .button { min-height: 46px; justify-content: center; padding: 10px 8px; font-size: 10px; letter-spacing: .03em; }
+  .gb-full .gb-controls .gb-flee-button { gap: 6px; flex-wrap: wrap; }
+  .gb-full .gb-controls .gb-flee-threshold { font-size: 9px; }
+  .gb-full .gb-idle { min-height: 160px; padding: 16px; }
+  .gb-full .gb-arena .gb-idle-title { font-size: 16px; text-align: center; }
+  .gb-full .gb-arena .gb-idle .gb-pile-stack { width: 72px; height: 100px; }
+  .gb-full .gb-arena .gb-idle .gb-pile-stack .gb-back { width: 67px; height: 94px; }
+
+  .solo-page .gb-full .gb-board { grid-column: 1 / -1; grid-row: 3; width: 100%; padding: 10px; border-radius: 12px; }
+  .gb-full .gb-board .gb-board-body { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding: 0; }
+  .gb-full .gb-board .gb-board-group { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+  .gb-full .gb-board .gb-hero-level-row { min-height: 40px; }
+  .gb-full .gb-board .gb-level { padding: 6px 12px; }
+  .gb-full .gb-board .gb-level strong { font-size: 25px; }
+  .gb-full .gb-board .gb-board-group h4 { width: 100%; margin: 0; padding-bottom: 8px; font-size: 11px; }
+  .gb-full .gb-board .gb-heroes { display: grid; grid-template-columns: repeat(var(--hero-card-count), minmax(0, 1fr)); gap: 8px; }
+  .gb-full .gb-board .gb-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 6px; }
+  .gb-full .gb-board .gb-slot { padding: 0; border-width: 1px; gap: 6px; min-width: 0; }
+  .gb-full .gb-board .gb-slot-label { font-size: 8px; letter-spacing: 0; overflow-wrap: anywhere; }
+  .gb-full .gb-board .gb-card-wrap.size-sm { --w: 100%; width: 100%; font-size: 9px; }
+  .gb-full .gb-board .gb-slot-empty { width: 100%; font-size: 20px; }
+  .gb-full .gb-board .gb-two-handed-copy { width: 100%; }
+  .gb-full .gb-board .gb-player-combat-status { position: sticky; top: -1px; z-index: 20; gap: 10px; padding: 10px 0; margin: 0; background: var(--surface-strong); border-bottom: 1px solid var(--line); }
+  .gb-full .gb-board .gb-hero-power-button { padding: 8px 10px; min-height: 46px; gap: 8px; }
+  .gb-full .gb-board .gb-hero-power-button > span:first-child { font-size: 10px; }
+  .gb-full .gb-board .gb-hero-power-button strong { font-size: 27px; }
+  .gb-full .gb-board .gb-player-combat-status .gb-die { gap: 6px; }
+  .gb-full .gb-board .gb-die-face { width: 42px; height: 42px; font-size: 24px; }
+  .gb-full .gb-board .gb-die-label { font-size: 10px; }
+  .gb-full .gb-board .gb-class-active { margin-left: 0; width: 100%; }
+  .gb-full .gb-board .gb-class-active .button { width: 100%; min-height: 44px; }
+
+  .solo-page .gb-full .gb-dock { margin: 0 -8px; padding: 8px 0 max(8px, env(safe-area-inset-bottom)); background: var(--surface-strong); border-top: 1px solid var(--line); box-shadow: 0 -6px 20px rgb(0 0 0 / 25%); }
+  .gb-full .gb-dock-label { padding: 0 12px 4px; font-size: 10px; letter-spacing: .06em; }
+  .solo-page .gb-full .gb-hand { display: flex; align-items: flex-start; justify-content: flex-start; height: auto; max-height: 205px; gap: 12px; padding: 8px 12px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; scroll-padding-left: 12px; overscroll-behavior-x: contain; touch-action: pan-x; pointer-events: auto; scrollbar-width: thin; }
+  .gb-full .gb-hand .gb-card-wrap.size-hand { --w: 92px; flex: 0 0 92px; margin-left: 0; transform: none; scroll-snap-align: start; }
+  .gb-full .gb-hand .gb-card-wrap:hover .gb-card, .gb-full .gb-hand .gb-card-wrap:has(:focus-visible) .gb-card { transform: none; }
+  .gb-full .gb-hand .gb-card-wrap .gb-card-actions, .gb-full .gb-hand .gb-card-wrap:hover .gb-card-actions, .gb-full .gb-hand .gb-card-wrap:has(:focus-visible) .gb-card-actions { position: static; display: flex; margin-top: 8px; transform: none; }
+  .gb-full .gb-hand .gb-card-actions button { width: 100%; min-height: 40px; padding: 8px 4px; font-size: 10px; border-radius: 6px; }
+  .gb-full .gb-hand .gb-mobile-card-actions { display: flex; margin-top: 8px; }
+  .gb-full .gb-hand .gb-mobile-card-actions .button { width: 100%; min-height: 44px; padding: 8px 4px; border: 1px solid var(--gold); background: linear-gradient(160deg, var(--surface-strong), var(--surface)); color: var(--bone); font-size: 10px; letter-spacing: .03em; border-radius: 6px; }
+  .gb-full .gb-hand .gb-card-wrap.is-dragging { opacity: .35; }
+
+  .solo-playing .sim-modal-backdrop { padding: 12px; }
+  .solo-playing .sim-modal { width: 100%; max-width: 100%; max-height: calc(100dvh - 24px); padding: 18px; gap: 14px; border-radius: 12px; }
+  .solo-playing .sim-modal > .app-modal-header { padding-bottom: 12px; }
+  .solo-playing .sim-modal .button { min-height: 44px; }
+  .solo-playing .sim-modal-backdrop.is-tavern { padding-top: 12px; padding-bottom: 210px; }
+  .solo-playing .sim-modal-backdrop.is-tavern .sim-modal { max-height: calc(100dvh - 230px); }
+  .solo-playing .sim-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; }
+  .solo-playing .sim-pick { min-width: 0; }
+  .solo-playing .sim-pick .gb-card-wrap.size-md { --w: 100%; width: 100%; font-size: 9px; }
+  .solo-playing .sim-pick > .button { width: 100%; padding: 8px 4px; font-size: 10px; }
+  .solo-playing .gb-boss-action-layout { width: 100%; gap: 16px; }
+  .solo-playing .gb-boss-action-copy { font-size: 13px; }
+  .solo-playing .gb-oath-celebration { bottom: 215px; right: 12px; width: calc(100vw - 24px); max-height: 50dvh; padding: 14px; }
+  .solo-playing .gb-reveal-title { font-size: 18px; text-align: center; padding: 0 16px; }
+  .solo-playing .gb-reveal-cards { gap: 8px; }
+  .solo-playing .gb-reveal-card { width: 100px; height: 140px; }
+  .solo-playing .gb-reveal-card .gb-card-wrap.size-lg { --w: 100px; }
+  .solo-playing .gb-reveal-card .gb-back.size-lg { width: 100px; height: 140px; }
+  .solo-playing .gb-toast { top: 72px; width: calc(100vw - 32px); padding: 12px; font-size: 13px; text-align: center; }
+  .gb-action-announcement { top: 65px; padding: 10px 12px; }
+
+  .card-dialog .dialog-layout { grid-template-columns: minmax(0, 1fr); }
+  .card-dialog .dialog-visual { padding: 20px 24px 12px; }
+  .card-dialog .dialog-art { max-height: 34dvh; width: auto; }
+  .card-dialog .dialog-body { padding: 18px 20px 24px; }
+  .card-dialog .dialog-body h2 { font-size: 26px; margin-bottom: 10px; }
+  .card-dialog .dialog-rule { font-size: 17px; line-height: 1.65; }
+  .card-dialog .dialog-actions .button { min-height: 46px; flex: 1; justify-content: center; }
+}
+
+@media (max-width: 760px) and (max-height: 650px) {
+  .gb-full .gb-level-timeline { display: none; }
+  .solo-page .gb-full .gb-hand { max-height: 170px; }
+  .gb-full .gb-hand .gb-card-wrap.size-hand { --w: 66px; flex-basis: 66px; }
+}
+
+@media (max-width: 1100px) and (max-height: 520px) {
+  body.solo-playing .site-header { height: 56px; min-height: 56px; padding: 8px 12px; }
+  body.solo-playing .site-header .main-nav { display: none; }
+  .solo-page .gb-full { height: calc(100dvh - 56px); --hand-card-width: 66px; gap: 6px; }
+  .gb-full .gb-level-timeline { display: none; }
+  .gb-full .gb-hud .sim-stat { padding: 4px 8px; }
+  .gb-full .gb-hud .sim-stat strong { font-size: 16px; }
+  .gb-full .gb-dock { padding-top: 4px; }
+  .gb-full .gb-hand { height: 108px; padding-top: 6px; }
+  .solo-playing .sim-modal-backdrop.is-tavern { padding-top: 12px; padding-bottom: 130px; }
+  .solo-playing .sim-modal-backdrop.is-tavern .sim-modal { max-height: calc(100dvh - 154px); }
+}
+
+.solo-playing .sim-modal { grid-auto-rows: max-content; align-content: start; }

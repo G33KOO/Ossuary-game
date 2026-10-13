@@ -1,11 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import type { CSSProperties, ReactNode } from 'react'
 import type { Card } from '../types/card'
 import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
 import type { CardGender } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
 import { useLocale } from '../i18n/LocaleProvider'
 import { localizeCard } from '../i18n/cardTranslations'
+import { getCardClass, getClassIcon } from '../utils/cardClass'
+import { ModalHeader } from './ModalHeader'
+import { CARDS } from '../game/data'
+import { soloCopy } from '../content/solo'
 
 function zoomFromOrigin(dialog: HTMLDialogElement, origin: DOMRect | null) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -42,6 +47,7 @@ type CardDetailsDialogProps = {
 
 export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, actions }: CardDetailsDialogProps) {
   const { locale, t } = useLocale()
+  const { pathname } = useLocation()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [genderChoice, setGenderChoice] = useState<{ cardId: string; gender: CardGender }>({
     cardId: '',
@@ -52,12 +58,17 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
   const canSwitchGender = card ? hasFemaleVariant(card) : false
   const localizedCard = card ? localizeCard(card, locale) : null
   const isOpen = card !== null
+  const pathClass = card?.name.startsWith('Voie du ') ? getCardClass(card) : undefined
+  const pathClassCard = pathClass ? CARDS.find((entry) => entry.type === 'Classe' && entry.name === pathClass) : undefined
+  const localizedPathClass = pathClassCard ? localizeCard(pathClassCard, locale) : undefined
+  const solo = soloCopy[locale]
+  const pathEffect = localizedPathClass ? pathname.startsWith('/solo') ? pathClass === 'Voleur' ? solo.sim.soloRogueEffect : solo.rules.flatMap((section) => section.items).find((item) => item.startsWith(`${localizedPathClass.name} —`)) ?? localizedPathClass.text : localizedPathClass.text : undefined
 
   useEffect(() => {
     const dialog = dialogRef.current
     if (dialog && !dialog.open) {
       dialog.showModal()
-      dialog.querySelector<HTMLElement>('.dialog-close')?.focus({ preventScroll: true })
+      dialog.querySelector<HTMLElement>('.modal-close')?.focus({ preventScroll: true })
       zoomFromOrigin(dialog, origin ?? null)
     }
   }, [isOpen, origin])
@@ -78,7 +89,7 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
 
   return (
     <dialog
-      aria-labelledby="card-dialog-title"
+      aria-labelledby="card-modal-heading"
       className={`card-dialog type-${slugify(card.type)}`}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose()
@@ -86,20 +97,15 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
       onClose={onClose}
       ref={dialogRef}
     >
-      <button
-        aria-label={t('card.close')}
-        className="dialog-close"
-        onClick={onClose}
-        type="button"
-      >
-        ×
-      </button>
+      <ModalHeader id="card-modal-heading" title={t('card.detailsTitle')} onClose={onClose} closeLabel={t('card.close')} />
       <div className="dialog-layout">
         <div className="dialog-visual">
           {illustration ? (
-            <img alt="" className="dialog-art" src={illustration.src} />
+            <TiltableCard key={`${card.id}-${gender}`} src={illustration.src} label={t('card.tilt')}>
+              <CardFaceBadges card={card} powerLabel={t('card.printedValue')} />
+            </TiltableCard>
           ) : (
-            <span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span>
+            <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span><CardFaceBadges card={card} powerLabel={t('card.printedValue')} /></div>
           )}
           {canSwitchGender && (
             <div aria-label={t('card.variants')} className="variant-switch" role="group">
@@ -123,7 +129,7 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
             {[localizedCard.subtype, localizedCard.deck].filter(Boolean).join(' · ')}
           </p>
           {localizedCard.text ? (
-            <p className="dialog-rule">{localizedCard.text}</p>
+            <p className="dialog-rule">{pathClass && localizedPathClass && pathEffect && localizedCard.text.includes(localizedPathClass.name) ? <>{localizedCard.text.slice(0, localizedCard.text.indexOf(localizedPathClass.name))}<ClassAbilityPreview key={`${card.id}-${locale}`} name={localizedPathClass.name} icon={getClassIcon(pathClass)} effect={pathEffect} title={t('card.pathAbility')} duration={t('card.pathDuration')} />{localizedCard.text.slice(localizedCard.text.indexOf(localizedPathClass.name) + localizedPathClass.name.length)}</> : localizedCard.text}</p>
           ) : (
             <p className="dialog-rule">{t('card.ruleMissing')}</p>
           )}
@@ -143,18 +149,80 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
               {actions}
             </div>
           ) : null}
-          <div className="dialog-nav">
-            <button disabled={!onPrevious} onClick={onPrevious} type="button">
-              ← {t('card.previous')}
-            </button>
-            <button disabled={!onNext} onClick={onNext} type="button">
-              {t('card.next')} →
-            </button>
-          </div>
         </div>
       </div>
     </dialog>
   )
+}
+
+function ClassAbilityPreview({ name, icon, effect, title, duration }: { name: string; icon: string; effect: string; title: string; duration: string }) {
+  const id = useId()
+  const [position, setPosition] = useState<{ left: number; top: number } | null>(null)
+  const show = (element: HTMLElement) => {
+    const bounds = element.getBoundingClientRect()
+    const width = Math.min(360, window.innerWidth * .85)
+    setPosition({ left: Math.max(16, Math.min(bounds.left, window.innerWidth - width - 16)), top: bounds.bottom + 240 < window.innerHeight ? bounds.bottom + 10 : Math.max(16, bounds.top - 230) })
+  }
+  useEffect(() => {
+    if (!position) return
+    const hide = () => setPosition(null)
+    window.addEventListener('scroll', hide, true)
+    window.addEventListener('resize', hide)
+    return () => { window.removeEventListener('scroll', hide, true); window.removeEventListener('resize', hide) }
+  }, [position])
+  return <span className="dialog-class-preview">
+    <button type="button" className="dialog-class-link" aria-describedby={position ? id : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show(event.currentTarget) }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setPosition(null) }} onFocus={(event) => show(event.currentTarget)} onBlur={() => setPosition(null)} onClick={(event) => show(event.currentTarget)} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setPosition(null) } }}>{name}</button>
+    {position ? <span id={id} role="tooltip" className="dialog-class-ability-tooltip" style={position}><span className="dialog-class-ability-heading"><img alt="" src={icon} /><strong>{name} · {title}</strong></span><span className="dialog-class-ability-effect">{effect}</span><span className="dialog-class-ability-duration">{duration}</span></span> : null}
+  </span>
+}
+
+function CardFaceBadges({ card, powerLabel }: { card: Card; powerLabel: string }) {
+  const cardClass = getCardClass(card)
+  return <>
+    {cardClass ? <span className="dialog-class-badge" title={cardClass}><img alt={cardClass} src={getClassIcon(cardClass)} /></span> : null}
+    {card.value ? <span className="dialog-power-badge" title={`${powerLabel} : ${card.value}`} aria-label={`${powerLabel} : ${card.value}`}>{card.value}</span> : null}
+  </>
+}
+
+function TiltableCard({ src, label, children }: { src: string; label: string; children: ReactNode }) {
+  const [tilt, setTilt] = useState({ x: 0, y: 0, dragging: false })
+  const pointer = useRef<{ id: number; x: number; y: number; width: number; height: number; startX: number; startY: number } | null>(null)
+  const clamp = (value: number) => Math.max(-12, Math.min(12, value))
+  const reset = () => {
+    pointer.current = null
+    setTilt({ x: 0, y: 0, dragging: false })
+  }
+  return <div className="dialog-tilt-stage">
+    <div className={`dialog-tilt-card${tilt.dragging ? ' is-dragging' : ''}${tilt.x || tilt.y ? ' is-tilted' : ''}`} role="button" tabIndex={0} aria-label={label}
+      style={{ '--tilt-x': `${tilt.x}deg`, '--tilt-y': `${tilt.y}deg`, '--shine-x': `${50 + tilt.y * 2.5}%`, '--shine-y': `${50 - tilt.x * 2.5}%` } as CSSProperties}
+      onPointerDown={(event) => {
+        if (!event.isPrimary || event.button !== 0) return
+        const bounds = event.currentTarget.getBoundingClientRect()
+        pointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY, width: bounds.width, height: bounds.height, startX: tilt.x, startY: tilt.y }
+        event.currentTarget.setPointerCapture(event.pointerId)
+        event.currentTarget.focus({ preventScroll: true })
+        setTilt((current) => ({ ...current, dragging: true }))
+      }}
+      onPointerMove={(event) => {
+        const start = pointer.current
+        if (!start || start.id !== event.pointerId) return
+        setTilt({ x: clamp(start.startX - (event.clientY - start.y) / Math.max(1, start.height) * 32), y: clamp(start.startY + (event.clientX - start.x) / Math.max(1, start.width) * 32), dragging: true })
+      }}
+      onPointerUp={(event) => { if (pointer.current?.id === event.pointerId) { event.currentTarget.releasePointerCapture(event.pointerId); reset() } }}
+      onPointerCancel={reset} onLostPointerCapture={reset} onBlur={reset}
+      onKeyDown={(event) => {
+        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', ' ', 'Escape'].includes(event.key)) {
+          event.preventDefault()
+          event.stopPropagation()
+          if (['Enter', ' ', 'Escape'].includes(event.key)) reset()
+          else setTilt((current) => ({ x: clamp(current.x + (event.key === 'ArrowUp' ? 3 : event.key === 'ArrowDown' ? -3 : 0)), y: clamp(current.y + (event.key === 'ArrowRight' ? 3 : event.key === 'ArrowLeft' ? -3 : 0)), dragging: false }))
+        }
+      }}>
+      <img alt="" className="dialog-art" src={src} draggable={false} />
+      {children}
+      <span aria-hidden="true" className="dialog-card-reflection" />
+    </div>
+  </div>
 }
 
 type DetailProps = {

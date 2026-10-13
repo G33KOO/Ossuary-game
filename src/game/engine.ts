@@ -1,8 +1,9 @@
 import { ARMOR_SLOTS, CARDS, COMBAT_ONLY_ACTIONS, SOLO_EXCLUDED_ACTIONS, card, printedPower } from './data'
 import type { ClassName, RaceName } from './data'
-import { activeClass, artifactBoosts, equippedIds, handLimit, hasFlag, strongestEquipmentPower, computePower } from './power'
+import { activeClass, artifactBoosts, equippedIds, handLimit, hasFlag, isMasteredWeapon, strongestEquipmentPower, computePower } from './power'
 import { randomInt, shuffle } from './rng'
 import type { Combat, GameAction, GameState, LogEntry, Prompt, PromptOption } from './types'
+import { OATH, SOLO_OATH_IDS, oathCompleted, permanentDieBonus } from './oaths'
 
 const MAX_LEVEL = 10
 const BOSS_LEVEL = 10
@@ -42,6 +43,9 @@ function newCombat(kind: Combat['kind']): Combat {
     stolenArmor: null,
     doubledArmors: [],
     actionsPlayed: 0,
+    resolvedActions: 0,
+    hasRolled: false,
+    oathRerollUsed: false,
     used: [],
     rounds: 1,
     lootMultiplier: 1,
@@ -92,9 +96,12 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   drawLoot(s, 5)
   s.draws = []
   s.oaths = []
+  s.completedOaths = []
+  s.excessDiscarded = 0
+  s.arcanaRewardUsed = false
   const oathPool = shuffle(
     s,
-    CARDS.filter((entry) => entry.type === 'Serment').map((entry) => entry.id),
+    [...SOLO_OATH_IDS],
   )
   const oathChoices = oathPool.slice(0, 3)
   if (oathChoices.length > 0) {
@@ -139,10 +146,11 @@ function drawMonster(s: GameState) {
 }
 
 function rollRaw(s: GameState) {
-  return randomInt(s, s.dieSides) + (s.race === 'Elfe' ? 1 : 0)
+  return randomInt(s, s.dieSides) + (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s)
 }
 
 function combatRoll(s: GameState, c: Combat) {
+  c.hasRolled = true
   if (hasFlag(c, 'doubleDie')) return rollRaw(s) + rollRaw(s)
   if (hasFlag(c, 'wyrm')) return Math.min(rollRaw(s), rollRaw(s))
   return rollRaw(s)
@@ -177,6 +185,38 @@ function queue(s: GameState, prompt: Prompt, front = false) {
   else s.promptQueue.push(prompt)
 }
 
+function completeOath(s: GameState, id: string) {
+  if (!(s.oaths ?? []).includes(id) || oathCompleted(s, id)) return
+  s.completedOaths = [...(s.completedOaths ?? []), id]
+  if (id === OATH.refusedAwakening) s.dieSides = 8
+  if (id === OATH.secondSkin) queue(s, { purpose: 'oath-armor-slot', options: ARMOR_SLOTS.map((slot) => ({ id: slot })), optional: false, ctx: {} })
+  log(s, 'oathCompleted', { card: id })
+}
+
+function completeVictoryOaths(s: GameState, c: Combat, tie: boolean) {
+  const strongest = Math.max(0, ...c.monsters.map(printedPower))
+  const armors = equippedIds(s).filter((id) => card(id).type === 'Armure')
+  const conditions = [
+    [OATH.destitution, tie],
+    [OATH.exhaustedArcana, (c.resolvedActions ?? c.actionsPlayed) >= 2],
+    [OATH.misfortune, c.kind === 'monster' && strongest >= 9 && c.playerDie === 1],
+    [OATH.secondSkin, c.kind === 'monster' && strongest >= 15 && ARMOR_SLOTS.every((slot) => s.equipment.armors[slot]) && armors.reduce((sum, id) => sum + printedPower(id), 0) >= 8],
+    [OATH.foreignIron, c.kind === 'monster' && strongest >= 15 && !s.equipment.hands.some((id) => isMasteredWeapon(card(id), s.klass))],
+    [OATH.conqueror, c.kind === 'monster' && strongest >= 18 && !c.hasRolled && c.playerDie === null && c.actionsPlayed === 0 && c.used.length === 0 && !s.turnFlags.includes('hunter')],
+    [OATH.refusedAwakening, c.kind === 'monster' && strongest >= 15 && s.dieSides === 6],
+  ] as const
+  for (const [id, fulfilled] of conditions) if (fulfilled) completeOath(s, id)
+}
+
+function replaceRefusedAwakeningOath(s: GameState) {
+  if (!(s.oaths ?? []).includes(OATH.refusedAwakening) || oathCompleted(s, OATH.refusedAwakening)) return
+  const available = SOLO_OATH_IDS.filter((id) => !s.oaths.includes(id))
+  if (!available.length) return
+  const replacement = available[randomInt(s, available.length) - 1]
+  s.oaths = s.oaths.map((id) => id === OATH.refusedAwakening ? replacement : id)
+  log(s, 'oathReplaced', { card: replacement })
+}
+
 function handOptions(s: GameState, filter?: (id: string) => boolean): PromptOption[] {
   return s.hand.filter((id) => !filter || filter(id)).map((id) => ({ id, cardId: id }))
 }
@@ -197,6 +237,7 @@ function destroyEquipped(s: GameState, id: string) {
     if (s.equipment.armors[slot] === id) s.equipment.armors[slot] = null
   }
   s.equipment.hands = s.equipment.hands.filter((handId) => handId !== id)
+  if (s.equipment.extraArmor?.id === id) s.equipment.extraArmor.id = null
   s.lootDiscard.push(id)
   log(s, 'destroyed', { card: id })
 }
@@ -207,9 +248,15 @@ function equip(s: GameState, id: string) {
   const entry = card(id)
   if (!s.hand.includes(id)) return
   if (entry.type === 'Armure') {
-    const previous = s.equipment.armors[entry.subtype]
-    if (previous) s.hand.push(previous)
-    s.equipment.armors[entry.subtype] = id
+    const extra = s.equipment.extraArmor
+    if (extra?.slot === entry.subtype && s.equipment.armors[entry.subtype]) {
+      if (extra.id) s.hand.push(extra.id)
+      extra.id = id
+    } else {
+      const previous = s.equipment.armors[entry.subtype]
+      if (previous) s.hand.push(previous)
+      s.equipment.armors[entry.subtype] = id
+    }
   } else if (entry.type === 'Arme') {
     const size = (cardId: string) => (card(cardId).subtype === 'Deux mains' ? 2 : 1)
     while (s.equipment.hands.reduce((sum, handId) => sum + size(handId), 0) + size(id) > 2) {
@@ -228,8 +275,14 @@ function equip(s: GameState, id: string) {
   log(s, 'equip', { card: id })
 }
 
+export function canChangeEquipment(s: GameState) {
+  if (s.promptQueue.length > 0) return false
+  if (s.phase === 'main' && !s.combat) return true
+  return s.phase === 'combat' && s.combat !== null && !s.combat.hasRolled && s.combat.playerDie === null && s.combat.bossDie === null
+}
+
 export function canEquip(s: GameState, id: string) {
-  if (s.phase !== 'main' || s.promptQueue.length > 0 || !s.hand.includes(id)) return false
+  if (!canChangeEquipment(s) || !s.hand.includes(id)) return false
   const entry = card(id)
   if (entry.type === 'Armure' || entry.type === 'Arme') return true
   if (entry.type === 'Artefact de classe') {
@@ -245,6 +298,7 @@ function unequip(s: GameState, id: string) {
   }
   s.equipment.hands = s.equipment.hands.filter((handId) => handId !== id)
   if (s.equipment.artifact === id) s.equipment.artifact = null
+  if (s.equipment.extraArmor?.id === id) s.equipment.extraArmor.id = null
   s.hand.push(id)
   log(s, 'unequip', { card: id })
 }
@@ -474,8 +528,7 @@ function startBoss(s: GameState, bossId: string) {
       break
     }
     case 'L’Envers': {
-      const armor = ARMOR_SLOTS.map((slot) => s.equipment.armors[slot])
-        .filter((id): id is string => Boolean(id))
+      const armor = equippedIds(s).filter((id) => card(id).type === 'Armure')
         .sort((a, b) => printedPower(b) - printedPower(a))[0]
       if (armor) {
         queue(s, { purpose: 'envers', options: [...handOptions(s), { id: 'decline' }], optional: false, ctx: { armor } })
@@ -492,17 +545,22 @@ function startBoss(s: GameState, bossId: string) {
       c.bossBonus += 2
       rest = rest.filter((other) => other !== id)
       s.lootDiscard.push(id)
-      log(s, 'bossForce')
+      log(s, 'bossForce', { card: id })
     } else if (name === 'Éveil') {
       c.bossSides = 8
       rest = rest.filter((other) => other !== id)
       s.lootDiscard.push(id)
-      log(s, 'bossAwakens')
+      log(s, 'bossAwakens', { card: id })
     }
   }
   c.bossHand = rest
   s.combat = c
   s.phase = 'combat'
+  if (oathCompleted(s, OATH.exhaustedArcana) && !s.arcanaRewardUsed) {
+    s.arcanaRewardUsed = true
+    const actions = s.lootDiscard.filter((id) => card(id).type === 'Action').slice(-5)
+    if (actions.length) queue(s, { purpose: 'oath-boss-action', options: actions.map((id) => ({ id, cardId: id })), optional: false, ctx: {} })
+  }
 }
 
 function priority(name: string) {
@@ -529,6 +587,7 @@ function playerGear(s: GameState) {
     if (id) items.push({ id, power: printedPower(id), weapon: false })
   }
   for (const id of s.equipment.hands) items.push({ id, power: printedPower(id), weapon: true })
+  if (s.equipment.extraArmor?.id) items.push({ id: s.equipment.extraArmor.id, power: printedPower(s.equipment.extraArmor.id), weapon: false })
   return items.sort((a, b) => b.power - a.power)
 }
 
@@ -571,6 +630,7 @@ function bossReact(s: GameState, c: Combat): boolean {
         for (const slot of ARMOR_SLOTS) {
           if (s.equipment.armors[slot] === target) s.equipment.armors[slot] = null
         }
+        if (s.equipment.extraArmor && s.equipment.extraArmor.id === target) s.equipment.extraArmor.id = null
         s.lootDiscard.push(target as string)
         log(s, 'playerItemDestroyed', { card: target as string })
         break
@@ -631,6 +691,7 @@ function winMonster(s: GameState, tie: boolean) {
     log(s, 'secondAssault')
     return
   }
+  completeVictoryOaths(s, c, tie)
   let levels = 0
   let loot = 0
   for (const id of c.monsters) {
@@ -700,7 +761,7 @@ function loseMonster(s: GameState) {
 function attemptFlee(s: GameState, automatic: boolean) {
   const c = s.combat
   if (!c || c.kind !== 'monster' || hasFlag(c, 'noFlee')) return
-  const value = randomInt(s, 6) + (s.race === 'Elfe' ? 1 : 0)
+  const value = randomInt(s, 6) + (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s)
   if (automatic || s.race === 'Vesskar' || value >= 4) {
     s.stats.flees += 1
     log(s, 'fled', { value: automatic || s.race === 'Vesskar' ? 0 : value })
@@ -728,6 +789,7 @@ function resolveCombat(s: GameState) {
 
   if (c.kind === 'boss') {
     if (wins) {
+      completeVictoryOaths(s, c, tie)
       s.phase = 'won'
       s.victoryBoss = c.bossId
       s.combat = null
@@ -823,6 +885,7 @@ function playAction(s: GameState, id: string) {
     log(s, 'actionCancelled')
     return
   }
+  if (c) c.resolvedActions = (c.resolvedActions ?? 0) + 1
 
   switch (name) {
     case 'Force':
@@ -888,6 +951,7 @@ function playAction(s: GameState, id: string) {
     }
     case 'Éveil':
       s.dieSides = 8
+      replaceRefusedAwakeningOath(s)
       log(s, 'awakened')
       break
     case 'Trouvaille':
@@ -929,43 +993,37 @@ function playAction(s: GameState, id: string) {
 
 // ---------- Class Actives ----------
 
-export type ActiveStatus = { klass: ClassName; available: boolean }
+export type ActiveBlockReason = { code: 'ended' | 'choice' | 'combat-only' | 'outside-combat' | 'monster-block' | 'used-combat' | 'used-turn' | 'weapon-cost' | 'armor-cost' | 'armor-equipped' | 'roll-first' | 'cards-cost' | 'monster-discard-empty' | 'monster-deck-empty'; required?: number; current?: number }
+export type ActiveStatus = { klass: ClassName; available: boolean; reasons: ActiveBlockReason[] }
 
 export function activeStatus(s: GameState): ActiveStatus {
   const klass = activeClass(s)
   const c = s.combat
-  const free = s.promptQueue.length === 0 && (s.phase === 'main' || s.phase === 'combat')
-  let available = false
-  if (free) {
-    const blocked = c !== null && hasFlag(c, 'noActive')
-    switch (klass) {
-      case 'Guerrier':
-        available = c !== null && !blocked && !c.used.includes('Guerrier') && s.hand.some((id) => card(id).type === 'Arme')
-        break
-      case 'Druide':
-        available =
-          c !== null &&
-          !blocked &&
-          !c.used.includes('Druide') &&
-          s.hand.some((id) => card(id).type === 'Armure') &&
-          equippedOptions(s, true).length > 0
-        break
-      case 'Mage':
-        available = c !== null && !blocked && c.playerDie !== null && !c.used.includes('Mage') && s.hand.length >= 1
-        break
-      case 'Nécromancien':
-        available = c !== null && !blocked && !c.used.includes('Nécromancien') && s.hand.length >= 3 && s.monsterDiscard.length > 0
-        break
-      case 'Chasseur':
-        available = c === null && s.phase === 'main' && !s.turnFlags.includes('hunter') && s.hand.length >= 1 && s.monsterDeck.length > 0
-        break
-      case 'Voleur':
-        available =
-          c === null && s.phase === 'main' && !s.turnFlags.includes('thief') && s.hand.length >= (artifactBoosts(s, 'Voleur') ? 1 : 2)
-        break
-    }
+  const reasons: ActiveBlockReason[] = []
+  if (s.phase !== 'main' && s.phase !== 'combat') reasons.push({ code: 'ended' })
+  if (s.promptQueue.length > 0) reasons.push({ code: 'choice' })
+  const outside = klass === 'Chasseur' || klass === 'Voleur'
+  if (outside) {
+    if (c) reasons.push({ code: 'outside-combat' })
+    if (s.turnFlags.includes(klass === 'Chasseur' ? 'hunter' : 'thief')) reasons.push({ code: 'used-turn' })
+  } else {
+    if (!c) reasons.push({ code: 'combat-only' })
+    if (c && hasFlag(c, 'noActive')) reasons.push({ code: 'monster-block' })
+    if (c?.used.includes(klass)) reasons.push({ code: 'used-combat' })
   }
-  return { klass, available }
+  switch (klass) {
+    case 'Guerrier': if (!s.hand.some((id) => card(id).type === 'Arme')) reasons.push({ code: 'weapon-cost' }); break
+    case 'Druide':
+      if (!s.hand.some((id) => card(id).type === 'Armure')) reasons.push({ code: 'armor-cost' })
+      if (!equippedOptions(s, true).length) reasons.push({ code: 'armor-equipped' })
+      break
+    case 'Mage': if (c && c.playerDie === null) reasons.push({ code: 'roll-first' }); break
+    case 'Nécromancien': if (!s.monsterDiscard.length) reasons.push({ code: 'monster-discard-empty' }); break
+    case 'Chasseur': if (!s.monsterDeck.length) reasons.push({ code: 'monster-deck-empty' }); break
+  }
+  const required = klass === 'Nécromancien' ? 3 : klass === 'Voleur' ? (artifactBoosts(s, 'Voleur') ? 1 : 2) : klass === 'Mage' || klass === 'Chasseur' ? 1 : 0
+  if (s.hand.length < required) reasons.push({ code: 'cards-cost', required, current: s.hand.length })
+  return { klass, available: reasons.length === 0, reasons }
 }
 
 function startPay(s: GameState, kind: string, n: number, filter: 'any' | 'armor' = 'any') {
@@ -1077,7 +1135,21 @@ function answerPrompt(s: GameState, option: string | null) {
   const choices = Array.isArray(prompt.ctx.choices) ? (prompt.ctx.choices as string[]) : []
 
   switch (prompt.purpose) {
+    case 'oath-armor-slot':
+      if (option && ARMOR_SLOTS.includes(option as (typeof ARMOR_SLOTS)[number])) s.equipment.extraArmor = { slot: option, id: null }
+      break
+    case 'oath-boss-action':
+      if (option) {
+        const index = s.lootDiscard.lastIndexOf(option)
+        if (index >= 0) { s.lootDiscard.splice(index, 1); s.hand.push(option); log(s, 'oathActionGained', { card: option }) }
+      }
+      break
     case 'discard-excess':
+      if (option && discardFromHand(s, option)) {
+        s.excessDiscarded = (s.excessDiscarded ?? 0) + 1
+        if (s.excessDiscarded >= 2) completeOath(s, OATH.burden)
+      }
+      break
     case 'discard-one':
       if (option) discardFromHand(s, option)
       break
@@ -1302,6 +1374,7 @@ function endTurnNow(s: GameState) {
   s.turn += 1
   s.mimic = null
   s.turnFlags = []
+  s.excessDiscarded = 0
   if (s.level >= BOSS_LEVEL) {
     s.bossPressure += 1
     log(s, 'bossGrows', { count: s.bossPressure })
@@ -1337,7 +1410,7 @@ function apply(s: GameState, action: GameAction): GameState {
       if (canEquip(s, action.id)) equip(s, action.id)
       break
     case 'unequip':
-      if (main) unequip(s, action.id)
+      if (canChangeEquipment(s)) unequip(s, action.id)
       break
     case 'fightMonster':
       if (main) {
@@ -1356,6 +1429,9 @@ function apply(s: GameState, action: GameAction): GameState {
     case 'challengeBoss':
       if (main && s.level >= BOSS_LEVEL && BOSS_IDS.includes(action.bossId)) startBoss(s, action.bossId)
       break
+    case 'drawBoss':
+      if (main && s.level >= BOSS_LEVEL && BOSS_IDS.length > 0) startBoss(s, BOSS_IDS[randomInt(s, BOSS_IDS.length) - 1])
+      break
     case 'playAction':
       playAction(s, action.id)
       break
@@ -1372,6 +1448,15 @@ function apply(s: GameState, action: GameAction): GameState {
           c.fielpeauDone = true
           queue(s, { purpose: 'fielpeau', options: [...handOptions(s), { id: 'reroll' }], optional: false, ctx: {} })
         }
+      }
+      break
+    }
+    case 'oathReroll': {
+      const c = s.combat
+      if (c && c.playerDie === 1 && !c.oathRerollUsed && oathCompleted(s, OATH.misfortune)) {
+        c.oathRerollUsed = true
+        c.playerDie = combatRoll(s, c)
+        log(s, 'oathRerolled', { value: c.playerDie })
       }
       break
     }

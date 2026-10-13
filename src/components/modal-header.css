@@ -1,0 +1,58 @@
+.app-modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
+  background: transparent;
+  text-align: left;
+}
+
+.app-modal-header .app-modal-title {
+  margin: 0;
+  color: var(--gold-light);
+  font-family: var(--display);
+  font-size: clamp(17px, 2vw, 21px);
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.4;
+}
+
+.modal-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--bone);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover { border-color: var(--gold); color: var(--gold-light); }
+.modal-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.sim-modal > .app-modal-header { align-self: stretch; margin: 0 0 8px; padding: 0 0 16px; background: transparent; }
+.app-modal-title > span { color: var(--muted); }
+.app-modal-header,
+.app-modal-header .app-modal-title {
+  background: none !important;
+  box-shadow: none;
+}
+.app-modal-header::before,
+.app-modal-header::after {
+  background: none;
+  box-shadow: none;
+}
+.sim-prompt-instructions { margin: 0; color: var(--bone); font-size: 15px; line-height: 1.7; }
+
+@media (max-width: 560px) { .app-modal-header { padding: 16px; margin-bottom: 10px; } .sim-modal > .app-modal-header { padding-bottom: 14px; } }

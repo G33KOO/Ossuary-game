@@ -1,6 +1,7 @@
 import { ARMOR_SLOTS, card, printedPower } from './data'
 import type { ClassName } from './data'
 import type { Combat, GameState } from './types'
+import { OATH, oathCompleted } from './oaths'
 
 export function hasFlag(combat: Combat, flag: string) {
   return combat.flags.includes(flag)
@@ -16,7 +17,7 @@ export function artifactBoosts(state: GameState, klass: ClassName) {
 }
 
 export function handLimit(state: GameState) {
-  return state.race === 'Humain' ? 6 : 5
+  return state.race === 'Humain' || oathCompleted(state, OATH.burden) ? 6 : 5
 }
 
 export function equippedIds(state: GameState) {
@@ -27,27 +28,40 @@ export function equippedIds(state: GameState) {
     if (id) ids.push(id)
   }
   ids.push(...hands)
+  if (state.equipment.extraArmor?.id) ids.push(state.equipment.extraArmor.id)
   if (artifact) ids.push(artifact)
   return ids
 }
 
 export function weaponPower(state: GameState, id: string) {
-  const mastered = (card(id).requirement ?? '').includes(`Maîtrise ${state.klass}`)
+  const mastered = isMasteredWeapon(card(id), state.klass) || oathCompleted(state, OATH.foreignIron)
   return printedPower(id) * (mastered ? 2 : 1) + (state.race === 'Orc' ? 1 : 0)
 }
 
+export function isMasteredWeapon(entry: { type: string; requirement: string | null }, klass: ClassName) {
+  return entry.type === 'Arme' && (entry.requirement ?? '').includes(`Maîtrise ${klass}`)
+}
+
 type Item = { id: string; kind: 'armor' | 'weapon'; power: number }
+
+export function equipmentCardPower(state: GameState, id: string, combat: Combat | null = state.combat) {
+  const entry = card(id)
+  if (entry.type === 'Arme') return weaponPower(state, id)
+  if (entry.type === 'Armure') return printedPower(id) * (combat?.doubledArmors.includes(id) ? 2 : 1)
+  return printedPower(id)
+}
 
 function equipmentItems(state: GameState, combat: Combat | null): Item[] {
   const items: Item[] = []
   for (const slot of ARMOR_SLOTS) {
     const id = state.equipment.armors[slot]
     if (!id || id === combat?.stolenArmor) continue
-    const doubled = combat?.doubledArmors.includes(id) ? 2 : 1
-    items.push({ id, kind: 'armor', power: printedPower(id) * doubled })
+    items.push({ id, kind: 'armor', power: equipmentCardPower(state, id, combat) })
   }
+  const extra = state.equipment.extraArmor?.id
+  if (extra && extra !== combat?.stolenArmor) items.push({ id: extra, kind: 'armor', power: equipmentCardPower(state, extra, combat) })
   for (const id of state.equipment.hands) {
-    items.push({ id, kind: 'weapon', power: weaponPower(state, id) })
+    items.push({ id, kind: 'weapon', power: equipmentCardPower(state, id, combat) })
   }
   return items
 }
@@ -98,20 +112,25 @@ export type PowerBreakdown = {
 
 export type CombatPower = { player: PowerBreakdown; opponent: PowerBreakdown }
 
+export function computePlayerPower(state: GameState): PowerBreakdown {
+  const combat = state.combat
+  const level = combat && hasFlag(combat, 'levelZero') ? 0 : state.level
+  const equipment = playerEquipmentPower(state, combat)
+  const playerDie = combat?.playerDie ?? null
+  const bonus = (combat?.playerBonus ?? 0) + (oathCompleted(state, OATH.destitution) ? 2 : 0)
+  return {
+    level,
+    equipment,
+    bonus,
+    die: playerDie,
+    total: level + equipment + bonus + (playerDie ?? 0),
+  }
+}
+
 export function computePower(state: GameState): CombatPower | null {
   const combat = state.combat
   if (!combat) return null
-
-  const level = hasFlag(combat, 'levelZero') ? 0 : state.level
-  const equipment = playerEquipmentPower(state, combat)
-  const playerDie = combat.playerDie ?? null
-  const player: PowerBreakdown = {
-    level,
-    equipment,
-    bonus: combat.playerBonus,
-    die: playerDie,
-    total: level + equipment + combat.playerBonus + (playerDie ?? 0),
-  }
+  const player = computePlayerPower(state)
 
   let base = 0
   if (combat.kind === 'boss') {

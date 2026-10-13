@@ -1,0 +1,39 @@
+.gb-level-timeline { flex: 1 1 480px; min-width: 310px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 6px 14px; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(180deg, var(--surface-strong), var(--surface)); }
+.gb-level-track { display: flex; align-items: flex-start; justify-content: space-between; position: relative; min-width: 0; }
+.gb-level-track-base { position: absolute; top: 18px; left: 18px; right: 18px; height: 3px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.gb-level-track-fill { display: block; width: var(--level-progress); height: 100%; background: linear-gradient(90deg, #7a5a22, var(--gold-light)); box-shadow: 0 0 10px rgb(201 164 92 / 55%); transition: width 700ms cubic-bezier(.2,.8,.2,1); }
+.gb-level-node { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; flex: 1 1 0; min-width: 0; padding: 0; border: 0; background: transparent; cursor: help; color: var(--muted); }
+.gb-level-node-number { display: grid; place-items: center; width: 28px; height: 28px; margin: 6px 0 5px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); font-family: var(--display); font-size: 12px; font-variant-numeric: tabular-nums; transition: border-color 200ms, color 200ms, box-shadow 200ms; }
+.gb-level-node.is-reached .gb-level-node-number { border-color: var(--gold); color: var(--gold-light); background: var(--surface-strong); }
+.gb-level-node.is-current .gb-level-node-number { border: 2px solid var(--gold-light); box-shadow: 0 0 15px rgb(201 164 92 / 35%), inset 0 0 12px rgb(201 164 92 / 12%); color: var(--bone); }
+.gb-level-node.is-milestone .gb-level-node-number { width: 36px; height: 36px; margin-top: 2px; margin-bottom: 1px; border-radius: 8px; font-size: 15px; }
+.gb-level-node-caption { display: flex; align-items: center; gap: 3px; font-family: var(--display); font-size: 9px; line-height: 1.3; color: var(--muted); white-space: nowrap; }
+.gb-level-node-caption svg { width: 12px; height: 12px; }
+.gb-level-node.is-reached .gb-level-node-caption { color: var(--gold-light); }
+.gb-level-node:hover .gb-level-node-number, .gb-level-node:focus-visible .gb-level-node-number { border-color: var(--bone); box-shadow: 0 0 14px rgb(201 164 92 / 45%); }
+.gb-level-node:focus-visible { outline: none; }
+.gb-enrage-meter { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: var(--muted); cursor: help; }
+.gb-enrage-meter > svg { width: 26px; height: 26px; }
+.gb-enrage-meter > span { display: flex; flex-direction: column; gap: 3px; font-family: var(--display); font-size: 10px; text-align: left; }
+.gb-enrage-meter strong { font-size: 14px; line-height: 1; font-variant-numeric: tabular-nums; }
+.gb-enrage-meter.is-active { border-color: var(--ember); background: color-mix(in srgb, var(--red) 18%, var(--surface)); color: var(--bone); box-shadow: inset 0 0 16px rgb(212 87 42 / 12%); }
+.gb-enrage-meter.is-active > svg { color: var(--ember); }
+.gb-enrage-meter.is-active strong { color: var(--gold-light); animation: gb-enrage-increase 700ms ease; }
+.gb-enrage-meter:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.gb-timeline-tooltip { position: fixed; z-index: 82; width: min(360px, 88vw); padding: 16px 18px; border: 1px solid var(--gold); border-radius: 10px; background: var(--surface-strong); color: var(--bone); box-shadow: 0 12px 35px rgb(0 0 0 / 60%); pointer-events: none; }
+.gb-timeline-tooltip > strong { font-family: var(--display); font-size: 15px; color: var(--gold-light); }
+.gb-timeline-tooltip p, .gb-timeline-tooltip ul { font-size: 12px; line-height: 1.65; margin: 10px 0 0; }
+.gb-timeline-tooltip ul { list-style: none; padding: 0; }
+.gb-timeline-tooltip li { color: var(--muted); padding: 6px 0; border-top: 1px solid var(--line); }
+.gb-timeline-tooltip li.is-unlocked { color: var(--bone); }
+.gb-timeline-tooltip .gb-timeline-enrage-count { color: var(--gold-light); font-weight: 700; }
+.gb-timeline-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.gb-level-timeline.is-level-up .is-current .gb-level-node-number { animation: gb-level-achieved 900ms ease; }
+.gb-level-timeline.is-milestone-up { animation: gb-milestone-achieved 1500ms ease; }
+.gb-level-timeline.is-milestone-up .is-current .gb-level-node-number { animation: gb-level-achieved 1100ms ease; }
+@keyframes gb-level-achieved { 0% { transform: scale(.8); filter: brightness(1.6); } 45% { transform: scale(1.22); box-shadow: 0 0 24px rgb(235 210 146 / 70%); } 100% { transform: none; filter: none; } }
+@keyframes gb-milestone-achieved { 0%, 100% { box-shadow: 0 0 0 rgb(201 164 92 / 0%); } 35%, 55% { border-color: var(--gold-light); box-shadow: 0 0 22px rgb(201 164 92 / 45%); } }
+@keyframes gb-enrage-increase { 0% { transform: scale(1.45); color: var(--ember); } 100% { transform: none; } }
+@media (max-width: 800px) { .gb-level-timeline { flex-basis: 100%; min-width: 0; padding: 6px 8px; gap: 8px; } .gb-level-node-number { width: 23px; height: 23px; margin-top: 8px; font-size: 10px; } .gb-level-node.is-milestone .gb-level-node-number { width: 29px; height: 29px; margin-top: 5px; font-size: 12px; } .gb-level-node-caption { font-size: 8px; gap: 1px; } .gb-level-node-caption svg { display: none; } .gb-enrage-meter { padding: 6px; gap: 4px; } .gb-enrage-meter > svg { width: 18px; height: 18px; } }
+@media (prefers-reduced-motion: reduce) { .gb-level-track-fill, .gb-level-node-number { transition: none; } .gb-level-timeline.is-level-up .is-current .gb-level-node-number, .gb-level-timeline.is-milestone-up, .gb-level-timeline.is-milestone-up .is-current .gb-level-node-number, .gb-enrage-meter.is-active strong { animation: none; } }
+@media (max-width: 420px) { .gb-level-node-number { width: 20px; height: 20px; margin-top: 8px; } .gb-level-node.is-milestone .gb-level-node-number { width: 26px; height: 26px; margin-top: 5px; } .gb-enrage-meter > svg { display: none; } }
