@@ -23,6 +23,14 @@
 .gb-final-scores > section > strong { display: block; font: 700 38px var(--display); color: var(--gold-light); }
 .gb-final-scores p { font-size: 12px; line-height: 1.4; }
 .gb-final-banner { font-size: 12px; }
+.gb-flee-control { position: relative; display: inline-flex; }
+.gb-flee-tooltip { position: absolute; bottom: calc(100% + 8px); right: 0; width: min(280px, 75vw); padding: 10px 12px; border: 1px solid var(--gold); border-radius: 6px; background: var(--surface-strong); color: var(--bone); font-size: 12px; line-height: 1.5; box-shadow: 0 6px 18px rgb(0 0 0 / 30%); z-index: 20; visibility: hidden; opacity: 0; pointer-events: none; }
+.gb-flee-control:hover .gb-flee-tooltip, .gb-flee-control:focus-visible .gb-flee-tooltip { visibility: visible; opacity: 1; }
+.gb-flee-note { display: none; }
+@media (max-width: 760px) {
+  .gb-flee-tooltip { display: none; }
+  .gb-flee-note { display: block; flex-basis: 100%; margin: 4px 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+}
 .gb-combat-resolution { grid-column: 1 / -1; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto; align-items: center; gap: 16px; min-height: 64px; }
 .gb-resolution-emblem { color: var(--gold-light); width: 40px; }
 .gb-resolution-emblem svg { display: block; width: 100%; }

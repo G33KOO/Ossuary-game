@@ -830,6 +830,7 @@ function loseMonster(s: GameState) {
 function attemptFlee(s: GameState, automatic: boolean) {
   const c = s.combat
   if (!c || c.kind !== 'monster' || hasFlag(c, 'noFlee')) return
+  if (!automatic && (c.hasRolled || c.playerDie !== null)) return
   const guaranteed = automatic || s.race === 'Vesskar'
   const roll = guaranteed ? null : diceRoll(s, 6, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s) + (s.equipment.hands.some((id) => cardName(id) === 'Dague Lunefeuille') ? 1 : 0))
   const value = roll?.total ?? 0
@@ -1646,5 +1647,5 @@ function apply(s: GameState, action: GameAction): GameState {
 
 export function fleeBlocked(s: GameState) {
   const c = s.combat
-  return !c || c.kind !== 'monster' || hasFlag(c, 'noFlee')
+  return !c || c.kind !== 'monster' || hasFlag(c, 'noFlee') || Boolean(c.hasRolled) || c.playerDie !== null
 }

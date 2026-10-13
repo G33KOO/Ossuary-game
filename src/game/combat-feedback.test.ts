@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CARDS, card } from './data'
-import { canEquip, newGame, reduce } from './engine'
+import { canEquip, fleeBlocked, newGame, reduce } from './engine'
 import { computePower, equipmentCardPower, handLimit } from './power'
 import { loadGame, saveGame } from './save'
 import type { GameState } from './types'
@@ -21,6 +21,33 @@ function suzeraine() {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('visible combat consequences', () => {
+  it.each(['Humain', 'Vesskar'] as const)('blocks natural escape after a combat roll for %s', (race) => {
+    let state = monster('Tranchebec', race)
+    expect(fleeBlocked(state)).toBe(false)
+    state = reduce(state, { t: 'roll' })
+    expect(fleeBlocked(state)).toBe(true)
+    const next = reduce(state, { t: 'flee' })
+    expect(next.combat).toEqual(state.combat)
+    expect(next.seed).toBe(state.seed)
+    expect(next.level).toBe(state.level)
+    expect(next.log).toEqual(state.log)
+  })
+  it('keeps the commitment after a second assault clears the combat die', () => {
+    let state = monster('Broyeur')
+    state.combat!.playerBonus = 100
+    state = reduce(state, { t: 'roll' })
+    state = reduce(state, { t: 'resolve' })
+    expect(state.combat!.playerDie).toBeNull()
+    expect(fleeBlocked(state)).toBe(true)
+    expect(reduce(state, { t: 'flee' }).combat).toEqual(state.combat)
+  })
+  it('keeps card-driven escape available after rolling', () => {
+    let state = reduce(monster('Tranchebec'), { t: 'roll' })
+    state.hand = [id('Peur')]
+    state = reduce(state, { t: 'playAction', id: id('Peur') })
+    expect(state.combat).toBeNull()
+    expect(state.stats.flees).toBe(1)
+  })
   it('requires an explicit Suzeraine choice before any die or resolution', () => {
     const state = suzeraine()
     expect(state.promptQueue[0].purpose).toBe('suzeraine')

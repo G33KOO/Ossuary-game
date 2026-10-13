@@ -138,7 +138,7 @@ function PlayerDie({ roll, count, modifier, sides, value, rolling, disabled, rea
   }, [open])
   return <div ref={anchor} className="gb-player-die-control" tabIndex={disabled ? 0 : -1} aria-label={`D${sides}`} aria-describedby={open ? 'player-die-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setOpen(false) }} onFocus={show} onBlur={() => setOpen(false)} onClick={() => { if (disabled) show() }} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
     <button className="gb-player-die-button" type="button" disabled={disabled} onClick={onRoll} aria-label={sim.roll} aria-describedby={open ? 'player-die-tooltip' : undefined}><DiceResults roll={roll} count={count} modifier={modifier} sides={sides} value={value} rolling={rolling} compact sim={sim} /></button>
-    {open ? createPortal(<div className="gb-active-tooltip gb-die-tooltip" id="player-die-tooltip" role="tooltip" style={position}><strong>D{sides} · {sim.diePossible}</strong><p>{possible}</p>{roll ? <DiceResults roll={roll} value={value} modifier={modifier} sim={sim} /> : null}{modifiers.map((text, index) => <p className="gb-active-passive" key={index}>{text}</p>)}<div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.dieUnavailable : sim.dieReady}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div></div>, document.body) : null}
+    {open ? createPortal(<div className="gb-active-tooltip gb-die-tooltip" id="player-die-tooltip" role="tooltip" style={position}><strong>D{sides} · {sim.diePossible}</strong><p>{possible}</p><p>{sim.dieCommitment}</p>{roll ? <DiceResults roll={roll} value={value} modifier={modifier} sim={sim} /> : null}{modifiers.map((text, index) => <p className="gb-active-passive" key={index}>{text}</p>)}<div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.dieUnavailable : sim.dieReady}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div></div>, document.body) : null}
   </div>
 }
 
@@ -719,12 +719,16 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   >
                     {combat.playerDie === null ? sim.resolveNoDie : sim.resolve}
                   </button>
-                  {!fleeBlocked(game) ? (
-                    <button className="button gb-flee-button" disabled={locked} onClick={flee} title={sim.fleeHint} type="button">
+                  {combat.kind === 'monster' && !combat.flags.includes('noFlee') ? (
+                    <span className="gb-flee-control" tabIndex={fleeBlocked(game) ? 0 : undefined} title={fleeBlocked(game) ? sim.fleeCommitted : sim.fleeHint}>
+                    <button className="button gb-flee-button" disabled={locked || fleeBlocked(game)} onClick={flee} type="button">
                       <FleeIcon />
                       <span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span>
                     </button>
+                    {fleeBlocked(game) ? <span className="gb-flee-tooltip" role="tooltip">{sim.fleeCommitted}</span> : null}
+                    </span>
                   ) : null}
+                  {combat.kind === 'monster' && !combat.flags.includes('noFlee') && (combat.hasRolled || combat.playerDie !== null) ? <p className="gb-flee-note">{sim.fleeCommitted}</p> : null}
                 </div>
               </DropTarget>
           </> : <>
