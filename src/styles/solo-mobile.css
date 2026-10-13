@@ -98,7 +98,7 @@
   .gb-full .gb-hand .gb-card-wrap .gb-card-actions, .gb-full .gb-hand .gb-card-wrap:hover .gb-card-actions, .gb-full .gb-hand .gb-card-wrap:has(:focus-visible) .gb-card-actions { position: static; display: flex; margin-top: 8px; transform: none; }
   .gb-full .gb-hand .gb-card-actions button { width: 100%; min-height: 40px; padding: 8px 4px; font-size: 10px; border-radius: 6px; }
   .gb-full .gb-hand .gb-mobile-card-actions { display: flex; margin-top: 8px; }
-  .gb-full .gb-hand .gb-mobile-card-actions .button { width: 100%; min-height: 44px; padding: 8px 4px; border: 1px solid var(--gold); background: linear-gradient(160deg, var(--surface-strong), var(--surface)); color: var(--bone); font-size: 10px; letter-spacing: .03em; border-radius: 6px; }
+  .gb-full .gb-hand .gb-mobile-card-actions .button { width: 100%; min-height: 44px; padding: 8px 4px; font-size: 10px; letter-spacing: .03em; border-radius: 6px; }
   .gb-full .gb-hand .gb-card-wrap.is-dragging { opacity: .35; }
 
   .solo-playing .sim-modal-backdrop { padding: 12px; }

@@ -1,0 +1,40 @@
+/* Shared action-button palette. Card faces, dice and deck controls keep their own shapes. */
+:root {
+  --button-secondary: linear-gradient(160deg, #352819, #21170f);
+  --button-secondary-hover: linear-gradient(160deg, #48351f, #2e2113);
+  --button-disabled: linear-gradient(160deg, #2c2419, #211a12);
+  --button-disabled-text: #bca782;
+  --button-primary: linear-gradient(180deg, #b93c2d, #7a2119);
+  --button-primary-hover: linear-gradient(180deg, #d04a37, #8e281e);
+  --button-primary-shadow: inset 0 1px 0 rgb(255 220 170 / 25%), 0 0 18px rgb(212 87 42 / 30%), 0 6px 14px rgb(0 0 0 / 45%);
+}
+:root[data-theme='light'] {
+  --button-secondary: linear-gradient(160deg, #f6e8c6, #e4cc98);
+  --button-secondary-hover: linear-gradient(160deg, #fff1ce, #efd7a1);
+  --button-disabled: linear-gradient(160deg, #eadcbb, #deca9f);
+  --button-disabled-text: #80633b;
+  --button-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 22%), inset 0 0 0 3px rgb(0 0 0 / 18%), 0 6px 16px rgb(155 47 37 / 25%);
+}
+button { appearance: none; background: var(--button-secondary); border: 1px solid var(--gold); border-radius: 6px; color: var(--bone); cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+.button { align-items: center; display: inline-flex; font-family: var(--display); font-size: 12px; font-weight: 700; gap: 24px; justify-content: center; letter-spacing: .14em; padding: 16px 24px; text-decoration: none; text-transform: uppercase; transition: background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+:is(.button, .filter-chip, .theme-toggle, .language-toggle, .variant-switch button, .modal-close, .gb-mobile-nav button, .gb-oath-celebration-heading button), .gb-class-active .button, .gb-mobile-card-actions .button {
+  background: var(--button-secondary); border: 1px solid var(--gold); border-radius: 6px; color: var(--bone); font-family: var(--display); font-weight: 700; box-shadow: inset 0 1px 0 rgb(226 194 130 / 15%), 0 2px 6px rgb(0 0 0 / 12%);
+}
+:is(.button, .filter-chip, .theme-toggle, .language-toggle, .variant-switch button, .modal-close, .gb-mobile-nav button, .gb-oath-celebration-heading button):hover:not(:disabled), .gb-class-active .button:hover:not(:disabled), .gb-mobile-card-actions .button:hover:not(:disabled) {
+  background: var(--button-secondary-hover); border-color: var(--gold-light); color: var(--bone);
+}
+.button:hover:not(:disabled) { transform: translateY(-1px); }
+.button:active:not(:disabled) { transform: translateY(1px); }
+.button.button-primary, .filter-chip.active { background: var(--button-primary); color: #fbeed2; border-color: var(--gold); box-shadow: var(--button-primary-shadow); text-shadow: 0 1px 2px rgb(0 0 0 / 60%); }
+.button.button-primary:hover:not(:disabled), .filter-chip.active:hover:not(:disabled) { background: var(--button-primary-hover); color: #fff5dc; box-shadow: var(--button-primary-shadow), 0 0 14px rgb(212 87 42 / 25%); }
+.button-primary span { font-size: 15px; }
+.button.button-outline { background: transparent; border-color: var(--gold); }
+.button.button-outline:hover:not(:disabled) { background: var(--button-secondary-hover); }
+.variant-switch button[aria-pressed='true'] { border-color: var(--gold-light); color: var(--gold-light); box-shadow: inset 0 0 0 1px var(--gold); }
+:is(.button, .filter-chip, .theme-toggle, .language-toggle, .variant-switch button, .modal-close, .gb-mobile-nav button):disabled, .gb-class-active .button:disabled, .gb-mobile-card-actions .button:disabled {
+  background: var(--button-disabled); border: 1px solid var(--gold); color: var(--button-disabled-text); opacity: .72; box-shadow: none; text-shadow: none; transform: none; filter: none;
+}
+.button.button-primary:disabled { background: linear-gradient(180deg, #84503b, #573426); color: #eed8ae; }
+:is(.button, .filter-chip, .theme-toggle, .language-toggle, .variant-switch button, .modal-close, .gb-mobile-nav button):focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .button { transition: none; } .button:hover:not(:disabled), .button:active:not(:disabled) { transform: none; } }

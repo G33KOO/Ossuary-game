@@ -13,5 +13,6 @@
 - `CombatRecap` : calcul et cartes jouées du duel final. Le moteur conserve un instantané du verdict ; le plateau et la sauvegarde utilisent cet instantané après la fin de partie.
 - `MonsterRewards` : pictogrammes officiels de niveaux et de Butins, avec les valeurs imprimées et les explications au survol.
 - `CombatResolution` : attaque du héros, riposte en cas de défaite et conséquences dans le bloc combat. Le plateau conserve son état avant résolution jusqu’à « Suivant », puis poursuit les effets et récompenses.
+- `buttons.css` : styles partagés des actions principales, secondaires et désactivées, des filtres et des contrôles de modale ; palettes braise et laiton adaptées aux thèmes clair et sombre. Les cartes et les dés conservent leurs formes propres.
 
 Les modales natives conservent la navigation au clavier et empêchent les actions sur le plateau pendant un choix. Les informations secondaires du mobile sont disponibles à la demande, tandis que les commandes de combat restent visibles.

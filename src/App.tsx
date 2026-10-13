@@ -11,6 +11,7 @@ import { SoloPage } from './pages/SoloPage'
 import './App.css'
 import './styles/fantasy.css'
 import './styles/immersion.css'
+import './styles/buttons.css'
 
 function App() {
   const { theme, toggleTheme } = useTheme()

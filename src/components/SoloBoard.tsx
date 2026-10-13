@@ -759,7 +759,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   <GameCard className={oathCompleted(boardState, id) ? 'gb-oath-completed' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
                 </div>
               ))}
-              {(boardState.retainedMonsters ?? []).map((id) => <div className="gb-slot" key={id}><span className="gb-slot-label">{sim.tradesRemaining} : 2</span><GameCard id={id} locale={locale} size="sm" onInspect={(el) => inspect(id, el)} /></div>)}
+              {(boardState.retainedMonsters ?? []).map((id) => <div className="gb-slot" key={id}><span className="gb-slot-label">{fill(sim.tradesRemaining, { count: 2 })}</span><GameCard id={id} locale={locale} size="sm" onInspect={(el) => inspect(id, el)} /></div>)}
             </div>
             </section>
             <DropTarget as="section" className="gb-board-group gb-equipment-group" labelledBy="board-equipment-title" target={equipZone} onHover={setOver} onCommit={commitDrop}>
@@ -929,7 +929,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 fresh: Number(prompt.ctx.fresh ?? 0),
               })}
             </p>
-            {tavern || prompt.purpose === 'tavern-give' ? <div className="gb-tavern-tools"><button className="button" type="button" onClick={() => setInventoryOpen(true)}>{sim.inspectInventory}</button><span>{sim.tradesRemaining} : {Number(prompt.ctx.remaining ?? 1)}</span></div> : null}
+            {tavern || prompt.purpose === 'tavern-give' ? <div className="gb-tavern-tools"><button className="button" type="button" onClick={() => setInventoryOpen(true)}>{sim.inspectInventory}</button><span>{fill(sim.tradesRemaining, { count: Number(prompt.ctx.remaining ?? 1) })}</span></div> : null}
             {tavern ? <p className="sim-note">{sim.tavernHint}</p> : null}
             {tavern ? <div className="gb-tavern-hand" aria-label={sim.handDock}>
               {game.hand.map((id) => <GameCard key={id} id={id} locale={locale} size="sm" onInspect={(element) => inspect(id, element)} {...dragFrom('hand', id)} />)}

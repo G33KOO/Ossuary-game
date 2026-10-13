@@ -58,22 +58,6 @@
   background-blend-mode: soft-light, normal;
 }
 
-/* Boutons : métal sombre et braise */
-:root:not([data-theme='light']) .button-primary {
-  box-shadow:
-    inset 0 1px 0 rgb(255 220 170 / 25%),
-    0 0 18px rgb(212 87 42 / 30%),
-    0 6px 14px rgb(0 0 0 / 60%);
-  text-shadow: 0 1px 2px #000;
-}
-
-:root:not([data-theme='light']) .button-primary:hover {
-  box-shadow:
-    inset 0 1px 0 rgb(255 220 170 / 35%),
-    0 0 28px rgb(212 87 42 / 55%),
-    0 6px 14px rgb(0 0 0 / 60%);
-}
-
 /* ---- Simulateur ---- */
 :root:not([data-theme='light']) .gb-full {
   background:
