@@ -120,6 +120,7 @@ function ClassActive({ klass, name, effect, passive, reasons, disabled, sim, onA
 function PlayerDie({ roll, count, modifier, sides, value, rolling, disabled, reasons, possible, modifiers, sim, onRoll }: {
   roll?: DiceRoll; count: number; modifier?: number; sides: number; value: number | null; rolling: boolean; disabled: boolean; reasons: string[]; possible: string; modifiers: string[]; sim: Record<string, string>; onRoll: () => void
 }) {
+  const ready = !disabled && !rolling && value === null
   const anchor = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState({ left: 0, bottom: 0 })
@@ -136,8 +137,8 @@ function PlayerDie({ roll, count, modifier, sides, value, rolling, disabled, rea
     window.addEventListener('resize', close)
     return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
   }, [open])
-  return <div ref={anchor} className="gb-player-die-control" tabIndex={disabled ? 0 : -1} aria-label={`D${sides}`} aria-describedby={open ? 'player-die-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setOpen(false) }} onFocus={show} onBlur={() => setOpen(false)} onClick={() => { if (disabled) show() }} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
-    <button className="gb-player-die-button" type="button" disabled={disabled} onClick={onRoll} aria-label={sim.roll} aria-describedby={open ? 'player-die-tooltip' : undefined}><DiceResults roll={roll} count={count} modifier={modifier} sides={sides} value={value} rolling={rolling} compact sim={sim} /></button>
+  return <div ref={anchor} className={`gb-player-die-control${ready ? ' is-ready' : ''}`} tabIndex={disabled ? 0 : -1} aria-label={`D${sides}`} aria-describedby={open ? 'player-die-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setOpen(false) }} onFocus={show} onBlur={() => setOpen(false)} onClick={() => { if (disabled) show() }} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
+    <button className="gb-player-die-button" type="button" disabled={disabled} onClick={() => { setOpen(false); onRoll() }} aria-label={sim.roll} aria-describedby={open ? 'player-die-tooltip' : undefined}><DiceResults roll={roll} count={count} modifier={modifier} sides={sides} value={value} rolling={rolling} ready={ready} compact sim={sim} />{ready ? <span className="gb-die-invitation" aria-hidden="true">{sim.dieInvite}</span> : null}</button>
     {open ? createPortal(<div className="gb-active-tooltip gb-die-tooltip" id="player-die-tooltip" role="tooltip" style={position}><strong>D{sides} · {sim.diePossible}</strong><p>{possible}</p><p>{sim.dieCommitment}</p>{roll ? <DiceResults roll={roll} value={value} modifier={modifier} sim={sim} /> : null}{modifiers.map((text, index) => <p className="gb-active-passive" key={index}>{text}</p>)}<div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.dieUnavailable : sim.dieReady}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div></div>, document.body) : null}
   </div>
 }

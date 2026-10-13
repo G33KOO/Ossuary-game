@@ -206,7 +206,7 @@ export function DiscardGallery({ ids, title, locale, closeLabel, onClose, onInsp
   )
 }
 
-export function Die({ sides, value, rolling, label, tone }: { sides: number; value: number | null; rolling: boolean; label: string; tone?: 'positive' | 'negative' }) {
+export function Die({ sides, value, rolling, ready = false, label, tone }: { sides: number; value: number | null; rolling: boolean; ready?: boolean; label: string; tone?: 'positive' | 'negative' }) {
   const [shown, setShown] = useState(1)
   useEffect(() => {
     if (!rolling) return undefined
@@ -215,7 +215,7 @@ export function Die({ sides, value, rolling, label, tone }: { sides: number; val
   }, [rolling, sides])
   return (
     <div className={`gb-die${rolling ? ' is-rolling' : ''}${value === null && !rolling ? ' is-idle' : ''}${tone ? ` is-${tone}` : ''}`}>
-      <span className="gb-die-face">{rolling ? shown : (value ?? '?')}</span>
+      <span className="gb-die-face">{ready && value === null && !rolling ? <svg className="gb-ready-die-icon" aria-hidden="true" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2"><path d="M24 4 43 14v21L24 45 5 35V14L24 4ZM5 14l19 10 19-10M24 24v21" /><g fill="currentColor" stroke="none"><ellipse cx="24" cy="14" rx="2.4" ry="1.6" /><ellipse cx="14" cy="24" rx="1.6" ry="2.2" /><ellipse cx="14" cy="33" rx="1.6" ry="2.2" /><ellipse cx="33" cy="24" rx="1.6" ry="2.2" /><ellipse cx="33" cy="33" rx="1.6" ry="2.2" /></g></svg> : rolling ? shown : (value ?? '?')}</span>
       <span className="gb-die-label">
         {label ? `${label} · ` : ''}D{sides}
       </span>

@@ -13,6 +13,17 @@
 .gb-dice-faces { display: flex; gap: 8px; align-items: center; justify-content: center; }
 .gb-dice-results.is-compact .gb-dice-faces { gap: 4px; }
 .gb-dice-combined { color: var(--gold-light); font-size: 22px; }
+.gb-player-die-control { min-height: 64px; }
+.gb-player-die-button { position: relative; display: inline-flex; align-items: center; min-height: 64px; padding-bottom: 16px; }
+.gb-ready-die-icon { width: 30px; height: 30px; }
+.gb-player-die-control.is-ready { cursor: pointer; }
+.gb-player-die-control.is-ready .gb-player-die-button::before { content: ''; position: absolute; inset: -3px -5px 12px; border: 1px solid var(--gold); border-radius: 13px; pointer-events: none; animation: gb-ready-die-glow 2400ms ease-in-out infinite; }
+.gb-player-die-control.is-ready .gb-die-face { opacity: 1; animation: gb-ready-die-sway 2400ms ease-in-out infinite; }
+.gb-die-invitation { position: absolute; bottom: 0; left: 0; right: 0; color: var(--gold-light); font: 700 10px var(--display); letter-spacing: .06em; text-align: center; }
+.gb-player-die-control.is-ready .gb-player-die-button:hover .gb-die-face, .gb-player-die-control.is-ready .gb-player-die-button:focus-visible .gb-die-face { animation: none; transform: translateY(-2px) rotate(-5deg); }
+@keyframes gb-ready-die-glow { 0%, 100% { box-shadow: 0 0 8px rgb(235 194 100 / 25%); opacity: .65; } 50% { box-shadow: 0 0 16px rgb(235 194 100 / 70%), inset 0 0 8px rgb(235 194 100 / 15%); opacity: 1; } }
+@keyframes gb-ready-die-sway { 0%, 65%, 100% { transform: none; } 20% { transform: translateY(-2px) rotate(-5deg); } 35% { transform: translateY(-2px) rotate(5deg); } 50% { transform: rotate(-3deg); } }
+@media (prefers-reduced-motion: reduce) { .gb-player-die-control.is-ready .gb-player-die-button::before, .gb-player-die-control.is-ready .gb-die-face { animation: none; } .gb-player-die-control.is-ready .gb-player-die-button::before { box-shadow: 0 0 12px rgb(235 194 100 / 50%); } }
 .gb-dice-calculation { font-size: 12px; line-height: 1.5; text-align: center; color: var(--bone); }
 .gb-die.is-positive .gb-die-face { border-color: #73c99c; color: #b3f3cf; background: radial-gradient(circle at 25% 20%, #294837, #14291e); box-shadow: 0 0 14px rgb(87 190 136 / 35%); }
 .gb-die.is-negative .gb-die-face { border-color: #d16b64; color: #ffc4bc; background: radial-gradient(circle at 25% 20%, #59302b, #2e1414); box-shadow: 0 0 14px rgb(219 90 81 / 35%); }

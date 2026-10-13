@@ -8,6 +8,7 @@
 - `power` : calcul partagé des valeurs affichées et des combats. Les effets d’équipement n’ont pas de calcul parallèle dans les composants.
 - `engine` : règles et transitions pures ; les animations lisent les événements sans modifier les résultats.
 - `DiceResults` : dés naturels, somme ou minimum, modificateurs, résultat final et couleurs de bonus/malus, partagés entre le plateau, les effets et le récapitulatif.
+- `PlayerDie` : le dé disponible affiche une icône en relief, un halo et « Lancer ». Ces repères cessent pendant le jet et après son résultat ; l’espace réservé reste constant et les animations respectent la réduction des mouvements.
 - `EffectPresentation` : une étape automatique à la fois ; le jet se termine avant que « Suivant » soit disponible. Les récompenses et les monstres enchaînés attendent la fin des étapes précédentes.
 - `HeroInventory` : consultation de la main, des équipements et des cartes natives depuis la taverne, sans changer les offres.
 - `CombatRecap` : calcul et cartes jouées du duel final. Le moteur conserve un instantané du verdict ; le plateau et la sauvegarde utilisent cet instantané après la fin de partie.
