@@ -1,5 +1,6 @@
 import { CARD_SYMBOLS as TYPE_ICON } from '../utils/cardSymbols'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { CSSProperties, ReactNode } from 'react'
 import { card } from '../game/data'
 import type { ClassName } from '../game/data'
@@ -96,11 +97,10 @@ export function GameCard({
   )
 }
 
-export function CardBack({ kind, size = 'md', actionLabel }: { kind: 'loot' | 'monster' | 'boss'; size?: 'sm' | 'md' | 'lg'; actionLabel?: string }) {
+export function CardBack({ kind, size = 'md' }: { kind: 'loot' | 'monster' | 'boss'; size?: 'sm' | 'md' | 'lg' }) {
   return (
     <span aria-hidden="true" className={`gb-back kind-${kind} size-${size}`}>
       <span>{kind === 'loot' ? '✦' : kind === 'monster' ? '☠' : '♜'}</span>
-      {actionLabel ? <span className="gb-pile-action"><span className="gb-pile-action-label">{actionLabel}</span></span> : null}
     </span>
   )
 }
@@ -122,16 +122,33 @@ export function Pile({
   disabled?: boolean
   actionLabel?: string
 }) {
+  const tooltipId = useId()
+  const [position, setPosition] = useState<{ left: number; top: number } | null>(null)
+  const show = (element: HTMLElement) => {
+    const rect = element.getBoundingClientRect()
+    const width = Math.min(260, window.innerWidth - 24)
+    setPosition({ left: Math.max(12, Math.min(rect.left + rect.width / 2 - width / 2, window.innerWidth - width - 12)), top: rect.bottom + 110 < window.innerHeight ? rect.bottom + 10 : Math.max(12, rect.top - 100) })
+  }
+  useEffect(() => {
+    if (!position) return
+    const close = () => setPosition(null)
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
+  }, [position])
   return (
-    <button className={`gb-pile kind-${kind}${actionLabel ? ' has-action' : ''}`} disabled={disabled || !onClick} onClick={onClick} title={hint} aria-label={actionLabel ?? label} type="button">
+    <>
+    <button className={`gb-pile kind-${kind}`} disabled={disabled || !onClick} onClick={() => { setPosition(null); onClick?.() }} aria-label={actionLabel ?? hint ?? label} aria-describedby={position ? tooltipId : undefined} type="button" onPointerEnter={(event) => { if (event.pointerType === 'mouse') show(event.currentTarget) }} onPointerLeave={() => setPosition(null)} onFocus={(event) => { const element = event.currentTarget; window.requestAnimationFrame(() => { if (document.activeElement === element && !element.matches(':disabled')) show(element) }) }} onBlur={() => setPosition(null)} onKeyDown={(event) => { if (event.key === 'Escape') setPosition(null) }}>
       <span className="gb-pile-stack">
         <CardBack kind={kind} />
         <CardBack kind={kind} />
-        <CardBack kind={kind} actionLabel={actionLabel} />
+        <CardBack kind={kind} />
         <span className="gb-pile-count">{count}</span>
       </span>
       <span className="gb-pile-label">{label}</span>
     </button>
+    {position ? createPortal(<div className="gb-pile-tooltip" id={tooltipId} role="tooltip" style={position}><strong>{actionLabel ?? hint ?? label}</strong>{hint && hint !== actionLabel && actionLabel ? <p>{hint}</p> : null}</div>, document.body) : null}
+    </>
   )
 }
 

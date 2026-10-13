@@ -31,8 +31,6 @@
   .gb-full .gb-pile-stack { width: 57px; height: 80px; }
   .gb-full .gb-pile-stack .gb-back { width: 52px; height: 73px; border-radius: 6px; }
   .gb-full .gb-pile-stack .gb-back span { font-size: 23px; }
-  .gb-full .gb-pile-stack .gb-back .gb-pile-action { padding: 4px; }
-  .gb-full .gb-pile-stack .gb-back .gb-pile-action-label { font-size: 9px; line-height: 1.35; }
   .gb-full .gb-pile-count { min-width: 22px; height: 22px; font-size: 11px; padding: 3px; }
   .gb-full .gb-side .gb-discard { width: 52px; min-width: 0; }
   .gb-full .gb-side .gb-discard .gb-card-wrap.size-sm { --w: 44px; }

@@ -508,6 +508,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const final = ended ? game.finalCombat : undefined
   const boardState = resolutionPreview ?? (final ? { ...game, combat: final.combat, equipment: final.equipment, level: final.level, completedOaths: final.completedOaths } : game)
   const combat = boardState.combat
+  const monsterVictory = Boolean(resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' && bossPresentations[0].lines.some((entry) => entry.code === 'victory'))
   const pendingMonsterIds = new Set(!resolutionPreview && (reveal || playedAction || drawDeferred) ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
   const power = resolutionPreview ? computePower(resolutionPreview) : final?.power ?? computePower(game)
   const prompt: Prompt | undefined = game.promptQueue[0]
@@ -650,7 +651,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 {combat.kind === 'boss' && combat.bossId ? (
                   <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={combat.bossId} locale={locale} onInspect={(el) => inspect(combat.bossId as string, el)} size="lg" />
                 ) : null}
-                {combat.monsters.filter((id) => !pendingMonsterIds.has(id)).map((id) => (
+                {combat.monsters.filter((id) => !pendingMonsterIds.has(id) && !(monsterVictory && combatBeat === 'result')).map((id) => (
                   <div className="gb-monster-encounter" key={id}>
                     <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="lg" />
                     {card(id).text && <div className="gb-monster-effect" key={`${id}-${boardState.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}

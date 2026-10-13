@@ -45,12 +45,6 @@
   .gb-effect-target-hero .gb-player-combat-status, .gb-effect-target-foe .gb-foe, .gb-effect-target-player-die .gb-player-combat-status .gb-die, .gb-effect-target-foe-die .gb-scoreboard .gb-die, .gb-effect-target-hand .gb-dock { animation: none; }
   .gb-action-impact, .gb-destroyed-card-ghost, .gb-boss-destroyed-item { display: none; }
 }
-.gb-pile.has-action { position: relative; }
-.gb-back .gb-pile-action { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 10px 8px; border-radius: inherit; background: rgb(8 5 3 / 12%); pointer-events: none; transition: background 180ms ease; }
-.gb-back .gb-pile-action-label { color: #fbeed2; font-family: var(--display); font-size: 12px; font-weight: 700; line-height: 1.5; letter-spacing: .03em; text-align: center; text-shadow: 0 2px 6px #000; opacity: 0; transform: translateY(4px); transition: opacity 180ms ease, transform 180ms ease; }
-.gb-pile.has-action:not(:disabled):hover .gb-pile-action, .gb-pile.has-action:focus-visible .gb-pile-action { background: rgb(8 5 3 / 65%); }
-.gb-pile.has-action:not(:disabled):hover .gb-pile-action-label, .gb-pile.has-action:focus-visible .gb-pile-action-label { opacity: 1; transform: none; }
-.gb-pile.has-action:disabled .gb-pile-action { background: transparent; }
 .gb-pile:not(:disabled) .gb-pile-stack {
   filter: brightness(1.12) drop-shadow(0 0 7px rgb(235 210 146 / 80%)) drop-shadow(0 0 20px rgb(201 164 92 / 55%));
   animation: gb-pile-ready 1800ms ease-in-out infinite;
@@ -67,7 +61,6 @@
 @media (prefers-reduced-motion: reduce) {
   .gb-pile:not(:disabled) .gb-pile-stack { animation: none; }
 }
-@media (hover: none) { .gb-pile.has-action:not(:disabled) .gb-pile-action { background: rgb(8 5 3 / 50%); } .gb-pile.has-action:not(:disabled) .gb-pile-action-label { opacity: 1; transform: none; } }
 .gb-pile.has-action:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 8px; }
 .gb-oath-completed .gb-card { outline: 1px solid var(--gold-light); outline-offset: 3px; filter: drop-shadow(0 0 5px rgb(235 210 146 / 45%)); }
 .gb-oath-celebration { position: fixed; right: 22px; bottom: clamp(150px, 20dvh, 200px); z-index: 60; width: min(440px, calc(100vw - 32px)); max-height: 55dvh; overflow-y: auto; padding: 18px; border: 1px solid var(--gold-light); border-radius: 12px; background: var(--surface-strong); color: var(--bone); box-shadow: 0 14px 44px rgb(0 0 0 / 65%), 0 0 24px rgb(201 164 92 / 25%); animation: gb-oath-earned 650ms ease both; }
