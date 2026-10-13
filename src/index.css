@@ -1,7 +1,7 @@
 :root {
   --page-pad: clamp(24px, 7vw, 104px);
   --sans: 'Manrope', 'Segoe UI', sans-serif;
-  --serif: 'Cormorant Garamond', Georgia, serif;
+  --serif: 'Lora', Georgia, serif;
   --background: #171512;
   --surface: #1c1915;
   --surface-strong: #211c17;
@@ -22,7 +22,7 @@
   color-scheme: dark;
   font-family: var(--sans);
   font-synthesis: none;
-  font-weight: 400;
+  font-weight: 600;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

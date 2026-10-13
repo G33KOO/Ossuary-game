@@ -4,8 +4,8 @@
  */
 
 :root {
-  --display: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
-  --serif: 'Cormorant Garamond', Georgia, serif;
+  --display: 'Cinzel', 'Lora', Georgia, serif;
+  --serif: 'Lora', Georgia, serif;
   --background: #100c0a;
   --surface: #1a1411;
   --surface-strong: #221a15;
@@ -215,6 +215,7 @@ h2 em {
 
 .hero-art {
   background: none;
+  container-type: inline-size;
   flex-direction: column;
   min-height: 640px;
 }
@@ -225,9 +226,9 @@ h2 em {
 }
 
 .hero-fan {
-  height: 460px;
+  height: min(460px, 64cqw);
   position: relative;
-  width: min(560px, 100%);
+  width: 100%;
 }
 
 .fan-card {
@@ -241,15 +242,15 @@ h2 em {
   border-radius: 12px;
   box-shadow: var(--shadow-card), inset 0 0 0 1px rgb(0 0 0 / 55%);
   left: 50%;
-  margin: 0 0 0 -112px;
+  margin: 0 0 0 calc(min(224px, 28cqw) / -2);
   padding: 3px;
   position: absolute;
-  top: 40px;
+  top: min(40px, 6cqw);
   transform: translate(var(--x), var(--y)) rotate(var(--r));
   transition:
     transform 260ms ease,
     box-shadow 260ms ease;
-  width: 224px;
+  width: min(224px, 28cqw);
 }
 
 .fan-card img {
@@ -261,34 +262,34 @@ h2 em {
 }
 
 .fan-card:nth-child(1) {
-  --x: -215px;
-  --y: 36px;
+  --x: calc(-1 * min(215px, 27cqw));
+  --y: min(36px, 5cqw);
   --r: -15deg;
   z-index: 1;
 }
 
 .fan-card:nth-child(2) {
-  --x: -108px;
-  --y: 10px;
+  --x: calc(-1 * min(108px, 13.5cqw));
+  --y: min(10px, 1.5cqw);
   --r: -7deg;
   z-index: 2;
 }
 
 .fan-card:nth-child(3) {
-  --y: -14px;
+  --y: calc(-1 * min(14px, 2cqw));
   z-index: 4;
 }
 
 .fan-card:nth-child(4) {
-  --x: 108px;
-  --y: 10px;
+  --x: min(108px, 13.5cqw);
+  --y: min(10px, 1.5cqw);
   --r: 7deg;
   z-index: 3;
 }
 
 .fan-card:nth-child(5) {
-  --x: 215px;
-  --y: 36px;
+  --x: min(215px, 27cqw);
+  --y: min(36px, 5cqw);
   --r: 15deg;
   z-index: 2;
 }
@@ -904,18 +905,12 @@ h2 em {
   }
 
   .hero-art {
-    min-height: 460px;
+    min-height: 0;
+    padding: 24px 0 40px;
   }
 
   .hero-fan {
-    height: 380px;
-    transform: scale(0.72);
-    transform-origin: top center;
-  }
-
-  .fan-card:nth-child(1),
-  .fan-card:nth-child(5) {
-    display: none;
+    height: min(460px, 64cqw);
   }
 
   .page-heading.has-art {
