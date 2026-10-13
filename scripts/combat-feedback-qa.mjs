@@ -42,8 +42,7 @@ async function screenshot(name) {
 const report = []
 const check = (name, passed) => { report.push({ name, passed }); if (!passed) errors.push(name) }
 async function next() {
-  await wait(1000)
-  await evaluate(`document.querySelector('.gb-effect-presentation .button-primary').click()`)
+  await evaluate(`(async()=>{for(let i=0;i<50;i++){const b=document.querySelector('.gb-combat-resolution .button-primary')??document.querySelector('.gb-effect-presentation .button-primary');if(b&&!b.disabled){b.click();return}await new Promise(r=>setTimeout(r,100))}throw Error('Presentation did not finish')})()`)
   await wait(150)
 }
 async function setup(mode) {
@@ -132,7 +131,7 @@ try {
   await next()
   await wait(1000)
   check('Sans-Visage-terminal-roll',await evaluate(`document.querySelector('.gb-effect-presentation').textContent.includes('jet 2')`))
-  await next(); await next()
+  await next()
   check('Sans-Visage-loot-after-rolls',await evaluate(`!!document.querySelector('.gb-reveal')`))
   await setup('flee')
   await evaluate(`document.querySelector('.gb-controls .gb-flee-button').click()`)
@@ -145,7 +144,7 @@ try {
   await screenshot('flee-level-loss')
   await setup('harvest')
   await evaluate(`document.querySelector('.gb-controls .button-primary').click()`)
-  await wait(1600);await next();await next();await wait(2600)
+  await wait(1600);await next();await wait(2600)
   check('Fetish-sacrifice-choice',await evaluate(`document.querySelector('.app-modal').textContent.includes('Sacrifier')`))
   await evaluate(`document.querySelector('.sim-pick > .button').click()`)
   check('Fetish-sacrifice-effect',await evaluate(`document.querySelector('.gb-effect-presentation').textContent.includes('sacrifiée')`))

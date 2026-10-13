@@ -21,6 +21,8 @@ import { permanentDieBonus } from '../game/oaths'
 import { Modal } from './Modal'
 import { DropTarget } from './DropTarget'
 import { GameCard, CardBack, Pile, Discard, DiscardGallery, Score } from './game-ui'
+import { CombatResolution } from './CombatResolution'
+import type { CombatBeat } from './CombatResolution'
 import { DiceResults } from './DiceResults'
 import type { EffectStage } from './EffectPresentation'
 import { EffectPresentation } from './EffectPresentation'
@@ -36,7 +38,7 @@ import '../styles/solo-mobile.css'
 import '../styles/combat-feedback.css'
 
 const ROLL_DELAY = 1100
-const RESOLVE_DELAY = 1300
+const RESOLVE_DELAY = 150
 const REVEAL_BASE = 1900
 const REVEAL_STAGGER = 250
 
@@ -186,6 +188,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       window.removeEventListener('pagehide', flush)
     }
   }, [game])
+  const [resolutionPreview, setResolutionPreview] = useState<GameState | null>(null)
+  const [combatBeat, setCombatBeat] = useState<CombatBeat>('hero')
   const [busy, setBusy] = useState<Busy>(null)
   const [inventoryOpen, setInventoryOpen] = useState(false)
   const [recapOpen, setRecapOpen] = useState(false)
@@ -282,10 +286,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       window.clearTimeout(actionAnimationTimer.current)
       actionAnimationTimer.current = window.setTimeout(() => { setPlayedAction(null); if (next.draws.length > 0 && !pendingReveal.current) showReveal(next) }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1800)
     }
+    const resolved = newLogs.some((entry) => entry.code === 'resolved')
+    const outcomeCodes = new Set(['victory', 'defeat', 'bossDefeated', 'bossLost', 'secondAssault', 'honorDuel'])
+    if (resolved) { setResolutionPreview(previous); setCombatBeat('hero') }
     const stageCodes = new Set(['bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossDecreeCancel', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'monsterEffect', 'equipmentIgnored', 'souriantRolled', 'sansVisageRolled', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'resolved', 'victory', 'greedRoll', 'executionRoll', 'mageReroll', 'rerolled', 'oathRerolled', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits'])
-    const stages = newLogs.filter((entry) => stageCodes.has(entry.code)).map((entry) => ({
+    const stages = newLogs.filter((entry) => stageCodes.has(entry.code) && !(resolved && outcomeCodes.has(entry.code))).map((entry) => ({
       id: typeof entry.params?.card === 'string' ? entry.params.card : next.combat?.bossId ?? previous.combat?.monsters[0] ?? undefined,
-      lines: [entry, ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed') : [])], seq: ++bossPresentationSeq.current,
+      lines: [entry, ...(entry.code === 'resolved' ? newLogs.filter((detail) => outcomeCodes.has(detail.code)) : []), ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed') : [])], seq: ++bossPresentationSeq.current,
     }))
     const hasOutcome = newLogs.some((entry) => ['resolved', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'victory', 'weaponHarvest', 'weaponSalvage'].includes(entry.code))
     if (hasOutcome && next.draws.length) {
@@ -304,6 +311,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const start = () => {
     window.clearTimeout(actionAnimationTimer.current)
     setPlayedAction(null)
+    setResolutionPreview(null)
     window.clearTimeout(timer.current)
     window.clearTimeout(revealTimer.current)
     setBusy(null)
@@ -498,10 +506,10 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
   const ended = game.phase === 'won' || game.phase === 'lost'
   const final = ended ? game.finalCombat : undefined
-  const boardState = final ? { ...game, combat: final.combat, equipment: final.equipment, level: final.level, completedOaths: final.completedOaths } : game
+  const boardState = resolutionPreview ?? (final ? { ...game, combat: final.combat, equipment: final.equipment, level: final.level, completedOaths: final.completedOaths } : game)
   const combat = boardState.combat
-  const pendingMonsterIds = new Set(reveal || playedAction || drawDeferred ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
-  const power = final?.power ?? computePower(game)
+  const pendingMonsterIds = new Set(!resolutionPreview && (reveal || playedAction || drawDeferred) ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
+  const power = resolutionPreview ? computePower(resolutionPreview) : final?.power ?? computePower(game)
   const prompt: Prompt | undefined = game.promptQueue[0]
   const main = game.phase === 'main' && !combat
   const locked = busy !== null || playedAction !== null || bossReveal !== null || bossPresentations.length > 0 || oathCelebrations.length > 0 || Boolean(prompt) || reveal !== null || ended
@@ -556,8 +564,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
   const labels = { level: sim.levelPart, equip: sim.equipPart, bonus: sim.bonusPart, die: sim.diePart }
   const foeLabels = { ...labels, equip: combat?.kind === 'boss' ? sim.equipPart : sim.powerPart }
-  const monsterTop = game.monsterDiscard[game.monsterDiscard.length - 1]
-  const lootTop = game.lootDiscard[game.lootDiscard.length - 1]
+  const monsterTop = boardState.monsterDiscard[boardState.monsterDiscard.length - 1]
+  const lootTop = boardState.lootDiscard[boardState.lootDiscard.length - 1]
   const hero = (type: 'Classe' | 'Race', name: string) => heroCard(type, name)
 
   const slotClass = (key: string, slot: string) => {
@@ -592,12 +600,12 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     )
 
   return (
-    <div className={`gb gb-full${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
+    <div className={`gb gb-full${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
-        <LevelTimeline game={game} />
-        {ended && final ? <button className="button gb-final-banner" type="button" onClick={() => setRecapOpen(true)}>{game.phase === 'won' ? sim.victoryTitle : sim.defeatTitle} · {sim.openRecap}</button> : null}
-        <Stat label={sim.turn} value={game.turn} />
-        <Stat label={sim.hand} value={`${game.hand.length}/${limit}`} />
+        <LevelTimeline game={boardState} />
+        {ended && final && !resolutionPreview ? <button className="button gb-final-banner" type="button" onClick={() => setRecapOpen(true)}>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle} · {sim.openRecap}</button> : null}
+        <Stat label={sim.turn} value={boardState.turn} />
+        <Stat label={sim.hand} value={`${boardState.hand.length}/${limit}`} />
         <button className="sim-link" onClick={reset} type="button">
           {sim.restart}
         </button>
@@ -611,7 +619,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       <div className="gb-table" ref={tableRef}>
         <div className="gb-side gb-side-left">
           <Pile
-            count={game.monsterDeck.length}
+            count={boardState.monsterDeck.length}
             disabled={locked || !main}
             hint={sim.pickMonster}
             actionLabel={sim.fight}
@@ -619,17 +627,17 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             label={sim.pileMonster}
             onClick={() => send({ t: 'fightMonster' })}
           />
-          <Discard count={game.monsterDiscard.length} label={sim.tableMonster} locale={locale} onOpen={() => setDiscardOpen('monster')} top={monsterTop} />
+          <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} locale={locale} onOpen={() => setDiscardOpen('monster')} top={monsterTop} />
         </div>
 
         <div className="gb-center">
         <DropTarget as="section" className="gb-arena" target={playZone} onHover={setOver} onCommit={commitDrop}>
           {ended && !combat ? (
-            <div className={`sim-end ${game.phase}`}>
-              <h3>{game.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
-              <p>{game.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
+            <div className={`sim-end ${boardState.phase}`}>
+              <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
+              <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
               <p>
-                {fill(sim.stats, { m: game.stats.monsters, d: game.stats.defeats, f: game.stats.flees, t: game.turn })}
+                {fill(sim.stats, { m: boardState.stats.monsters, d: boardState.stats.defeats, f: boardState.stats.flees, t: boardState.turn })}
               </p>
               <button className="button button-primary" onClick={reset} type="button">
                 {sim.restart}
@@ -645,7 +653,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 {combat.monsters.filter((id) => !pendingMonsterIds.has(id)).map((id) => (
                   <div className="gb-monster-encounter" key={id}>
                     <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="lg" />
-                    {card(id).text && <div className="gb-monster-effect" key={`${id}-${game.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}
+                    {card(id).text && <div className="gb-monster-effect" key={`${id}-${boardState.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}
                   </div>
                 ))}
                 {combat.kind === 'boss' ? (
@@ -686,7 +694,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </DropTarget>
         </div>
         <section className="gb-combat-panel" aria-label={sim.mobileCombat}>
-          {combat ? <>
+          {bossPresentations[0]?.lines[0].code === 'resolved' && !bossReveal && !reveal && !playedAction ? <CombatResolution key={bossPresentations[0].seq} stage={bossPresentations[0]} sim={sim} formatLog={formatLog} onBeat={setCombatBeat} onContinue={() => { setResolutionPreview(null); nextBossPresentation() }} /> : combat ? <>
               {power ? (
                 <div className="gb-scoreboard">
                   <Score label={sim.you} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} />
@@ -702,7 +710,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               <DropTarget className="gb-playzone" target={playZone} onHover={setOver} onCommit={commitDrop}>
                 {busy ? <span className="gb-playzone-hint">{busy === 'rolling' ? sim.rolling : sim.resolving}</span> : null}
                 <div className="gb-controls">
-                  {combat.playerDie === 1 && !combat.oathRerollUsed && oathCompleted(game, OATH.misfortune) ? <button className="button" disabled={locked} type="button" onClick={() => delayed('rolling', ROLL_DELAY, { t: 'oathReroll' })}>{sim.oathReroll}</button> : null}
+                  {combat.playerDie === 1 && !combat.oathRerollUsed && oathCompleted(boardState, OATH.misfortune) ? <button className="button" disabled={locked} type="button" onClick={() => delayed('rolling', ROLL_DELAY, { t: 'oathReroll' })}>{sim.oathReroll}</button> : null}
                   <button
                     className="button button-primary"
                     disabled={locked}
@@ -728,7 +736,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             <div className="gb-playzone"><div className="gb-controls"><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span></button></div></div>
           </>}
         </section>
-        <section className="gb-board" style={{ '--board-card-count': 9 + (game.retainedMonsters?.length ?? 0) + (game.oaths?.length ?? 0) + (game.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (game.retainedMonsters?.length ?? 0) + (game.oaths?.length ?? 0) } as CSSProperties}>
+        <section className="gb-board" style={{ '--board-card-count': 9 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) + (boardState.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) } as CSSProperties}>
           <h3>{sim.equipment}</h3>
           <div className="gb-board-body">
             <section className="gb-board-group gb-native-group" aria-labelledby="board-hero-title">
@@ -736,7 +744,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             <h4 id="board-hero-title">{sim.yourHero}</h4>
             <div className="gb-heroes">
               {(['Race', 'Classe'] as const).map((kind) => {
-                const entry = hero(kind, kind === 'Race' ? game.race : game.klass) as { id: string } | undefined
+                const entry = hero(kind, kind === 'Race' ? boardState.race : boardState.klass) as { id: string } | undefined
                 if (!entry) return null
                 return (
                   <div className="gb-slot" key={kind}>
@@ -745,44 +753,44 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   </div>
                 )
               })}
-              {(game.oaths ?? []).map((id) => (
+              {(boardState.oaths ?? []).map((id) => (
                 <div className="gb-slot" key={id}>
-                  <span className="gb-slot-label">{localizeCard(card(id), locale).type}{oathCompleted(game, id) ? ' ✓' : ''}</span>
-                  <GameCard className={oathCompleted(game, id) ? 'gb-oath-completed' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
+                  <span className="gb-slot-label">{localizeCard(card(id), locale).type}{oathCompleted(boardState, id) ? ' ✓' : ''}</span>
+                  <GameCard className={oathCompleted(boardState, id) ? 'gb-oath-completed' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
                 </div>
               ))}
-              {(game.retainedMonsters ?? []).map((id) => <div className="gb-slot" key={id}><span className="gb-slot-label">{sim.tradesRemaining} : 2</span><GameCard id={id} locale={locale} size="sm" onInspect={(el) => inspect(id, el)} /></div>)}
+              {(boardState.retainedMonsters ?? []).map((id) => <div className="gb-slot" key={id}><span className="gb-slot-label">{sim.tradesRemaining} : 2</span><GameCard id={id} locale={locale} size="sm" onInspect={(el) => inspect(id, el)} /></div>)}
             </div>
             </section>
             <DropTarget as="section" className="gb-board-group gb-equipment-group" labelledBy="board-equipment-title" target={equipZone} onHover={setOver} onCommit={commitDrop}>
             <div className="gb-player-combat-status">
               <HeroPower power={power?.player ?? computePlayerPower(boardState)} sim={sim} />
-              <PlayerDie roll={combat?.playerRoll} count={diceCount} modifier={combat?.playerDieModifier ?? dieBonus} sides={game.dieSides} value={combat?.playerDie ?? null} rolling={busy === 'rolling'} disabled={locked || !combat || combat.playerDie !== null} reasons={dieReasons} possible={possibleRolls} modifiers={dieModifiers} sim={sim} onRoll={() => delayed('rolling', ROLL_DELAY, { t: 'roll' })} />
-              <ClassActive klass={status.klass} name={heroName('Classe', status.klass)} effect={activeEffect} passive={fill(sim.classPassive, { klass: heroName('Classe', game.klass) })} reasons={activeReasons} disabled={locked || !status.available} sim={sim} onActivate={() => send({ t: 'useActive' })} />
+              <PlayerDie roll={combat?.playerRoll} count={diceCount} modifier={combat?.playerDieModifier ?? dieBonus} sides={boardState.dieSides} value={combat?.playerDie ?? null} rolling={busy === 'rolling'} disabled={locked || !combat || combat.playerDie !== null} reasons={dieReasons} possible={possibleRolls} modifiers={dieModifiers} sim={sim} onRoll={() => delayed('rolling', ROLL_DELAY, { t: 'roll' })} />
+              <ClassActive klass={status.klass} name={heroName('Classe', status.klass)} effect={activeEffect} passive={fill(sim.classPassive, { klass: heroName('Classe', boardState.klass) })} reasons={activeReasons} disabled={locked || !status.available} sim={sim} onActivate={() => send({ t: 'useActive' })} />
             </div>
             <h4 id="board-equipment-title">{sim.equipment}</h4>
             <div className="gb-slots">
               {ARMOR_SLOTS.map((slot) => (
                 <div className={`gb-slot${slotClass(slot, slot)}`} key={slot} onDragEnter={() => setSlotOver(slot)} onDragOver={() => setSlotOver(slot)}>
                   <span className="gb-slot-label">{slot}</span>
-                  {renderEquipped(game.equipment.armors[slot], slot)}
+                  {renderEquipped(boardState.equipment.armors[slot], slot)}
                 </div>
               ))}
-              {game.equipment.extraArmor ? <div className={`gb-slot${slotClass('extra-armor', game.equipment.extraArmor.slot)}`} onDragEnter={() => setSlotOver('extra-armor')} onDragOver={() => setSlotOver('extra-armor')}><span className="gb-slot-label">{game.equipment.extraArmor.slot} · 2</span>{renderEquipped(game.equipment.extraArmor.id, game.equipment.extraArmor.slot)}</div> : null}
+              {boardState.equipment.extraArmor ? <div className={`gb-slot${slotClass('extra-armor', boardState.equipment.extraArmor.slot)}`} onDragEnter={() => setSlotOver('extra-armor')} onDragOver={() => setSlotOver('extra-armor')}><span className="gb-slot-label">{boardState.equipment.extraArmor.slot} · 2</span>{renderEquipped(boardState.equipment.extraArmor.id, boardState.equipment.extraArmor.slot)}</div> : null}
               {[0, 1].map((index) => {
-                const twoHanded = game.equipment.hands.length === 1 && card(game.equipment.hands[0]).subtype === 'Deux mains'
+                const twoHanded = boardState.equipment.hands.length === 1 && card(boardState.equipment.hands[0]).subtype === 'Deux mains'
                 return (
                   <div className={`gb-slot${slotClass(`hand-${index}`, 'hand')}`} key={`hand-${index}`} onDragEnter={() => setSlotOver(`hand-${index}`)} onDragOver={() => setSlotOver(`hand-${index}`)}>
                     <span className="gb-slot-label">
                       {sim.weapons} {index + 1}
                     </span>
-                    {twoHanded && index === 1 ? <div className="gb-two-handed-copy"><GameCard id={game.equipment.hands[0]} allWeaponMastery={oathCompleted(game, OATH.foreignIron)} equipmentPower={gearIgnored(game.equipment.hands[0]) ? 0 : equipmentCardPower(boardState, game.equipment.hands[0])} neutralized={gearIgnored(game.equipment.hands[0])} playerClass={game.klass} locale={locale} onInspect={(el) => inspect(game.equipment.hands[0], el)} size="sm" /></div> : renderEquipped(game.equipment.hands[index], 'hand')}
+                    {twoHanded && index === 1 ? <div className="gb-two-handed-copy"><GameCard id={boardState.equipment.hands[0]} allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)} equipmentPower={gearIgnored(boardState.equipment.hands[0]) ? 0 : equipmentCardPower(boardState, boardState.equipment.hands[0])} neutralized={gearIgnored(boardState.equipment.hands[0])} playerClass={boardState.klass} locale={locale} onInspect={(el) => inspect(boardState.equipment.hands[0], el)} size="sm" /></div> : renderEquipped(boardState.equipment.hands[index], 'hand')}
                   </div>
                 )
               })}
               <div className={`gb-slot${slotClass('artifact', 'artifact')}`} onDragEnter={() => setSlotOver('artifact')} onDragOver={() => setSlotOver('artifact')}>
                 <span className="gb-slot-label">{sim.artifact}</span>
-                {renderEquipped(game.equipment.artifact, 'artifact')}
+                {renderEquipped(boardState.equipment.artifact, 'artifact')}
               </div>
             </div>
             </DropTarget>
@@ -792,30 +800,30 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
         <div className="gb-side gb-side-right">
           <Pile
-            count={game.lootDeck.length}
+            count={boardState.lootDeck.length}
             disabled={locked || !main}
             hint={sim.pickLoot}
-            actionLabel={game.race === 'Nain' ? sim.drawLootNain : sim.drawLoot}
+            actionLabel={boardState.race === 'Nain' ? sim.drawLootNain : sim.drawLoot}
             kind="loot"
             label={sim.pileLoot}
             onClick={() => send({ t: 'drawLoot' })}
           />
-          <Discard count={game.lootDiscard.length} label={sim.tableLoot} locale={locale} onOpen={() => setDiscardOpen('loot')} top={lootTop} />
+          <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} locale={locale} onOpen={() => setDiscardOpen('loot')} top={lootTop} />
         </div>
       </div>
 
       <DropTarget className="gb-dock" target={handZone} onHover={setOver} onCommit={commitDrop}>
         <span className="gb-dock-label">
-          {sim.handDock} · {game.hand.length}/{limit}
+          {sim.handDock} · {boardState.hand.length}/{limit}
           {drag?.from === 'equip' ? ` — ${sim.dropHand}` : ''}
         </span>
         <div className="gb-hand">
-          {game.hand.map((id, index) => {
+          {boardState.hand.map((id, index) => {
             const entry = card(id)
             const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
             const equipable = !locked && canEquip(game, id)
             const playable = !locked && entry.type === 'Action' && canPlayAction(game, id)
-            const reason = isGear ? equipmentReason(game, id) : undefined
+            const reason = isGear ? equipmentReason(boardState, id) : undefined
             const actions = isGear ? (
               <><button className="button" disabled={!equipable} onClick={() => send({ t: 'equip', id })} type="button">
                 {sim.equipBtn}
@@ -829,15 +837,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               <GameCard
                 className={drag?.id === id ? 'is-dragging' : ''}
                 unavailableReason={reason}
-                playerClass={game.klass}
-                allWeaponMastery={oathCompleted(game, OATH.foreignIron)}
+                playerClass={boardState.klass}
+                allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)}
                 id={id}
                 key={`${id}-${index}`}
                 locale={locale}
                 onInspect={(el) => inspect(id, el, actions)}
                 size="hand"
                 mobileActions={actions}
-                style={{ '--i': index, '--n': game.hand.length } as CSSProperties}
+                style={{ '--i': index, '--n': boardState.hand.length } as CSSProperties}
                 {...(handDraggable ? dragFrom('hand', id) : {})}
               />
             )
@@ -882,7 +890,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </div>
       ) : null}
 
-      {bossPresentations[0] && !bossReveal && !reveal && !playedAction ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : null}
+      {bossPresentations[0] && bossPresentations[0].lines[0].code !== 'resolved' && !bossReveal && !reveal && !playedAction ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : null}
       {inventoryOpen ? <HeroInventory game={boardState} locale={locale} sim={sim} inspect={inspect} onClose={() => setInventoryOpen(false)} /> : null}
       {recapOpen && final && !bossPresentations.length && !playedAction && !reveal && !bossReveal && !oathCelebrations.length ? <CombatRecap final={final} locale={locale} sim={sim} inspect={inspect} onClose={() => setRecapOpen(false)} /> : null}
 

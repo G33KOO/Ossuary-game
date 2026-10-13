@@ -23,6 +23,28 @@
 .gb-final-scores > section > strong { display: block; font: 700 38px var(--display); color: var(--gold-light); }
 .gb-final-scores p { font-size: 12px; line-height: 1.4; }
 .gb-final-banner { font-size: 12px; }
+.gb-combat-resolution { grid-column: 1 / -1; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto; align-items: center; gap: 16px; min-height: 64px; }
+.gb-resolution-emblem { color: var(--gold-light); width: 40px; }
+.gb-resolution-emblem svg { display: block; width: 100%; }
+.gb-resolution-copy { min-width: 0; }
+.gb-resolution-copy > strong { display: block; font-family: var(--display); color: var(--gold-light); font-size: 18px; animation: gb-battle-caption 450ms both; }
+.gb-resolution-copy p { margin: 4px 0 0; font-size: 12px; line-height: 1.4; }
+.gb-resolution-values { display: flex; gap: 20px; text-align: center; }
+.gb-resolution-values span { display: grid; font-size: 10px; }
+.gb-resolution-values b { font-family: var(--display); font-size: 26px; color: var(--gold-light); }
+.gb-combat-resolution.is-defeat.beat-result .gb-resolution-copy > strong { color: #efb1a7; }
+:root[data-theme='light'] .gb-combat-resolution.is-defeat.beat-result .gb-resolution-copy > strong { color: var(--red); }
+.gb-resolution-hero .gb-native-group .gb-card.type-classe, .gb-resolution-hero .gb-equipment-group .gb-card.type-arme { animation: gb-hero-strike 1100ms both; }
+.gb-resolution-hero .gb-foe { animation: gb-attack-impact 1100ms 250ms both; }
+.gb-resolution-opponent .gb-foe { animation: gb-opponent-strike 1100ms both; }
+.gb-resolution-opponent .gb-native-group { animation: gb-attack-impact 1100ms 250ms both; }
+.gb-combat-resolution:not(.beat-result) .gb-resolution-emblem { animation: gb-swords-strike 1100ms both; }
+@keyframes gb-hero-strike { 0%, 100% { transform: none; } 25% { transform: translateY(6px) rotate(-3deg); } 45% { transform: translateY(-22px) rotate(4deg); filter: brightness(1.4) drop-shadow(0 -10px 14px #d9ad54); } }
+@keyframes gb-opponent-strike { 0%, 100% { transform: none; } 25% { transform: translateY(-8px); } 45% { transform: translateY(22px); filter: brightness(1.3) drop-shadow(0 10px 14px #be5549); } }
+@keyframes gb-attack-impact { 0%, 30%, 100% { transform: none; filter: none; } 40%, 60% { transform: translateX(-5px); filter: brightness(1.5) drop-shadow(0 0 14px #c95c43); } 50%, 70% { transform: translateX(5px); } }
+@keyframes gb-swords-strike { 0%, 100% { transform: none; } 35% { transform: scale(1.18) rotate(-12deg); } 50% { transform: scale(1.3) rotate(12deg); filter: drop-shadow(0 0 8px #e9bc63); } }
+@keyframes gb-battle-caption { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .gb-resolution-hero .gb-native-group .gb-card, .gb-resolution-hero .gb-equipment-group .gb-card.type-arme, .gb-resolution-hero .gb-foe, .gb-resolution-opponent .gb-foe, .gb-resolution-opponent .gb-native-group, .gb-combat-resolution .gb-resolution-emblem, .gb-resolution-copy > strong { animation: none; } }
 .gb-inventory-modal, .gb-recap-modal { width: min(900px, 94vw); }
 .gb-inventory-modal section { margin-bottom: 18px; }
 .gb-inventory-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
@@ -38,6 +60,14 @@
 }
 @media (prefers-reduced-motion: reduce) { .gb-pile:not(:disabled) .gb-back:nth-child(3) { animation: none; box-shadow: 0 0 0 2px #efbe4e, 0 0 14px #f8d56a; } }
 @media (max-width: 760px), (max-height: 600px) {
+  .gb-combat-resolution { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 8px; padding: 10px; }
+  .gb-resolution-emblem { width: 26px; }
+  .gb-resolution-copy > strong { font-size: 14px; }
+  .gb-resolution-copy p { font-size: 11px; }
+  .gb-resolution-values { gap: 8px; }
+  .gb-resolution-values span { font-size: 9px; }
+  .gb-resolution-values b { font-size: 20px; }
+  .gb-combat-resolution > .button { grid-column: 1 / -1; width: 100%; min-height: 40px; }
   .gb-effect-presentation .gb-boss-action-layout { grid-template-columns: 95px minmax(0, 1fr); gap: 12px; align-items: start; }
   .gb-effect-presentation .gb-card-wrap.size-lg { --w: 95px; }
   .gb-effect-presentation .gb-boss-action-copy { font-size: 12px; line-height: 1.4; }
