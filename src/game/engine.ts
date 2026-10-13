@@ -2,7 +2,7 @@ import { ARMOR_SLOTS, CARDS, COMBAT_ONLY_ACTIONS, SOLO_EXCLUDED_ACTIONS, card, p
 import type { ClassName, RaceName } from './data'
 import { activeClass, artifactBoosts, equippedIds, handLimit, hasFlag, isMasteredWeapon, strongestEquipmentPower, computePower, equipmentCardPower } from './power'
 import { randomInt, shuffle } from './rng'
-import type { Combat, GameAction, GameState, LogEntry, Prompt, PromptOption } from './types'
+import type { Combat, DiceRoll, GameAction, GameState, LogEntry, Prompt, PromptOption } from './types'
 import { OATH, SOLO_OATH_IDS, oathCompleted, permanentDieBonus } from './oaths'
 
 const MAX_LEVEL = 10
@@ -145,20 +145,29 @@ function drawMonster(s: GameState) {
   return id
 }
 
-function rollRaw(s: GameState) {
-  return randomInt(s, s.dieSides) + (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s)
+
+function diceRoll(s: GameState, sides: number, bonus = 0, mode: DiceRoll['mode'] = 'single'): DiceRoll {
+  const raw = Array.from({ length: mode === 'single' ? 1 : 2 }, () => randomInt(s, sides))
+  const natural = mode === 'sum' ? raw.reduce((sum, value) => sum + value, 0) : mode === 'lowest' ? Math.min(...raw) : raw[0]
+  const modifier = bonus * (mode === 'sum' ? raw.length : 1)
+  return { sides, raw, bonus: modifier, total: natural + modifier, mode }
+}
+
+function rollParams(roll: DiceRoll): Record<string, string | number> {
+  return { sides: roll.sides, raw: roll.raw.join(','), bonus: roll.bonus, value: roll.total, mode: roll.mode }
+}
+
+function playerEffectRoll(s: GameState, c: Combat | null) {
+  return diceRoll(s, s.dieSides, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s), c && hasFlag(c, 'wyrm') ? 'lowest' : 'single')
 }
 
 function combatRoll(s: GameState, c: Combat) {
   c.hasRolled = true
-  if (hasFlag(c, 'doubleDie')) return rollRaw(s) + rollRaw(s)
-  if (hasFlag(c, 'wyrm')) return Math.min(rollRaw(s), rollRaw(s))
-  return rollRaw(s)
+  c.playerRoll = diceRoll(s, s.dieSides, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s), hasFlag(c, 'doubleDie') ? 'sum' : hasFlag(c, 'wyrm') ? 'lowest' : 'single')
+  c.playerDieModifier = c.playerRoll.bonus
+  return c.playerRoll.total
 }
 
-function effectRoll(s: GameState, c: Combat | null) {
-  return c && hasFlag(c, 'wyrm') ? Math.min(rollRaw(s), rollRaw(s)) : rollRaw(s)
-}
 
 function addFlag(c: Combat, flag: string) {
   if (!c.flags.includes(flag)) c.flags.push(flag)
@@ -359,6 +368,7 @@ function applyMonsterStart(s: GameState, c: Combat, id: string) {
       {
         const options = equippedOptions(s).filter((option) => card(option.id).type !== 'Artefact de classe' && !c.ignoredEquipment?.includes(option.id))
         if (options.length) queue(s, { purpose: 'ignore-equipment', options, optional: false, ctx: { remaining: Math.min(2, options.length) } })
+        log(s, 'monsterEffect', { card: id, count: Math.min(2, options.length) })
       }
       break
     case 'Raseciel':
@@ -368,21 +378,27 @@ function applyMonsterStart(s: GameState, c: Combat, id: string) {
       addFlag(c, 'cuirasse')
       break
     case 'Lacéreur': {
-      const value = rollRaw(s)
+      const roll = playerEffectRoll(s, c)
+      const value = roll.total
+      c.monsterRolls = { ...c.monsterRolls, [id]: roll }
       c.monsterBonus += value
-      log(s, 'monsterRoll', { card: id, value })
+      log(s, 'monsterRoll', { card: id, ...rollParams(roll), powerChange: value })
       break
     }
     case 'Tranchebec': {
-      const value = randomInt(s, 6)
+      const roll = diceRoll(s, 6)
+      const value = roll.total
+      c.monsterRolls = { ...c.monsterRolls, [id]: roll }
       if (value >= 4) c.monsterBonus += 2
-      log(s, 'monsterRoll', { card: id, value })
+      log(s, 'monsterRoll', { card: id, ...rollParams(roll), powerChange: value >= 4 ? 2 : 0 })
       break
     }
     case 'Rafistolé': {
-      const value = randomInt(s, 6)
+      const roll = diceRoll(s, 6)
+      const value = roll.total
+      c.monsterRolls = { ...c.monsterRolls, [id]: roll }
       c.monsterBonus += value <= 2 ? -2 : value >= 5 ? 2 : 0
-      log(s, 'monsterRoll', { card: id, value })
+      log(s, 'monsterRoll', { card: id, ...rollParams(roll), powerChange: value <= 2 ? -2 : value >= 5 ? 2 : 0 })
       break
     }
     case 'Hurlemort':
@@ -399,6 +415,8 @@ function applyMonsterStart(s: GameState, c: Combat, id: string) {
       addFlag(c, 'levelZero')
       addFlag(c, 'ignoreAll')
       addFlag(c, 'doubleDie')
+      c.playerDie = combatRoll(s, c)
+      log(s, 'souriantRolled', { card: id, ...rollParams(c.playerRoll!) })
       break
     case 'Encloué':
       addFlag(c, 'noChanceForce')
@@ -530,8 +548,7 @@ function startBoss(s: GameState, bossId: string) {
       break
     }
     case 'La Suzeraine':
-      c.bossBonus += 2
-      log(s, 'bossDecree')
+      queue(s, { purpose: 'suzeraine', options: [{ id: 'boss-bonus' }, { id: 'cancel-action' }], optional: false, ctx: {} })
       break
     case 'Le Martyr': {
       const give = spare().slice(0, 2)
@@ -579,11 +596,13 @@ function startBoss(s: GameState, bossId: string) {
       rest = rest.filter((other) => other !== id)
       s.lootDiscard.push(id)
       log(s, 'bossForce', { card: id })
+      c.bossPlayedCards = [...(c.bossPlayedCards ?? []), id]
     } else if (name === 'Éveil') {
       c.bossSides = 8
       rest = rest.filter((other) => other !== id)
       s.lootDiscard.push(id)
       log(s, 'bossAwakens', { card: id })
+      c.bossPlayedCards = [...(c.bossPlayedCards ?? []), id]
     }
   }
   c.bossHand = rest
@@ -606,9 +625,10 @@ function cardValue(id: string) {
 }
 
 function rollBossDie(s: GameState, c: Combat) {
-  const value = randomInt(s, c.bossSides)
+  c.bossRoll = diceRoll(s, c.bossSides)
+  const value = c.bossRoll.total
   c.bossDie = value
-  log(s, 'bossRolled', { value })
+  log(s, 'bossRolled', { card: c.bossId ?? '', ...rollParams(c.bossRoll) })
 }
 
 const BOSS_REACTIONS = ['Destruction', 'Corrosion', 'Dépossession', 'Brise-armure', 'Faiblesse', 'Malchance', 'Chance']
@@ -656,6 +676,7 @@ function bossReact(s: GameState, c: Combat): boolean {
     c.bossHand = c.bossHand.filter((other) => other !== id)
     s.lootDiscard.push(id)
     log(s, 'bossPlays', { card: id })
+    c.bossPlayedCards = [...(c.bossPlayedCards ?? []), id]
     switch (name) {
       case 'Destruction':
       case 'Corrosion':
@@ -673,9 +694,11 @@ function bossReact(s: GameState, c: Combat): boolean {
         break
       case 'Malchance':
         c.playerDie = Math.max(0, (c.playerDie ?? 0) - 2)
+        c.playerDieModifier = -2
         break
       default:
         c.bossDie += 2
+        c.bossDieModifier = 2
     }
     return true
   }
@@ -742,12 +765,19 @@ function winMonster(s: GameState, tie: boolean) {
     loot = 0
   }
   if (names.includes('Sans-Visage')) {
-    while (effectRoll(s, c) >= 5) loot += 1
+    let index = 0
+    while (true) {
+      const roll = playerEffectRoll(s, c)
+      const extra = roll.total >= 5
+      log(s, 'sansVisageRolled', { card: c.monsters.find((id) => cardName(id) === 'Sans-Visage')!, ...rollParams(roll), extra: extra ? 1 : 0, index: ++index })
+      if (!extra) break
+      loot += 1
+    }
   }
   s.level = clampLevel(s.level + levels)
   drawLoot(s, loot)
   s.stats.monsters += 1
-  log(s, 'victory', { levels, loot })
+  log(s, 'victory', { card: c.monsters[0], levels, loot })
   const fetiche = s.equipment.hands.find((id) => cardName(id) === 'Hache Fétiche à deux mains')
   if (fetiche) queue(s, { purpose: 'weapon-loot', options: [{ id: fetiche, cardId: fetiche }], optional: true, ctx: {} })
   postCombat(s, c, tie ? 'tie' : 'win')
@@ -783,8 +813,9 @@ function loseMonster(s: GameState) {
   const names = monsterNames(c)
   s.stats.defeats += 1
   const spared = names.includes('Rapiécé') || names.includes('Orant')
+  const before = s.level
   if (!spared) s.level = clampLevel(s.level - 1)
-  log(s, 'defeat', { spared: spared ? 1 : 0 })
+  log(s, 'defeat', { card: c.monsters[0], spared: spared ? 1 : 0, before, after: s.level })
   if (names.includes('Nécropode')) drawLoot(s, 1)
   if (names.includes('Réanimateur')) s.nextMonsterPenalty = 3
   if (names.includes('Souverain')) queueDiscardOne(s)
@@ -799,14 +830,17 @@ function loseMonster(s: GameState) {
 function attemptFlee(s: GameState, automatic: boolean) {
   const c = s.combat
   if (!c || c.kind !== 'monster' || hasFlag(c, 'noFlee')) return
-  const value = randomInt(s, 6) + (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s) + (s.equipment.hands.some((id) => cardName(id) === 'Dague Lunefeuille') ? 1 : 0)
-  if (automatic || s.race === 'Vesskar' || value >= 4) {
+  const guaranteed = automatic || s.race === 'Vesskar'
+  const roll = guaranteed ? null : diceRoll(s, 6, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s) + (s.equipment.hands.some((id) => cardName(id) === 'Dague Lunefeuille') ? 1 : 0))
+  const value = roll?.total ?? 0
+  if (roll) log(s, 'fleeRolled', { card: c.monsters[0], ...rollParams(roll) })
+  if (guaranteed || value >= 4) {
     s.stats.flees += 1
-    log(s, 'fled', { value: automatic || s.race === 'Vesskar' ? 0 : value })
+    log(s, 'fled', { card: c.monsters[0], value, automatic: guaranteed ? 1 : 0 })
     postCombat(s, c, 'flee')
     endCombat(s, c)
   } else {
-    log(s, 'fleeFailed', { value })
+    log(s, 'fleeFailed', { card: c.monsters[0], value })
     loseMonster(s)
   }
 }
@@ -823,9 +857,10 @@ function resolveCombat(s: GameState) {
   const diff = power.player.total - power.opponent.total
   const tie = diff === 0
   const wins = diff > 0 || (tie && !hasFlag(c, 'tieLoses'))
-  log(s, 'resolved', { player: power.player.total, opponent: power.opponent.total })
+  log(s, 'resolved', { card: c.bossId ?? c.monsters[0], player: power.player.total, opponent: power.opponent.total })
 
   if (c.kind === 'boss') {
+    s.finalCombat = { outcome: wins ? 'won' : 'lost', combat: structuredClone(c), power, level: s.level, equipment: structuredClone(s.equipment), completedOaths: [...(s.completedOaths ?? [])] }
     if (wins) {
       completeVictoryOaths(s, c, tie)
       s.phase = 'won'
@@ -914,6 +949,10 @@ function playAction(s: GameState, id: string) {
 
   let cancelled = false
   if (c) {
+    if (hasFlag(c, 'suzeraine-cancel') && !hasFlag(c, 'suzeraine-consumed') && name !== 'Éveil') {
+      cancelled = true
+      addFlag(c, 'suzeraine-consumed')
+    }
     if (hasFlag(c, 'cuirasse') && !hasFlag(c, 'cuirasse-blocked') && ['Faiblesse', 'Frénésie', 'Apaiser', 'Exécution', 'Invocation'].includes(name)) {
       cancelled = true
       addFlag(c, 'cuirasse-blocked')
@@ -935,10 +974,10 @@ function playAction(s: GameState, id: string) {
       if (c) c.playerBonus += 2
       break
     case 'Chance':
-      if (c && c.playerDie !== null) c.playerDie += 2
+      if (c && c.playerDie !== null) { c.playerDie += 2; c.playerDieModifier = 2 }
       break
     case 'Malchance':
-      if (c && c.bossDie !== null) c.bossDie = Math.max(0, c.bossDie - 2)
+      if (c && c.bossDie !== null) { c.bossDie = Math.max(0, c.bossDie - 2); c.bossDieModifier = -2 }
       break
     case 'Faiblesse':
       if (c) c.monsterBonus -= 2
@@ -965,14 +1004,16 @@ function playAction(s: GameState, id: string) {
       }
       break
     case 'Cupidité': {
-      const value = effectRoll(s, c)
-      log(s, 'greedRoll', { value })
+      const roll = playerEffectRoll(s, c)
+      const value = roll.total
+      log(s, 'greedRoll', { card: id, ...rollParams(roll) })
       if (c && value >= 4) c.lootMultiplier *= 2
       break
     }
     case 'Exécution': {
-      const value = effectRoll(s, c)
-      log(s, 'executionRoll', { value })
+      const roll = playerEffectRoll(s, c)
+      const value = roll.total
+      log(s, 'executionRoll', { card: id, ...rollParams(roll) })
       if (value >= 6 && c) { c.rounds = 1; winMonster(s, false) }
       break
     }
@@ -1115,10 +1156,11 @@ function finishPay(s: GameState, kind: string) {
       if (!c || c.playerDie === null) break
       c.used.push('Mage')
       const fresh = combatRoll(s, c)
-      log(s, 'mageReroll', { value: fresh })
+      log(s, 'mageReroll', { ...rollParams(c.playerRoll!) })
       if (artifactBoosts(s, 'Mage') && !s.turnFlags.includes('mage-artifact')) {
         s.turnFlags.push('mage-artifact')
         c.playerDie += fresh
+        c.playerDieModifier = (c.playerRoll?.bonus ?? 0) + c.playerDie - fresh
       } else {
         queue(
           s,
@@ -1177,6 +1219,10 @@ function answerPrompt(s: GameState, option: string | null) {
   const choices = Array.isArray(prompt.ctx.choices) ? (prompt.ctx.choices as string[]) : []
 
   switch (prompt.purpose) {
+    case 'suzeraine':
+      if (c && option === 'boss-bonus') { c.bossBonus += 2; log(s, 'bossDecree', { card: c.bossId ?? '' }) }
+      else if (c && option === 'cancel-action') { addFlag(c, 'suzeraine-cancel'); log(s, 'bossDecreeCancel', { card: c.bossId ?? '' }) }
+      break
     case 'boss-destroy':
       if (option && c && c.bossEquip.includes(option)) {
         c.bossEquip = c.bossEquip.filter((id) => id !== option)
@@ -1192,6 +1238,7 @@ function answerPrompt(s: GameState, option: string | null) {
     case 'ignore-equipment':
       if (option && c) {
         c.ignoredEquipment = [...(c.ignoredEquipment ?? []), option]
+        log(s, 'equipmentIgnored', { card: option })
         const remaining = Number(prompt.ctx.remaining) - 1
         const options = prompt.options.filter((entry) => entry.id !== option)
         if (remaining > 0 && options.length) queue(s, { purpose: 'ignore-equipment', options, optional: false, ctx: { remaining } }, true)
@@ -1282,7 +1329,7 @@ function answerPrompt(s: GameState, option: string | null) {
       if (c) {
         if (option === 'reroll') {
           c.playerDie = combatRoll(s, c)
-          log(s, 'rerolled', { value: c.playerDie })
+          log(s, 'rerolled', { ...rollParams(c.playerRoll!) })
         } else if (option) {
           discardFromHand(s, option)
         }
@@ -1551,7 +1598,7 @@ function apply(s: GameState, action: GameAction): GameState {
       const c = s.combat
       if (c && c.playerDie === null) {
         c.playerDie = combatRoll(s, c)
-        log(s, 'rolled', { value: c.playerDie })
+        log(s, 'rolled', { ...rollParams(c.playerRoll!) })
         if (c.kind === 'boss' && c.bossDie === null) rollBossDie(s, c)
         if (hasFlag(c, 'fielpeau') && !c.fielpeauDone) {
           c.fielpeauDone = true
@@ -1565,7 +1612,7 @@ function apply(s: GameState, action: GameAction): GameState {
       if (c && c.playerDie === 1 && !c.oathRerollUsed && oathCompleted(s, OATH.misfortune)) {
         c.oathRerollUsed = true
         c.playerDie = combatRoll(s, c)
-        log(s, 'oathRerolled', { value: c.playerDie })
+        log(s, 'oathRerolled', { ...rollParams(c.playerRoll!) })
       }
       break
     }
@@ -1574,7 +1621,7 @@ function apply(s: GameState, action: GameAction): GameState {
       if (c && canWeaponReroll(s, action.id)) {
         destroyEquipped(s, action.id, true)
         c.playerDie = combatRoll(s, c)
-        log(s, 'weaponRerolled', { card: action.id, value: c.playerDie })
+        log(s, 'weaponRerolled', { card: action.id, ...rollParams(c.playerRoll!) })
       }
       break
     }

@@ -10,8 +10,11 @@ import { getCardIllustration } from '../utils/cardIllustration'
 import { CardClassBadge } from './CardClassBadge'
 import { slugify } from '../utils/slugify'
 import { ModalHeader } from './ModalHeader'
+import { MonsterRewards } from './MonsterRewards'
 
 type GameCardProps = {
+  unavailableReason?: string
+  neutralized?: boolean
   mobileActions?: ReactNode
   decorative?: boolean
   allWeaponMastery?: boolean
@@ -30,6 +33,8 @@ type GameCardProps = {
 }
 
 export function GameCard({
+  unavailableReason,
+  neutralized,
   mobileActions,
   decorative = false,
   allWeaponMastery = false,
@@ -53,9 +58,10 @@ export function GameCard({
   const masteryLabel = locale === 'fr' ? 'Maîtrisée · Puissance doublée' : 'Mastered · Double power'
   const boosted = equipmentPower !== undefined && equipmentPower > (Number.parseInt(entry.value, 10) || 0)
   const powerLabel = boosted ? (locale === 'fr' ? `Puissance augmentée : ${entry.value} → ${equipmentPower}` : `Boosted power: ${entry.value} → ${equipmentPower}`) : ''
+  const ignoredLabel = neutralized ? locale === 'fr' ? 'Puissance neutralisée pour ce combat' : 'Power ignored for this combat' : ''
   return (
     <div
-      className={`gb-card-wrap size-${size} ${className}${mastered ? ' is-mastered' : ''}`}
+      className={`gb-card-wrap size-${size} ${className}${mastered ? ' is-mastered' : ''}${unavailableReason ? ' is-unavailable' : ''}${neutralized ? ' is-neutralized' : ''}`}
       data-card-id={id}
       aria-hidden={decorative || undefined}
       draggable={draggable}
@@ -70,8 +76,8 @@ export function GameCard({
       <button
         className={`gb-card type-${slugify(entry.type)}`}
         onClick={(event) => onInspect(event.currentTarget)}
-        title={`${localized.name}${mastered ? ` · ${masteryLabel}` : ''}`}
-        aria-label={`${localized.name}${mastered ? ` · ${masteryLabel}` : ''}${boosted ? ` · ${powerLabel}` : ''}`}
+        title={`${localized.name}${unavailableReason ? ` · ${unavailableReason}` : ''}${ignoredLabel ? ` · ${ignoredLabel}` : ''}${mastered ? ` · ${masteryLabel}` : ''}`}
+        aria-label={`${localized.name}${unavailableReason ? ` · ${unavailableReason}` : ''}${mastered ? ` · ${masteryLabel}` : ''}${boosted ? ` · ${powerLabel}` : ''}`}
         type="button"
         tabIndex={decorative ? -1 : undefined}
       >
@@ -81,7 +87,9 @@ export function GameCard({
         <CardClassBadge card={entry} className="gb-class-icon" />
         {entry.value ? <span className={`gb-orb${boosted ? ' is-boosted' : ''}`} title={powerLabel || undefined} key={`power-${equipmentPower ?? entry.value}`}>{equipmentPower ?? entry.value}</span> : null}
         <span className="gb-name">{localized.name}</span>
+        <MonsterRewards card={entry} locale={locale} />
       </button>
+      {unavailableReason ? <span className="gb-unavailable-hint" role="tooltip">{unavailableReason}</span> : null}
       {actions ? <div className="gb-card-actions">{actions}</div> : null}
       {mobileActions ? <div className="gb-mobile-card-actions">{mobileActions}</div> : null}
     </div>
@@ -181,7 +189,7 @@ export function DiscardGallery({ ids, title, locale, closeLabel, onClose, onInsp
   )
 }
 
-export function Die({ sides, value, rolling, label }: { sides: number; value: number | null; rolling: boolean; label: string }) {
+export function Die({ sides, value, rolling, label, tone }: { sides: number; value: number | null; rolling: boolean; label: string; tone?: 'positive' | 'negative' }) {
   const [shown, setShown] = useState(1)
   useEffect(() => {
     if (!rolling) return undefined
@@ -189,7 +197,7 @@ export function Die({ sides, value, rolling, label }: { sides: number; value: nu
     return () => window.clearInterval(interval)
   }, [rolling, sides])
   return (
-    <div className={`gb-die${rolling ? ' is-rolling' : ''}${value === null && !rolling ? ' is-idle' : ''}`}>
+    <div className={`gb-die${rolling ? ' is-rolling' : ''}${value === null && !rolling ? ' is-idle' : ''}${tone ? ` is-${tone}` : ''}`}>
       <span className="gb-die-face">{rolling ? shown : (value ?? '?')}</span>
       <span className="gb-die-label">
         {label ? `${label} · ` : ''}D{sides}

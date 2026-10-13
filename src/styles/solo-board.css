@@ -53,7 +53,7 @@
 .gb-pile.has-action:disabled .gb-pile-action { background: transparent; }
 .gb-pile:not(:disabled) .gb-pile-stack {
   filter: brightness(1.12) drop-shadow(0 0 7px rgb(235 210 146 / 80%)) drop-shadow(0 0 20px rgb(201 164 92 / 55%));
-  animation: gb-pile-ready 2600ms ease-in-out infinite;
+  animation: gb-pile-ready 1800ms ease-in-out infinite;
 }
 .gb-pile:not(:disabled):hover .gb-pile-stack,
 .gb-pile:not(:disabled):focus-visible .gb-pile-stack {
@@ -61,8 +61,8 @@
   filter: brightness(1.25) drop-shadow(0 0 10px rgb(255 226 155 / 95%)) drop-shadow(0 0 28px rgb(201 164 92 / 75%));
 }
 @keyframes gb-pile-ready {
-  0%, 100% { filter: brightness(1.1) drop-shadow(0 0 6px rgb(235 210 146 / 70%)) drop-shadow(0 0 16px rgb(201 164 92 / 45%)); }
-  50% { filter: brightness(1.22) drop-shadow(0 0 10px rgb(255 226 155 / 95%)) drop-shadow(0 0 26px rgb(201 164 92 / 70%)); }
+  0%, 100% { filter: brightness(1.15) drop-shadow(0 0 8px rgb(235 210 146 / 85%)) drop-shadow(0 0 22px rgb(201 164 92 / 65%)); }
+  50% { filter: brightness(1.8) drop-shadow(0 0 18px #ffe39b) drop-shadow(0 0 45px rgb(235 190 90 / 95%)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .gb-pile:not(:disabled) .gb-pile-stack { animation: none; }

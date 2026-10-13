@@ -7,5 +7,10 @@
 - `localeContext`, `LocaleProvider`, `useLocale` : contexte, persistance et consommation de la traduction séparés.
 - `power` : calcul partagé des valeurs affichées et des combats. Les effets d’équipement n’ont pas de calcul parallèle dans les composants.
 - `engine` : règles et transitions pures ; les animations lisent les événements sans modifier les résultats.
+- `DiceResults` : dés naturels, somme ou minimum, modificateurs, résultat final et couleurs de bonus/malus, partagés entre le plateau, les effets et le récapitulatif.
+- `EffectPresentation` : une étape automatique à la fois ; le jet se termine avant que « Suivant » soit disponible. Les récompenses et les monstres enchaînés attendent la fin des étapes précédentes.
+- `HeroInventory` : consultation de la main, des équipements et des cartes natives depuis la taverne, sans changer les offres.
+- `CombatRecap` : calcul et cartes jouées du duel final. Le moteur conserve un instantané du verdict ; le plateau et la sauvegarde utilisent cet instantané après la fin de partie.
+- `MonsterRewards` : pictogrammes officiels de niveaux et de Butins, avec les valeurs imprimées et les explications au survol.
 
 Les modales natives conservent la navigation au clavier et empêchent les actions sur le plateau pendant un choix. Les informations secondaires du mobile sont disponibles à la demande, tandis que les commandes de combat restent visibles.

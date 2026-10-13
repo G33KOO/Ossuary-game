@@ -1,0 +1,46 @@
+import { useEffect, useState } from 'react'
+import type { DiceRoll, GameState } from '../game/types'
+import type { Locale } from '../i18n/LocaleProvider'
+import { card } from '../game/data'
+import { localizeCard } from '../i18n/cardTranslations'
+import { actionVisual } from '../game/actionVisual'
+import { Modal } from './Modal'
+import { GameCard } from './game-ui'
+import { DiceResults } from './DiceResults'
+
+export type EffectStage = { id?: string; lines: GameState['log']; seq: number }
+
+export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onNext }: {
+  stage: EffectStage; locale: Locale; sim: Record<string, string>
+  formatLog: (entry: GameState['log'][number]) => string
+  inspect: (id: string, element: HTMLElement) => void; onNext: () => void
+}) {
+  const params = stage.lines[0].params ?? {}
+  const roll: DiceRoll | undefined = typeof params.raw === 'string' ? {
+    raw: params.raw.split(',').map(Number), sides: Number(params.sides), bonus: Number(params.bonus ?? 0),
+    total: Number(params.value), mode: params.mode as DiceRoll['mode'],
+  } : undefined
+  const hasRoll = Boolean(roll)
+  const [ready, setReady] = useState(!roll)
+  useEffect(() => {
+    if (!hasRoll) return
+    const timer = window.setTimeout(() => setReady(true), window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900)
+    return () => window.clearTimeout(timer)
+  }, [hasRoll])
+  const effect = stage.lines[0].code === 'bossItemDestroyed' ? 'destroy' : stage.id ? actionVisual(card(stage.id).name).effect : 'magic'
+  return <Modal id="game-effect-title" title={stage.lines[0].code.startsWith('boss') ? sim.bossActionTitle : sim.cardEffectTitle} className={`gb-boss-action gb-effect-presentation effect-${effect}`}>
+    <div className="gb-boss-action-layout">
+      {stage.id ? <GameCard id={stage.id} locale={locale} onInspect={(el) => inspect(stage.id!, el)} size="lg" className="gb-boss-played-card" /> : null}
+      <div className="gb-boss-action-copy" aria-live="polite">
+        {roll ? <DiceResults roll={roll} rolling={!ready} sim={sim} /> : null}
+        {(!roll || ready) ? stage.lines.map((entry, index) => <p className="gb-boss-action-result" key={index}>{formatLog(entry)}</p>) : <p>{sim.rolling}</p>}
+        {ready && params.powerChange !== undefined ? <strong className="gb-effect-change">{Number(params.powerChange) > 0 ? '+' : ''}{params.powerChange} {sim.powerPart}</strong> : null}
+        {params.before !== undefined ? <strong className="gb-effect-change is-negative">{sim.level} : {params.before} → {params.after}</strong> : null}
+        {params.player !== undefined ? <div className="gb-final-scores"><strong>{sim.you} : {params.player}</strong><strong>{sim.opponent} : {params.opponent}</strong></div> : null}
+        {stage.id ? <p className="gb-effect-rule">{localizeCard(card(stage.id), locale).text}</p> : null}
+        {stage.lines.filter((entry) => entry.code === 'playerItemDestroyed' && typeof entry.params?.card === 'string').map((entry) => <GameCard key={String(entry.params!.card)} id={String(entry.params!.card)} locale={locale} onInspect={(el) => inspect(String(entry.params!.card), el)} size="sm" />)}
+        <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button>
+      </div>
+    </div>
+  </Modal>
+}

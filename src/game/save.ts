@@ -12,7 +12,7 @@ export function loadGame(): GameState | null {
     const data = JSON.parse(raw) as Saved
     const game = data?.game
     if (data?.v !== 1 || !game || !Array.isArray(game.hand) || !Array.isArray(game.lootDeck) || !game.equipment) return null
-    if (game.phase === 'won' || game.phase === 'lost') return null
+    if ((game.phase === 'won' || game.phase === 'lost') && !game.finalCombat) return null
     return { ...game, draws: [] }
   } catch {
     return null
@@ -21,7 +21,7 @@ export function loadGame(): GameState | null {
 
 export function saveGame(game: GameState | null) {
   try {
-    if (!game || game.phase === 'won' || game.phase === 'lost') {
+    if (!game) {
       window.localStorage.removeItem(KEY)
       return
     }

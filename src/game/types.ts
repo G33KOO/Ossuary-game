@@ -1,4 +1,8 @@
 import type { ClassName, RaceName } from './data'
+import type { CombatPower } from './power'
+
+export type DiceRoll = { sides: number; raw: number[]; bonus: number; total: number; mode: 'single' | 'sum' | 'lowest' }
+export type FinalCombat = { outcome: 'won' | 'lost'; combat: Combat; power: CombatPower; level: number; equipment: Equipment; completedOaths: string[] }
 
 export type Phase = 'main' | 'combat' | 'won' | 'lost'
 
@@ -38,6 +42,7 @@ export type PromptPurpose =
   | 'hunter-boss-pick'
   | 'ignore-equipment'
   | 'boss-destroy'
+  | 'suzeraine'
 
 export type Prompt = {
   purpose: PromptPurpose
@@ -54,6 +59,12 @@ export type Equipment = {
 }
 
 export type Combat = {
+  playerRoll?: DiceRoll
+  bossRoll?: DiceRoll
+  monsterRolls?: Record<string, DiceRoll>
+  playerDieModifier?: number
+  bossDieModifier?: number
+  bossPlayedCards?: string[]
   resolvedActions?: number
   hasRolled?: boolean
   oathRerollUsed?: boolean
@@ -85,6 +96,7 @@ export type Combat = {
 }
 
 export type GameState = {
+  finalCombat?: FinalCombat
   retainedMonsters?: string[]
   forcedMonsterId?: string | null
   seed: number

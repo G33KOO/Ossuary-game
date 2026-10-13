@@ -1,0 +1,62 @@
+.gb-monster-rewards { position: absolute; bottom: .25em; left: .35em; right: .35em; display: flex; justify-content: center; gap: .55em; font-size: clamp(9px, .9em, 12px); color: var(--bone); }
+.gb-monster-rewards > span { display: flex; align-items: center; gap: .15em; padding: .15em .3em; border-radius: .4em; background: rgb(12 8 4 / 88%); }
+.gb-monster-rewards img { width: 1.5em; height: 1.5em; object-fit: contain; }
+.gb-monster-rewards strong { font-size: 1.2em; }
+.gb-card.type-monstre .gb-name { bottom: 24px; }
+.gb-card-wrap.is-unavailable .gb-card::after, .gb-card-wrap.is-neutralized .gb-card::after { background: linear-gradient(180deg, rgb(168 25 30 / 12%), rgb(120 12 20 / 46%)); box-shadow: inset 0 0 0 2px #db655e; pointer-events: none; }
+.gb-card-wrap.is-neutralized .gb-orb { color: #ffb4aa; border-color: #dc7165; }
+.gb-unavailable-hint { position: absolute; z-index: 12; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: min(270px, 80vw); padding: 9px 12px; border: 1px solid #c96960; border-radius: 6px; color: #ffe1dd; background: #251513; font: 600 12px/1.4 var(--sans); opacity: 0; visibility: hidden; pointer-events: none; }
+.gb-card-wrap:hover .gb-unavailable-hint, .gb-card-wrap:focus-within .gb-unavailable-hint { opacity: 1; visibility: visible; }
+.gb-card-use-reason { color: #efb1a7; font-size: 12px; line-height: 1.4; }
+:root[data-theme='light'] .gb-card-use-reason, :root[data-theme='light'] .gb-effect-change.is-negative { color: var(--red); }
+.gb-mobile-card-actions .gb-card-use-reason { display: none; }
+.gb-dice-faces { display: flex; gap: 8px; align-items: center; justify-content: center; }
+.gb-dice-results.is-compact .gb-dice-faces { gap: 4px; }
+.gb-dice-combined { color: var(--gold-light); font-size: 22px; }
+.gb-dice-calculation { font-size: 12px; line-height: 1.5; text-align: center; color: var(--bone); }
+.gb-die.is-positive .gb-die-face { border-color: #73c99c; color: #b3f3cf; background: radial-gradient(circle at 25% 20%, #294837, #14291e); box-shadow: 0 0 14px rgb(87 190 136 / 35%); }
+.gb-die.is-negative .gb-die-face { border-color: #d16b64; color: #ffc4bc; background: radial-gradient(circle at 25% 20%, #59302b, #2e1414); box-shadow: 0 0 14px rgb(219 90 81 / 35%); }
+.gb-effect-change { display: block; color: var(--gold-light); text-align: center; padding: 8px; animation: gb-effect-arrival 600ms both; }
+.gb-effect-change.is-negative { color: #f3a399; }
+.gb-final-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center; }
+.gb-final-scores > section { min-width: 0; border: 1px solid var(--gold); border-radius: 8px; padding: 12px; }
+.gb-final-scores > section > strong { display: block; font: 700 38px var(--display); color: var(--gold-light); }
+.gb-final-scores p { font-size: 12px; line-height: 1.4; }
+.gb-final-banner { font-size: 12px; }
+.gb-inventory-modal, .gb-recap-modal { width: min(900px, 94vw); }
+.gb-inventory-modal section { margin-bottom: 18px; }
+.gb-inventory-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.gb-inventory-grid .gb-card-wrap.size-sm { --w: 95px; }
+.gb-tavern-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.gb-tavern-tools > span { font-size: 12px; color: var(--gold-light); }
+.gb-recap-modal > .button { display: flex; margin: 20px auto 0; }
+.gb-pile:not(:disabled):hover .gb-pile-stack { filter: brightness(1.9) drop-shadow(0 0 22px rgb(255 224 132 / 95%)); }
+.gb-pile:not(:disabled) .gb-back:nth-child(3) { animation: gb-ready-edge 1800ms ease-in-out infinite; }
+@keyframes gb-ready-edge {
+  0%, 100% { box-shadow: inset 0 0 0 1px #d5a84d, 0 0 8px rgb(232 183 78 / 65%); }
+  50% { box-shadow: inset 0 0 0 2px #fff5c1, 0 0 0 2px #efbe4e, 0 0 20px #f8d56a; }
+}
+@media (prefers-reduced-motion: reduce) { .gb-pile:not(:disabled) .gb-back:nth-child(3) { animation: none; box-shadow: 0 0 0 2px #efbe4e, 0 0 14px #f8d56a; } }
+@media (max-width: 760px), (max-height: 600px) {
+  .gb-effect-presentation .gb-boss-action-layout { grid-template-columns: 95px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .gb-effect-presentation .gb-card-wrap.size-lg { --w: 95px; }
+  .gb-effect-presentation .gb-boss-action-copy { font-size: 12px; line-height: 1.4; }
+  .gb-effect-presentation .gb-boss-action-result { font-size: 14px; margin: 10px 0; }
+  .gb-effect-presentation .gb-effect-rule { font-size: 11px; max-height: 16dvh; overflow-y: auto; }
+  .gb-effect-presentation .gb-boss-action-copy .button { margin-top: 8px; min-height: 40px; }
+  .gb-dice-faces { gap: 4px; }
+  .gb-dice-combined { font-size: 18px; }
+  .gb-inventory-grid { gap: 8px; }
+  .gb-inventory-grid .gb-card-wrap.size-sm { --w: 72px; }
+  .gb-final-scores { gap: 8px; }
+  .gb-final-scores > section { padding: 8px; }
+  .solo-playing .gb-recap-modal.sim-modal { gap: 8px; }
+  .gb-recap-modal h3 { margin: 0; font-size: 16px; }
+  .gb-recap-modal .gb-final-scores > section > strong { font-size: 28px; }
+  .gb-recap-modal .gb-final-scores > section > p { display: none; }
+  .gb-recap-modal .gb-die-face { width: 34px; height: 34px; font-size: 20px; }
+  .gb-recap-modal .gb-die-label { font-size: 9px; }
+  .gb-recap-modal .gb-dice-calculation { font-size: 10px; line-height: 1.3; margin: 6px 0 0; }
+  .gb-recap-modal .gb-inventory-grid .gb-card-wrap.size-sm { --w: 60px; }
+  .gb-recap-modal > .button { margin-top: 4px; }
+}

@@ -277,7 +277,12 @@ describe('card effects', () => {
     state=reduce(state,{t:'challengeBoss',bossId})
     const name=card(bossId).name
     if(name==='L’Invaincu') expect(state.combat!.bossBonus).toBe(4)
-    if(name==='La Suzeraine') expect(state.combat!.bossBonus).toBe(2)
+    if(name==='La Suzeraine') {
+      expect(state.combat!.bossBonus).toBe(0)
+      expect(state.promptQueue[0].purpose).toBe('suzeraine')
+      state=reduce(state,{t:'answer',option:'boss-bonus'})
+      expect(state.combat!.bossBonus).toBe(2)
+    }
     if(name==='Le Martyr') expect(state.combat!.bossBonus).toBe(2)
     if(name==='Zénith') expect(state.combat!.bossBonus).toBe(4)
     if(name==='Le Parfait') expect(state.log.some(event=>event.code==='bossRecovers')).toBe(true)

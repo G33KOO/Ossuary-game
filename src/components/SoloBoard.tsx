@@ -9,7 +9,7 @@ import { BOSS_IDS, activeStatus, canChangeEquipment, canEquip, canPlayAction, ca
 import { loadGame, saveGame } from '../game/save'
 import { bossEquipmentCardPower, computePlayerPower, computePower, equipmentCardPower, handLimit } from '../game/power'
 import type { PowerBreakdown } from '../game/power'
-import type { GameAction, GameState, Prompt } from '../game/types'
+import type { DiceRoll, GameAction, GameState, Prompt } from '../game/types'
 import { useCardDialog } from '../hooks/useCardDialog'
 import { localizeCard } from '../i18n/cardTranslations'
 import { useLocale } from '../hooks/useLocale'
@@ -20,7 +20,12 @@ import { OATH, oathCompleted } from '../game/oaths'
 import { permanentDieBonus } from '../game/oaths'
 import { Modal } from './Modal'
 import { DropTarget } from './DropTarget'
-import { GameCard, CardBack, Pile, Discard, DiscardGallery, Die, Score } from './game-ui'
+import { GameCard, CardBack, Pile, Discard, DiscardGallery, Score } from './game-ui'
+import { DiceResults } from './DiceResults'
+import type { EffectStage } from './EffectPresentation'
+import { EffectPresentation } from './EffectPresentation'
+import { HeroInventory } from './HeroInventory'
+import { CombatRecap } from './CombatRecap'
 import { LevelTimeline } from './LevelTimeline'
 import { actionVisual } from '../game/actionVisual'
 import { drawPresentations } from '../game/drawPresentations'
@@ -28,16 +33,16 @@ import type { ActionEffect, ActionTarget } from '../game/actionVisual'
 import '../styles/solo-board.css'
 import '../styles/immersion.css'
 import '../styles/solo-mobile.css'
+import '../styles/combat-feedback.css'
 
 const ROLL_DELAY = 1100
 const RESOLVE_DELAY = 1300
 const REVEAL_BASE = 1900
 const REVEAL_STAGGER = 250
 
-type Busy = 'rolling' | 'resolving' | 'boss' | null
+type Busy = 'rolling' | 'resolving' | 'boss' | 'flee' | null
 type Drag = { id: string; from: 'hand' | 'equip' }
 type Reveal = { seq: number; kind: 'loot' | 'monster'; cards: string[] }
-type BossPresentation = { id?: string; lines: GameState['log']; seq: number }
 type PlayedAction = { id: string; effect: ActionEffect; target: ActionTarget; seq: number; x: number; y: number; dx: number; dy: number; result: string; lines: GameState['log']; destroyed?: { id: string; x: number; y: number } }
 
 function heroCard(type: 'Classe' | 'Race', name: string) {
@@ -110,8 +115,8 @@ function ClassActive({ klass, name, effect, passive, reasons, disabled, sim, onA
   </div>
 }
 
-function PlayerDie({ sides, value, rolling, disabled, reasons, possible, modifiers, sim, onRoll }: {
-  sides: number; value: number | null; rolling: boolean; disabled: boolean; reasons: string[]; possible: string; modifiers: string[]; sim: Record<string, string>; onRoll: () => void
+function PlayerDie({ roll, count, modifier, sides, value, rolling, disabled, reasons, possible, modifiers, sim, onRoll }: {
+  roll?: DiceRoll; count: number; modifier?: number; sides: number; value: number | null; rolling: boolean; disabled: boolean; reasons: string[]; possible: string; modifiers: string[]; sim: Record<string, string>; onRoll: () => void
 }) {
   const anchor = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
@@ -130,8 +135,8 @@ function PlayerDie({ sides, value, rolling, disabled, reasons, possible, modifie
     return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
   }, [open])
   return <div ref={anchor} className="gb-player-die-control" tabIndex={disabled ? 0 : -1} aria-label={`D${sides}`} aria-describedby={open ? 'player-die-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setOpen(false) }} onFocus={show} onBlur={() => setOpen(false)} onClick={() => { if (disabled) show() }} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
-    <button className="gb-player-die-button" type="button" disabled={disabled} onClick={onRoll} aria-label={sim.roll} aria-describedby={open ? 'player-die-tooltip' : undefined}><Die label="" sides={sides} value={value} rolling={rolling} /></button>
-    {open ? createPortal(<div className="gb-active-tooltip gb-die-tooltip" id="player-die-tooltip" role="tooltip" style={position}><strong>D{sides} · {sim.diePossible}</strong><p>{possible}</p>{modifiers.map((text, index) => <p className="gb-active-passive" key={index}>{text}</p>)}<div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.dieUnavailable : sim.dieReady}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div></div>, document.body) : null}
+    <button className="gb-player-die-button" type="button" disabled={disabled} onClick={onRoll} aria-label={sim.roll} aria-describedby={open ? 'player-die-tooltip' : undefined}><DiceResults roll={roll} count={count} modifier={modifier} sides={sides} value={value} rolling={rolling} compact sim={sim} /></button>
+    {open ? createPortal(<div className="gb-active-tooltip gb-die-tooltip" id="player-die-tooltip" role="tooltip" style={position}><strong>D{sides} · {sim.diePossible}</strong><p>{possible}</p>{roll ? <DiceResults roll={roll} value={value} modifier={modifier} sim={sim} /> : null}{modifiers.map((text, index) => <p className="gb-active-passive" key={index}>{text}</p>)}<div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.dieUnavailable : sim.dieReady}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div></div>, document.body) : null}
   </div>
 }
 
@@ -182,16 +187,20 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     }
   }, [game])
   const [busy, setBusy] = useState<Busy>(null)
+  const [inventoryOpen, setInventoryOpen] = useState(false)
+  const [recapOpen, setRecapOpen] = useState(false)
+  const pendingReveal = useRef<GameState | null>(null)
+  const [drawDeferred, setDrawDeferred] = useState(false)
+  const afterReveal = useRef<EffectStage[]>([])
   const [informationOpen, setInformationOpen] = useState(false)
   const [playedAction, setPlayedAction] = useState<PlayedAction | null>(null)
-  const [bossPresentations, setBossPresentations] = useState<BossPresentation[]>([])
+  const [bossPresentations, setBossPresentations] = useState<EffectStage[]>([])
   const [oathCelebrations, setOathCelebrations] = useState<string[]>([])
   const [reveal, setReveal] = useState<Reveal | null>(null)
   const [drag, setDrag] = useState<Drag | null>(null)
   const [over, setOver] = useState<string | null>(null)
   const [slotOver, setSlotOver] = useState<string | null>(null)
   const [discardOpen, setDiscardOpen] = useState<'monster' | 'loot' | null>(null)
-  const [fleeNote, setFleeNote] = useState<string | null>(null)
   const [bossReveal, setBossReveal] = useState<string | null>(null)
   const [bossDrawReady, setBossDrawReady] = useState(false)
   const [klass, setKlass] = useState<ClassName>('Guerrier')
@@ -199,7 +208,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const [heroGender, setHeroGender] = useState<CardGender>('male')
   const timer = useRef<number | undefined>(undefined)
   const revealTimer = useRef<number | undefined>(undefined)
-  const fleeNoteTimer = useRef<number | undefined>(undefined)
   const bossPresentationSeq = useRef(0)
   const actionAnimationTimer = useRef<number | undefined>(undefined)
   const actionAnimationSeq = useRef(0)
@@ -208,7 +216,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     () => () => {
       window.clearTimeout(timer.current)
       window.clearTimeout(revealTimer.current)
-      window.clearTimeout(fleeNoteTimer.current)
       window.clearTimeout(actionAnimationTimer.current)
     },
     [],
@@ -232,7 +239,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     window.clearTimeout(revealTimer.current)
     const show = (index: number) => {
       const frame = frames[index]
-      if (!frame) { setReveal(null); return }
+      if (!frame) { setReveal(null); if (afterReveal.current.length) { setBossPresentations(afterReveal.current); afterReveal.current = [] } return }
       setReveal({ seq: next.drawSeq * 100 + index, ...frame })
       revealTimer.current = window.setTimeout(() => show(index + 1), REVEAL_BASE + frame.cards.length * REVEAL_STAGGER)
     }
@@ -273,19 +280,25 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       const result = visual.effect === 'cancelled' ? sim.cancelledAction : next.dieSides !== previous.dieSides ? `D${previous.dieSides} → D${next.dieSides}` : delta !== 0 ? `${delta > 0 ? '+' : ''}${delta}` : next.draws.filter((draw) => draw.kind === 'loot').length > 0 ? `+${next.draws.filter((draw) => draw.kind === 'loot').length} ${sim.cards}` : ''
       setPlayedAction({ id: action.id, ...visual, seq: ++actionAnimationSeq.current, x, y, dx: source ? source.left + source.width / 2 - x : 0, dy: source ? source.top + source.height / 2 - y : 120, result, lines: newLogs.filter((entry) => entry.code !== 'actionPlayed'), destroyed: typeof destroyedId === 'string' && destroyedBounds ? { id: destroyedId, x: destroyedBounds.left + destroyedBounds.width / 2, y: destroyedBounds.top + destroyedBounds.height / 2 } : undefined })
       window.clearTimeout(actionAnimationTimer.current)
-      actionAnimationTimer.current = window.setTimeout(() => { setPlayedAction(null); if (next.draws.length > 0) showReveal(next) }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1800)
+      actionAnimationTimer.current = window.setTimeout(() => { setPlayedAction(null); if (next.draws.length > 0 && !pendingReveal.current) showReveal(next) }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1800)
     }
-    const bossEvents = newLogs.filter((entry) => ['bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits'].includes(entry.code))
-    if (bossEvents.length > 0) {
-      setBossPresentations(bossEvents.map((entry) => ({
-        id: typeof entry.params?.card === 'string' ? entry.params.card : next.combat?.bossId ?? undefined,
-        lines: [entry, ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed') : [])],
-        seq: ++bossPresentationSeq.current,
-      })))
-    }
+    const stageCodes = new Set(['bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossDecreeCancel', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'monsterEffect', 'equipmentIgnored', 'souriantRolled', 'sansVisageRolled', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'resolved', 'victory', 'greedRoll', 'executionRoll', 'mageReroll', 'rerolled', 'oathRerolled', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits'])
+    const stages = newLogs.filter((entry) => stageCodes.has(entry.code)).map((entry) => ({
+      id: typeof entry.params?.card === 'string' ? entry.params.card : next.combat?.bossId ?? previous.combat?.monsters[0] ?? undefined,
+      lines: [entry, ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed') : [])], seq: ++bossPresentationSeq.current,
+    }))
+    const hasOutcome = newLogs.some((entry) => ['resolved', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'victory', 'weaponHarvest', 'weaponSalvage'].includes(entry.code))
+    if (hasOutcome && next.draws.length) {
+      const arrivals = new Set(['monsterRoll', 'monsterEffect', 'souriantRolled'])
+      afterReveal.current = stages.filter((stage) => arrivals.has(stage.lines[0].code))
+      setBossPresentations(stages.filter((stage) => !arrivals.has(stage.lines[0].code)))
+      pendingReveal.current = next
+      setDrawDeferred(true)
+    } else if (stages.length) setBossPresentations(stages)
+    if (next.finalCombat && !previous.finalCombat) setRecapOpen(true)
     gameRef.current = next
     setGame(next)
-    if (next.draws.length > 0 && !(action.t === 'playAction' && newLogs.some((entry) => entry.code === 'actionPlayed'))) showReveal(next)
+    if (next.draws.length > 0 && !pendingReveal.current && !(action.t === 'playAction' && newLogs.some((entry) => entry.code === 'actionPlayed'))) showReveal(next)
   }
 
   const start = () => {
@@ -294,6 +307,11 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     window.clearTimeout(timer.current)
     window.clearTimeout(revealTimer.current)
     setBusy(null)
+    pendingReveal.current = null
+    setDrawDeferred(false)
+    afterReveal.current = []
+    setRecapOpen(false)
+    setInventoryOpen(false)
     setBossPresentations([])
     setOathCelebrations([])
     setDiscardOpen(null)
@@ -309,6 +327,11 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     window.clearTimeout(timer.current)
     window.clearTimeout(revealTimer.current)
     setBusy(null)
+    pendingReveal.current = null
+    setDrawDeferred(false)
+    afterReveal.current = []
+    setRecapOpen(false)
+    setInventoryOpen(false)
     setBossPresentations([])
     setOathCelebrations([])
     setDiscardOpen(null)
@@ -326,19 +349,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     }, delay)
   }
 
-  const flee = () => {
-    setBusy('rolling')
-    setFleeNote(null)
-    timer.current = window.setTimeout(() => {
-      send({ t: 'flee' })
-      setBusy(null)
-      const last = gameRef.current?.log.at(-1)
-      if (last?.code === 'fleeFailed') setFleeNote(fill(sim.fleeFailedNote, { value: Number(last.params?.value ?? 0) }))
-      else if (last?.code === 'fled') setFleeNote(Number(last.params?.value) > 0 ? fill(sim.fleeOkNote, { value: Number(last.params?.value) }) : sim.fleeAuto)
-      window.clearTimeout(fleeNoteTimer.current)
-      fleeNoteTimer.current = window.setTimeout(() => setFleeNote(null), 3500)
-    }, ROLL_DELAY)
-  }
+  const flee = () => delayed('flee', 350, { t: 'flee' })
 
   const runBossSequence = () => {
     const current = gameRef.current
@@ -357,16 +368,34 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       return
     }
     setBossPresentations([])
-    if (busy === 'boss') runBossSequence()
+    if (pendingReveal.current) { const next = pendingReveal.current; pendingReveal.current = null; setDrawDeferred(false); showReveal(next) }
+    else if (busy === 'boss') runBossSequence()
   }
 
   const inspect = (id: string, element: HTMLElement, actions?: ReactNode) => {
     const current = game
     const weaponAction = current && !busy && canWeaponReroll(current, id) ? <button className="button button-primary" type="button" onClick={() => delayed('rolling', ROLL_DELAY, { t: 'weaponReroll', id })}>{sim.weaponReroll}</button> : undefined
-    openCard(card(id), undefined, element, actions ?? weaponAction)
+    const harvestPrompt = current?.promptQueue[0]
+    const harvestAction = current && card(id).name === 'Hache Fétiche à deux mains' && current.equipment.hands.includes(id)
+      ? harvestPrompt?.purpose === 'weapon-loot' ? <button className="button button-primary" type="button" onClick={() => send({ t: 'answer', option: id })}>{sim.harvest}</button> : <p className="gb-card-use-reason">{sim.harvestWait}</p>
+      : undefined
+    openCard(card(id), undefined, element, actions ?? weaponAction ?? harvestAction)
+  }
+
+  const equipmentReason = (state: GameState, id: string) => {
+    const entry = card(id)
+    if (entry.type === 'Artefact de classe') {
+      if (state.level < 10) return sim.artifactLevel
+      if (!(entry.requirement ?? '').includes(`Classe : ${state.klass}`)) return sim.artifactClass
+    }
+    if (!['Armure', 'Arme', 'Artefact de classe'].includes(entry.type)) return undefined
+    if (state.promptQueue.length) return sim.equipmentChoice
+    if (!canChangeEquipment(state)) return sim.equipmentRolled
+    return undefined
   }
 
   const formatLog = (entry: { code: string; params?: Record<string, string | number> }) => {
+    if (entry.code === 'fled' && entry.params?.automatic === 1) return sim.fleeAuto
     const template = copy.log[entry.code]
     if (!template) return entry.code
     const params: Record<string, string | number> = {}
@@ -467,11 +496,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     )
   }
 
-  const combat = game.combat
-  const pendingMonsterIds = new Set(reveal || playedAction ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
-  const power = computePower(game)
-  const prompt: Prompt | undefined = game.promptQueue[0]
   const ended = game.phase === 'won' || game.phase === 'lost'
+  const final = ended ? game.finalCombat : undefined
+  const boardState = final ? { ...game, combat: final.combat, equipment: final.equipment, level: final.level, completedOaths: final.completedOaths } : game
+  const combat = boardState.combat
+  const pendingMonsterIds = new Set(reveal || playedAction || drawDeferred ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
+  const power = final?.power ?? computePower(game)
+  const prompt: Prompt | undefined = game.promptQueue[0]
   const main = game.phase === 'main' && !combat
   const locked = busy !== null || playedAction !== null || bossReveal !== null || bossPresentations.length > 0 || oathCelebrations.length > 0 || Boolean(prompt) || reveal !== null || ended
   const equipmentEditable = !locked && canChangeEquipment(game)
@@ -488,12 +519,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   if (busy || playedAction || reveal || bossReveal || bossPresentations.length) dieReasons.push(sim.activeWait)
   if (prompt) dieReasons.push(sim.activeBlocked_choice)
   if (oathCelebrations.length) dieReasons.push(sim.activeOathWait)
-  const diceCount = combat?.flags.includes('doubleDie') ? 2 : 1
+  const diceCount = combat?.flags.includes('doubleDie') || combat?.flags.includes('wyrm') ? 2 : 1
   const dieBonus = (game.race === 'Elfe' ? 1 : 0) + permanentDieBonus(game)
-  const dieMinimum = diceCount * (1 + dieBonus)
-  const dieMaximum = diceCount * (game.dieSides + dieBonus)
+  const summedDice = combat?.flags.includes('doubleDie') ? 2 : 1
+  const dieMinimum = summedDice * (1 + dieBonus)
+  const dieMaximum = summedDice * (game.dieSides + dieBonus)
   const possibleRolls = Array.from({ length: dieMaximum - dieMinimum + 1 }, (_, index) => dieMinimum + index).join(', ')
-  const dieModifiers = [game.race === 'Elfe' ? sim.dieElfBonus : '', permanentDieBonus(game) ? sim.dieOathBonus : '', diceCount === 2 ? sim.dieDouble : '', diceCount === 1 && combat?.flags.includes('wyrm') ? sim.dieWyrm : ''].filter(Boolean)
+  const dieModifiers = [game.race === 'Elfe' ? sim.dieElfBonus : '', permanentDieBonus(game) ? sim.dieOathBonus : '', combat?.flags.includes('doubleDie') ? sim.dieDouble : '', combat?.flags.includes('wyrm') ? sim.dieWyrm : ''].filter(Boolean)
   const limit = handLimit(game)
   const bossUnlocked = game.level >= 10
   const tavern = prompt?.purpose === 'tavern'
@@ -533,12 +565,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     return ` is-target${slotOver === key ? ' is-over' : ''}`
   }
 
+  const gearIgnored = (id: string) => Boolean(combat?.ignoredEquipment?.includes(id) || combat?.flags.includes('ignoreAll') || (combat?.flags.includes('ignoreWeapons') && card(id).type === 'Arme') || (combat?.flags.includes('ignoreArmors') && card(id).type === 'Armure') || combat?.stolenArmor === id)
+
   const renderEquipped = (id: string | null | undefined, slot: string) =>
     id ? (
       <GameCard
         playerClass={game.klass}
         allWeaponMastery={oathCompleted(game, OATH.foreignIron)}
-        equipmentPower={equipmentCardPower(game, id)}
+        equipmentPower={gearIgnored(id) ? 0 : equipmentCardPower(boardState, id)}
+        neutralized={gearIgnored(id)}
         id={id}
         locale={locale}
         onInspect={(element) => inspect(id, element)}
@@ -559,8 +594,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   return (
     <div className={`gb gb-full${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
-        {fleeNote ? <div className="gb-toast">{fleeNote}</div> : null}
         <LevelTimeline game={game} />
+        {ended && final ? <button className="button gb-final-banner" type="button" onClick={() => setRecapOpen(true)}>{game.phase === 'won' ? sim.victoryTitle : sim.defeatTitle} · {sim.openRecap}</button> : null}
         <Stat label={sim.turn} value={game.turn} />
         <Stat label={sim.hand} value={`${game.hand.length}/${limit}`} />
         <button className="sim-link" onClick={reset} type="button">
@@ -589,7 +624,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
         <div className="gb-center">
         <DropTarget as="section" className="gb-arena" target={playZone} onHover={setOver} onCommit={commitDrop}>
-          {ended ? (
+          {ended && !combat ? (
             <div className={`sim-end ${game.phase}`}>
               <h3>{game.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{game.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -610,7 +645,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 {combat.monsters.filter((id) => !pendingMonsterIds.has(id)).map((id) => (
                   <div className="gb-monster-encounter" key={id}>
                     <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="lg" />
-                    {card(id).text && <div className="gb-monster-effect" key={`${id}-${game.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p></div>}
+                    {card(id).text && <div className="gb-monster-effect" key={`${id}-${game.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}
                   </div>
                 ))}
                 {combat.kind === 'boss' ? (
@@ -650,14 +685,14 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           )}
         </DropTarget>
         </div>
-        {!ended ? <section className="gb-combat-panel" aria-label={sim.mobileCombat}>
+        <section className="gb-combat-panel" aria-label={sim.mobileCombat}>
           {combat ? <>
               {power ? (
                 <div className="gb-scoreboard">
                   <Score label={sim.you} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} />
                   <div className="gb-dice">
                     {power.opponent.die !== null ? (
-                      <Die label={sim.opponent} rolling={false} sides={combat.kind === 'boss' ? combat.bossSides : 6} value={power.opponent.die} />
+                      <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={combat.kind === 'boss' ? combat.bossSides : 6} value={power.opponent.die} compact sim={sim} />
                     ) : null}
                   </div>
                   <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />
@@ -692,12 +727,12 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             </div>
             <div className="gb-playzone"><div className="gb-controls"><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span></button></div></div>
           </>}
-        </section> : null}
-        <section className="gb-board" style={{ '--board-card-count': 9 + (game.oaths?.length ?? 0) + (game.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (game.oaths?.length ?? 0) } as CSSProperties}>
+        </section>
+        <section className="gb-board" style={{ '--board-card-count': 9 + (game.retainedMonsters?.length ?? 0) + (game.oaths?.length ?? 0) + (game.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (game.retainedMonsters?.length ?? 0) + (game.oaths?.length ?? 0) } as CSSProperties}>
           <h3>{sim.equipment}</h3>
           <div className="gb-board-body">
             <section className="gb-board-group gb-native-group" aria-labelledby="board-hero-title">
-            <div className="gb-hero-level-row"><div className="gb-level" title={sim.level}><span className="gb-level-label">{sim.level}</span><span className="gb-level-value"><strong>{game.level}</strong><span className="gb-level-max">/10</span></span></div></div>
+            <div className="gb-hero-level-row"><div className="gb-level" title={sim.level}><span className="gb-level-label">{sim.level}</span><span className="gb-level-value"><strong>{boardState.level}</strong><span className="gb-level-max">/10</span></span></div></div>
             <h4 id="board-hero-title">{sim.yourHero}</h4>
             <div className="gb-heroes">
               {(['Race', 'Classe'] as const).map((kind) => {
@@ -716,12 +751,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   <GameCard className={oathCompleted(game, id) ? 'gb-oath-completed' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
                 </div>
               ))}
+              {(game.retainedMonsters ?? []).map((id) => <div className="gb-slot" key={id}><span className="gb-slot-label">{sim.tradesRemaining} : 2</span><GameCard id={id} locale={locale} size="sm" onInspect={(el) => inspect(id, el)} /></div>)}
             </div>
             </section>
             <DropTarget as="section" className="gb-board-group gb-equipment-group" labelledBy="board-equipment-title" target={equipZone} onHover={setOver} onCommit={commitDrop}>
             <div className="gb-player-combat-status">
-              <HeroPower power={computePlayerPower(game)} sim={sim} />
-              <PlayerDie sides={game.dieSides} value={combat?.playerDie ?? null} rolling={busy === 'rolling'} disabled={locked || !combat || combat.playerDie !== null} reasons={dieReasons} possible={possibleRolls} modifiers={dieModifiers} sim={sim} onRoll={() => delayed('rolling', ROLL_DELAY, { t: 'roll' })} />
+              <HeroPower power={power?.player ?? computePlayerPower(boardState)} sim={sim} />
+              <PlayerDie roll={combat?.playerRoll} count={diceCount} modifier={combat?.playerDieModifier ?? dieBonus} sides={game.dieSides} value={combat?.playerDie ?? null} rolling={busy === 'rolling'} disabled={locked || !combat || combat.playerDie !== null} reasons={dieReasons} possible={possibleRolls} modifiers={dieModifiers} sim={sim} onRoll={() => delayed('rolling', ROLL_DELAY, { t: 'roll' })} />
               <ClassActive klass={status.klass} name={heroName('Classe', status.klass)} effect={activeEffect} passive={fill(sim.classPassive, { klass: heroName('Classe', game.klass) })} reasons={activeReasons} disabled={locked || !status.available} sim={sim} onActivate={() => send({ t: 'useActive' })} />
             </div>
             <h4 id="board-equipment-title">{sim.equipment}</h4>
@@ -740,7 +776,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                     <span className="gb-slot-label">
                       {sim.weapons} {index + 1}
                     </span>
-                    {twoHanded && index === 1 ? <div className="gb-two-handed-copy"><GameCard id={game.equipment.hands[0]} allWeaponMastery={oathCompleted(game, OATH.foreignIron)} equipmentPower={equipmentCardPower(game, game.equipment.hands[0])} playerClass={game.klass} locale={locale} onInspect={(el) => inspect(game.equipment.hands[0], el)} size="sm" /></div> : renderEquipped(game.equipment.hands[index], 'hand')}
+                    {twoHanded && index === 1 ? <div className="gb-two-handed-copy"><GameCard id={game.equipment.hands[0]} allWeaponMastery={oathCompleted(game, OATH.foreignIron)} equipmentPower={gearIgnored(game.equipment.hands[0]) ? 0 : equipmentCardPower(boardState, game.equipment.hands[0])} neutralized={gearIgnored(game.equipment.hands[0])} playerClass={game.klass} locale={locale} onInspect={(el) => inspect(game.equipment.hands[0], el)} size="sm" /></div> : renderEquipped(game.equipment.hands[index], 'hand')}
                   </div>
                 )
               })}
@@ -779,10 +815,11 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
             const equipable = !locked && canEquip(game, id)
             const playable = !locked && entry.type === 'Action' && canPlayAction(game, id)
+            const reason = isGear ? equipmentReason(game, id) : undefined
             const actions = isGear ? (
-              <button className="button" disabled={!equipable} onClick={() => send({ t: 'equip', id })} type="button">
+              <><button className="button" disabled={!equipable} onClick={() => send({ t: 'equip', id })} type="button">
                 {sim.equipBtn}
-              </button>
+              </button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
             ) : entry.type === 'Action' ? (
               <button className="button" disabled={!playable} onClick={() => send({ t: 'playAction', id })} type="button">
                 {sim.play}
@@ -791,6 +828,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             return (
               <GameCard
                 className={drag?.id === id ? 'is-dragging' : ''}
+                unavailableReason={reason}
                 playerClass={game.klass}
                 allWeaponMastery={oathCompleted(game, OATH.foreignIron)}
                 id={id}
@@ -844,20 +882,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </div>
       ) : null}
 
-      {bossPresentations[0] && !bossReveal && !reveal && !playedAction ? (
-        <Modal id="boss-action-title" title={bossPresentations[0].lines[0].code.startsWith('boss') && !['bossItemDestroyed', 'bossSalvage'].includes(bossPresentations[0].lines[0].code) ? sim.bossActionTitle : sim.cardEffectTitle} className={`gb-boss-action effect-${bossPresentations[0].lines[0].code === 'bossItemDestroyed' ? 'destroy' : bossPresentations[0].id ? actionVisual(card(bossPresentations[0].id).name).effect : 'magic'}`} key={bossPresentations[0].seq}>
-            <div className="gb-boss-action-layout">
-              {bossPresentations[0].id ? <GameCard id={bossPresentations[0].id} locale={locale} onInspect={(el) => inspect(bossPresentations[0].id as string, el)} size="lg" className="gb-boss-played-card" /> : null}
-              <div className="gb-boss-action-copy" aria-live="polite">
-                {bossPresentations[0].lines.map((entry, index) => <p className="gb-boss-action-result" key={index}>{formatLog(entry)}</p>)}
-                {bossPresentations[0].id ? <p>{localizeCard(card(bossPresentations[0].id), locale).text}</p> : null}
-                {bossPresentations[0].lines.filter((entry) => entry.code === 'playerItemDestroyed' && typeof entry.params?.card === 'string').map((entry) => <div className="gb-boss-destroyed-item" key={String(entry.params!.card)}><GameCard id={String(entry.params!.card)} locale={locale} onInspect={(el) => inspect(String(entry.params!.card), el)} size="sm" /></div>)}
-                <p className="sim-note">{sim.bossActionHint}</p>
-                <button className="button button-primary" autoFocus onClick={nextBossPresentation} type="button">{sim.nextAction} →</button>
-              </div>
-            </div>
-          </Modal>
-      ) : null}
+      {bossPresentations[0] && !bossReveal && !reveal && !playedAction ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : null}
+      {inventoryOpen ? <HeroInventory game={boardState} locale={locale} sim={sim} inspect={inspect} onClose={() => setInventoryOpen(false)} /> : null}
+      {recapOpen && final && !bossPresentations.length && !playedAction && !reveal && !bossReveal && !oathCelebrations.length ? <CombatRecap final={final} locale={locale} sim={sim} inspect={inspect} onClose={() => setRecapOpen(false)} /> : null}
 
       {discardOpen ? <DiscardGallery ids={discardOpen === 'monster' ? game.monsterDiscard : game.lootDiscard} title={discardOpen === 'monster' ? sim.tableMonster : sim.tableLoot} locale={locale} closeLabel={sim.close} onClose={() => setDiscardOpen(null)} onInspect={inspect} /> : null}
 
@@ -894,6 +921,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 fresh: Number(prompt.ctx.fresh ?? 0),
               })}
             </p>
+            {tavern || prompt.purpose === 'tavern-give' ? <div className="gb-tavern-tools"><button className="button" type="button" onClick={() => setInventoryOpen(true)}>{sim.inspectInventory}</button><span>{sim.tradesRemaining} : {Number(prompt.ctx.remaining ?? 1)}</span></div> : null}
             {tavern ? <p className="sim-note">{sim.tavernHint}</p> : null}
             {tavern ? <div className="gb-tavern-hand" aria-label={sim.handDock}>
               {game.hand.map((id) => <GameCard key={id} id={id} locale={locale} size="sm" onInspect={(element) => inspect(id, element)} {...dragFrom('hand', id)} />)}
@@ -910,7 +938,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                     <DropTarget className="sim-pick" target={target} key={`${option.id}-${index}`} onHover={setOver} onCommit={commitDrop}>
                       <GameCard id={cardId} locale={locale} onInspect={(el) => inspect(cardId, el)} size="md" />
                       <button className="button button-primary" onClick={() => send({ t: 'answer', option: option.id })} type="button">
-                        {sim.choose}
+                        {prompt.purpose === 'weapon-loot' ? sim.harvest : sim.choose}
                       </button>
                     </DropTarget>
                   )
