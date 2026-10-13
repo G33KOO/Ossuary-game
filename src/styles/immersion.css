@@ -18,21 +18,6 @@
     var(--background);
 }
 
-:root:not([data-theme='light']) body::after {
-  background:
-    radial-gradient(ellipse at center, transparent 45%, rgb(0 0 0 / 70%) 100%),
-    var(--cracks) 0 0 / 420px,
-    var(--stone) 0 0 / 260px;
-  background-blend-mode: normal, normal, soft-light;
-  content: '';
-  inset: 0;
-  mix-blend-mode: multiply;
-  opacity: 0.85;
-  pointer-events: none;
-  position: fixed;
-  z-index: 49;
-}
-
 /* En-tête : pierre noire et liseré doré */
 :root:not([data-theme='light']) .site-header {
   background:

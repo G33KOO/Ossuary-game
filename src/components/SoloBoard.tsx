@@ -356,8 +356,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   if (!game) {
     return (
       <div className="sim-setup">
-        <p className="sim-intro">{sim.intro}</p>
-        <h3>{sim.chooseClass}</h3>
+        <div className="sim-setup-heading">
+          <p className="eyebrow">{sim.setupEyebrow}</p>
+          <h3>{sim.setupTitle}</h3>
+          <p className="sim-intro">{sim.intro}</p>
+        </div>
+        <div className="sim-builder">
+        <div className="sim-builder-choices">
+        <section className="sim-choice-section" aria-labelledby="setup-class">
+        <div className="sim-choice-heading"><span className="sim-step" aria-hidden="true">01</span><div><h4 id="setup-class">{sim.chooseClass}</h4><p>{sim.classHint}</p></div></div>
         <div className="sim-choice-grid">
           {CLASS_NAMES.map((name) => (
             <HeroChoice
@@ -369,7 +376,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             />
           ))}
         </div>
-        <h3>{sim.chooseRace}</h3>
+        </section>
+        <section className="sim-choice-section" aria-labelledby="setup-race">
+        <div className="sim-choice-heading"><span className="sim-step" aria-hidden="true">02</span><div><h4 id="setup-race">{sim.chooseRace}</h4><p>{sim.raceHint}</p></div></div>
         <div className="sim-choice-grid">
           {RACE_NAMES.map((name) => (
             <HeroChoice
@@ -381,9 +390,34 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             />
           ))}
         </div>
+        </section>
+        </div>
+        <aside className="sim-hero-summary" aria-labelledby="setup-summary-title">
+          <p className="eyebrow" id="setup-summary-title">{sim.yourHero}</p>
+          <h3>{heroName('Race', race)} <span>· {heroName('Classe', klass)}</span></h3>
+          <div className="sim-hero-portraits">
+            {(['Classe', 'Race'] as const).map((kind) => {
+              const entry = heroCard(kind, kind === 'Classe' ? klass : race)
+              const art = entry ? getCardIllustration(entry) : undefined
+              return art ? <img alt={heroName(kind, kind === 'Classe' ? klass : race)} src={art.src} key={kind} /> : null
+            })}
+          </div>
+          <div className="sim-hero-details" aria-live="polite">
+            {(['Classe', 'Race'] as const).map((kind) => {
+              const entry = heroCard(kind, kind === 'Classe' ? klass : race)
+              if (!entry) return null
+              const localized = localizeCard(entry, locale)
+              return <div key={kind}><div className="sim-hero-detail-heading"><strong>{localized.name}</strong><button className="sim-link" type="button" onClick={(event) => inspect(entry.id, event.currentTarget)}>{sim.inspect}</button></div><p>{localized.text}</p></div>
+            })}
+          </div>
+          <div className="sim-launch">
+          <p>{sim.startingKit}</p>
         <button className="button button-primary" onClick={start} type="button">
           {sim.start}
         </button>
+          </div>
+        </aside>
+        </div>
       </div>
     )
   }
@@ -884,7 +918,8 @@ function HeroChoice({
   return (
     <button aria-pressed={active} className={`sim-choice${active ? ' is-active' : ''}`} onClick={onClick} type="button">
       {art ? <img alt="" loading="lazy" src={art.src} /> : null}
-      <span>{label}</span>
+      <span className="sim-choice-name">{label}</span>
+      <span aria-hidden="true" className="sim-choice-check">{active ? '✓' : '+'}</span>
     </button>
   )
 }
