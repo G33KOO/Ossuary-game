@@ -7,6 +7,7 @@ import { ARMOR_SLOTS, CARDS, CLASS_NAMES, RACE_NAMES, card } from '../game/data'
 import type { ClassName, RaceName } from '../game/data'
 import { BOSS_IDS, activeStatus, canManageHand, canChangeEquipment, canEquip, canPlayAction, canWeaponReroll, fleeBlocked, newGame, reduce } from '../game/engine'
 import { loadGame, saveGame } from '../game/save'
+import { equipmentImprovesHero } from '../game/equipmentUpgrade'
 import { randomHero } from '../game/randomHero'
 import { bossEquipmentCardPower, computePlayerPower, computePower, equipmentCardPower, handLimit } from '../game/power'
 import type { PowerBreakdown } from '../game/power'
@@ -825,10 +826,10 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
             const reason = isGear ? equipmentReason(boardState, id) : undefined
             const actions = handActions(id)
-            const playable = (!handLocked && ((isGear ? canEquip(game, id) : canPlayAction(game, id)) || (prompt?.purpose === 'tavern-give' && prompt.options.some(option => option.id === id)))) || (choiceVisible && prompt.options.some(option => option.cardId === id))
+            const playable = (!handLocked && ((isGear ? equipmentImprovesHero(game, id) : canPlayAction(game, id)) || (prompt?.purpose === 'tavern-give' && prompt.options.some(option => option.id === id)))) || (choiceVisible && prompt.options.some(option => option.cardId === id))
             return (
               <GameCard
-                className={`${playable && entry.type !== 'Arme' ? 'is-playable' : ''}${drag?.id === id ? ' is-dragging' : ''}`}
+                className={`${playable ? 'is-playable' : ''}${drag?.id === id ? ' is-dragging' : ''}`}
                 unavailableReason={reason}
                 playerClass={boardState.klass}
                 allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)}
