@@ -115,6 +115,7 @@ export function bossEquipmentPower(combat: Combat) {
 export function bossEquipmentCardPower(combat: Combat, id: string) {
   const entry = card(id)
   let power = printedPower(id)
+  if (entry.type === 'Armure' && combat.bossDoubledArmors?.includes(id)) power *= 2
   if (entry.name === 'Masse Mille-Clous' && combat.bossEquip.filter((id) => card(id).type === 'Arme').length === 1) power *= 2
   if (entry.name === 'Hache Brise-Enclume à deux mains') power += 2
   return power

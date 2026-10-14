@@ -68,6 +68,9 @@ export type Combat = {
   bossDieModifier?: number
   bossPlayedCards?: string[]
   bossReady?: boolean
+  bossActives?: Partial<Record<ClassName, string>>
+  bossUsedActives?: ClassName[]
+  bossDoubledArmors?: string[]
   resolvedActions?: number
   hasRolled?: boolean
   oathRerollUsed?: boolean

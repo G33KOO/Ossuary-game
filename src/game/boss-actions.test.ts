@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CARDS } from './data'
 import { BOSS_IDS, canPlayAction, newGame, reduce } from './engine'
 import { loadGame, saveGame } from './save'
+import { computePower, bossEquipmentCardPower } from './power'
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -21,6 +22,100 @@ function battle() {
 }
 
 describe('interactive Boss actions', () => {
+  it('acquires Warrior then pays a weapon and applies its printed power on a separate step', () => {
+    let game = battle()
+    game.combat!.bossHand = ['Voie du Guerrier', 'Masse Nautile'].map(id)
+    game = reduce(game, { t: 'bossStep' })
+    expect(game.combat!.bossBonus).toBe(0)
+    expect(game.log.at(-1)?.code).toBe('bossAcquiresActive')
+    game = reduce(game, { t: 'bossStep' })
+    expect(game.combat!.bossBonus).toBe(1)
+    expect(game.combat!.bossHand).toEqual([])
+    expect(game.log.at(-1)?.code).toBe('bossActive')
+  })
+  it('acquires Druid and doubles each equipped armor only once', () => {
+    let game = battle()
+    const armors = CARDS.filter(c => c.type === 'Armure')
+    game.combat!.bossEquip = [armors[0].id]
+    game.combat!.bossHand = [id('Voie du Druide'), armors[1].id, armors[2].id]
+    const before = bossEquipmentCardPower(game.combat!, armors[0].id)
+    game = reduce(reduce(game, { t: 'bossStep' }), { t: 'bossStep' })
+    expect(bossEquipmentCardPower(game.combat!, armors[0].id)).toBe(before * 2)
+    game = reduce(game, { t: 'bossStep' })
+    expect(game.combat!.bossDoubledArmors).toEqual([armors[0].id])
+  })
+  it('uses a relevant Mage path after rolling and preserves dice modifiers', () => {
+    let game = battle()
+    game.combat!.bossDie = 2
+    game.combat!.bossDieModifier = 1
+    game.combat!.bossHand = ['Voie du Mage', 'Renoncement'].map(id)
+    game = reduce(reduce(game, { t: 'bossStep' }), { t: 'bossStep' })
+    expect(game.combat!.bossDie).toBeGreaterThanOrEqual(2)
+    expect(game.combat!.bossDieModifier).toBe(1)
+    expect(game.combat!.bossHand).toEqual([])
+    expect(game.log.some(e => e.code === 'bossActiveRoll')).toBe(true)
+  })
+  it('chooses a useful Mimicry active and applies it rather than discarding the card without an effect', () => {
+    let game = battle()
+    game.combat!.bossHand = ['Mimétisme', 'Masse Nautile'].map(id)
+    game = reduce(reduce(game, { t: 'bossStep' }), { t: 'bossStep' })
+    expect(game.combat!.bossActives?.Guerrier).toBe(id('Mimétisme'))
+    expect(game.combat!.bossBonus).toBe(1)
+  })
+  it('does not waste a path or Mimicry when there is no legal useful active', () => {
+    let game = battle()
+    game.combat!.bossHand = ['Voie du Chasseur', 'Voie du Druide', 'Mimétisme'].map(id)
+    game.combat!.bossDie = 6
+    game = reduce(game, { t: 'bossStep' })
+    expect(game.combat!.bossHand).toHaveLength(3)
+    expect(game.combat!.bossPlayedCards).toEqual([])
+  })
+  it('uses Necromancer only once and pays three cards for half a recent monster power', () => {
+    let game = battle()
+    const monster = CARDS.find(c => c.type === 'Monstre')!
+    game.monsterDiscard = [monster.id]
+    game.combat!.bossHand = ['Voie du Nécromancien', 'Renoncement', 'Voie du Chasseur', 'Cupidité'].map(id)
+    game = reduce(reduce(game, { t: 'bossStep' }), { t: 'bossStep' })
+    expect(game.combat!.bossBonus).toBe(Math.floor(Number.parseInt(monster.value) / 2))
+    expect(game.combat!.bossUsedActives).toContain('Nécromancien')
+  })
+  it('uses Thief to exchange matching equipment and improves the duel balance', () => {
+    let game = battle()
+    const armors = CARDS.filter(c => c.type === 'Armure').sort((a, b) => Number.parseInt(a.value) - Number.parseInt(b.value))
+    const weak = armors[0]
+    const strong = armors.find(c => c.subtype === weak.subtype && Number.parseInt(c.value) > Number.parseInt(weak.value))!
+    game.equipment.armors[strong.subtype!] = strong.id
+    game.combat!.bossEquip = [weak.id]
+    game.combat!.bossHand = ['Voie du Voleur', 'Renoncement', 'Voie du Chasseur'].map(id)
+    const before = computePower(game)!
+    game = reduce(reduce(game, { t: 'bossStep' }), { t: 'bossStep' })
+    expect(game.combat!.bossEquip).toContain(strong.id)
+    expect(game.equipment.armors[weak.subtype!]).toBe(weak.id)
+    const after = computePower(game)!
+    expect(after.opponent.total - after.player.total).toBeGreaterThan(before.opponent.total - before.player.total)
+  })
+  it('lets the hero counter a path before the Boss acquires its power', () => {
+    let game = battle()
+    game.hand = [id('Contre-sort')]
+    game.combat!.bossHand = ['Voie du Guerrier', 'Masse Nautile'].map(id)
+    game = reduce(game, { t: 'bossStep' })
+    game = reduce(game, { t: 'answer', option: id('Contre-sort') })
+    expect(game.combat!.bossActives).toBeUndefined()
+    expect(game.combat!.bossHand).toContain(id('Masse Nautile'))
+  })
+  it('chains draw actions, then a drawn path and its power, without replaying recycled actions', () => {
+    let game = battle()
+    game.combat!.bossHand = [id('Trouvaille')]
+    game.lootDeck = ['Providence', 'Voie du Mage', 'Renoncement', 'Voie du Chasseur', 'Cupidité'].map(id)
+    game.lootDiscard = []
+    game.combat!.bossDie = 1
+    for (let step = 0; step < 20 && !game.combat!.bossReady; step++) game = reduce(game, { t: 'bossStep' })
+    expect(game.combat!.bossReady).toBe(true)
+    expect(game.combat!.bossPlayedCards).toEqual(expect.arrayContaining(['Trouvaille', 'Providence', 'Voie du Mage'].map(id)))
+    expect(new Set(game.combat!.bossPlayedCards).size).toBe(game.combat!.bossPlayedCards!.length)
+    expect(game.log.filter(e => e.code === 'bossDraws')).toHaveLength(2)
+    expect(game.log.some(e => e.code === 'bossActiveRoll')).toBe(true)
+  })
   it('upgrades an old save with missing Counterspells once, without duplicating an existing copy', () => {
     const game = battle()
     const counters = CARDS.filter(card => card.name === 'Contre-sort').map(card => card.id)

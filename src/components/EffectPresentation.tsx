@@ -45,6 +45,10 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
         {stage.lines[0].code === 'bossDraws' ? <div className="gb-boss-drawn-cards" aria-label={formatLog(stage.lines[0])}>{Array.from({ length: Number(params.count ?? 0) }, (_, index) => <span key={index} style={{ animationDelay: `${index * 120}ms` }}><CardBack kind="loot" size="sm" /></span>)}</div> : null}
         {ready && stage.lines[0].code === 'greedRoll' ? <strong className={`gb-effect-change${Number(params.value) < 4 ? ' is-negative' : ''}`}>{Number(params.value) >= 4 ? locale === 'fr' ? 'Cupidité réussie · Butin ×2' : 'Greed succeeds · Loot ×2' : locale === 'fr' ? 'Aucun bonus de butin' : 'No loot bonus'}</strong> : null}
         {ready && params.powerChange !== undefined ? <strong className="gb-effect-change">{Number(params.powerChange) > 0 ? '+' : ''}{params.powerChange} {sim.powerPart}</strong> : null}
+        {stage.lines[0].code === 'bossActive' ? <div className="gb-inventory-grid">
+          {String(params.cost ?? '').split(',').filter(Boolean).map(id => <GameCard key={id} id={id} locale={locale} size="sm" onInspect={el => inspect(id, el)} className="gb-boss-played-card" />)}
+          {params.target ? <GameCard id={String(params.target)} locale={locale} size="sm" onInspect={el => inspect(String(params.target), el)} /> : null}
+        </div> : null}
         {params.before !== undefined ? <strong className="gb-effect-change is-negative">{sim.level} : {params.before} → {params.after}</strong> : null}
         {params.player !== undefined ? <div className="gb-final-scores"><strong>{sim.you} : {params.player}</strong><strong>{sim.opponent} : {params.opponent}</strong></div> : null}
         {stage.id ? <details className="gb-effect-rule"><summary>{sim.cardEffectTitle}</summary><p>{localizeCard(card(stage.id), locale).text}</p></details> : null}
