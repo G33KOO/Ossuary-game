@@ -610,7 +610,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             label={sim.pileMonster}
             onClick={() => send({ t: 'fightMonster' })}
           />
-          <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('monster')} />
+          {combat?.kind !== 'boss' ? <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('monster')} /> : null}
         </div>
 
         <div className="gb-center">
@@ -796,7 +796,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             label={sim.pileLoot}
             onClick={() => send({ t: 'drawLoot' })}
           />
-          <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('loot')} />
+          {combat?.kind !== 'boss' ? <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('loot')} /> : null}
         </div>
       </div>
 
