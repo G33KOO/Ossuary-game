@@ -1727,3 +1727,29 @@ body.solo-playing footer {
   .gb-mobile-preparation { display: flex; align-items: center; gap: .6rem; padding-top: .6rem; font-size: .75rem; }
   .gb-mobile-preparation .button { flex-shrink: 0; }
 }
+.gb-boss-enrage {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 3px 12px;
+  padding: 7px 12px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--bone);
+  text-align: left;
+}
+.gb-boss-enrage > span { font-family: var(--display); font-size: 11px; }
+.gb-boss-enrage strong { font-size: 18px; font-variant-numeric: tabular-nums; }
+.gb-boss-enrage small { grid-column: 1 / -1; font-size: 11px; color: var(--muted); }
+.gb-boss-enrage.is-active { border-color: var(--ember); box-shadow: 0 0 12px color-mix(in srgb, var(--ember) 30%, transparent); }
+.gb-boss-enrage.is-active strong { color: var(--ember); animation: gb-enrage-increase 700ms ease; }
+.gb-boss-enrage-mobile { display: none; }
+@media (max-width: 760px) {
+  .gb-full .gb-boss-enrage-mobile { display: grid; width: 100%; }
+  .gb-boss-enrage { gap: 2px 8px; padding: 5px 9px; }
+  .gb-boss-enrage strong { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gb-boss-enrage.is-active strong { animation: none; }
+}

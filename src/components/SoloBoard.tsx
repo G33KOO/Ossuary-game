@@ -29,6 +29,7 @@ import { EffectPresentation } from './EffectPresentation'
 import { HeroInventory } from './HeroInventory'
 import { CombatRecap } from './CombatRecap'
 import { LevelTimeline } from './LevelTimeline'
+import { BossEnrage } from './BossEnrage'
 import { actionVisual } from '../game/actionVisual'
 import { drawPresentations } from '../game/drawPresentations'
 import type { ActionEffect, ActionTarget } from '../game/actionVisual'
@@ -616,6 +617,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     <div className={`gb gb-full${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
         <LevelTimeline game={boardState} />
+        {boardState.level >= 10 || boardState.bossPressure > 0 ? <BossEnrage count={boardState.bossPressure} sim={sim} className="gb-boss-enrage-mobile" /> : null}
         {ended && final && !resolutionPreview ? <button className="button gb-final-banner" type="button" onClick={() => setRecapOpen(true)}>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle} · {sim.openRecap}</button> : null}
         <Stat label={sim.turn} value={boardState.turn} />
         <Stat label={sim.hand} value={`${boardState.hand.length}/${limit}`} />
@@ -673,6 +675,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 ))}
                 {combat.kind === 'boss' ? (
                   <div className="gb-foe-gear">
+                    <BossEnrage count={boardState.bossPressure} sim={sim} />
                     <div className="gb-foe-equip">
                       {combat.bossEquip.map((id) => (
                         <GameCard id={id} key={id} equipmentPower={bossEquipmentCardPower(combat, id)} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
@@ -704,6 +707,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 onClick={() => send({ t: 'drawBoss' })}
               />
               {!bossUnlocked ? <p className="sim-note">{sim.bossWaits}</p> : null}
+              {bossUnlocked ? <BossEnrage count={boardState.bossPressure} sim={sim} /> : null}
             </DropTarget>
           )}
         </DropTarget>

@@ -50,7 +50,7 @@ export function LevelTimeline({ game }: { game: GameState }) {
       <span className="gb-timeline-live" role="status">{fill(sim.timelineCurrentLevel, { level: game.level })}</span>
     </div>
     <button className={`gb-enrage-meter${enraged ? ' is-active' : ''}`} type="button" aria-label={fill(sim.timelineEnrageCount, { n: game.bossPressure })} aria-describedby={hover?.level === 11 ? 'level-timeline-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show(11, event.currentTarget) }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setHover(null) }} onFocus={(event) => show(11, event.currentTarget)} onBlur={() => setHover(null)} onClick={(event) => show(11, event.currentTarget)}>
-      <MilestoneIcon boss /><span>{sim.timelineEnrage}<strong key={game.bossPressure}>{active || game.bossPressure ? `+${game.bossPressure}` : sim.timelineLocked}</strong></span>
+      <MilestoneIcon boss /><span>{sim.timelineEnrage}<strong key={game.bossPressure}>{active || game.bossPressure ? fill(sim.bossEnrageBonus, { n: game.bossPressure }) : sim.timelineLocked}</strong></span>
     </button>
     {hover ? createPortal(<div className="gb-timeline-tooltip" id="level-timeline-tooltip" role="tooltip" style={{ left: hover.left, top: hover.top }}>
       <strong>{hover.level === 11 ? sim.timelineEnrage : `${fill(sim.timelineNodeLabel, { level: hover.level })}${hover.level === 5 ? ` · ${sim.timelineAwakening}` : hover.level === 10 ? ` · ${sim.timelineBoss}` : ''}`}</strong>
