@@ -385,6 +385,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <p className="eyebrow">{sim.setupEyebrow}</p>
           <h3>{sim.setupTitle}</h3>
           <p className="sim-intro">{sim.intro}</p>
+          <aside className="sim-solo-notice"><strong>{sim.soloCardSelectionTitle}</strong><p>{sim.soloCardSelection}</p></aside>
           <span className="sim-random-control">
             <button className="button sim-random-button" type="button" aria-describedby="random-hero-hint" onClick={() => {
               const hero = randomHero()
