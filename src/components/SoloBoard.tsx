@@ -14,6 +14,7 @@ import { useCardDialog } from '../hooks/useCardDialog'
 import { localizeCard } from '../i18n/cardTranslations'
 import { useLocale } from '../hooks/useLocale'
 import { useBoardFocus } from '../hooks/useBoardFocus'
+import { weaponSlots } from '../game/weaponSlots'
 import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
 import type { CardGender } from '../utils/cardIllustration'
 import { OATH, oathCompleted } from '../game/oaths'
@@ -534,7 +535,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const hero = (type: 'Classe' | 'Race', name: string) => heroCard(type, name)
 
   const slotClass = (key: string, slot: string) => {
-    if (!fromHand || locked || !canEquip(game, fromHand) || !slotAccepts(slot, fromHand)) return ''
+    if (!fromHand || handLocked || !canEquip(game, fromHand) || !slotAccepts(slot, fromHand)) return ''
     return ` is-target${slotOver === key ? ' is-over' : ''}`
   }
 
@@ -757,11 +758,18 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               {[0, 1].map((index) => {
                 const twoHanded = boardState.equipment.hands.length === 1 && card(boardState.equipment.hands[0]).subtype === 'Deux mains'
                 return (
-                  <div className={`gb-slot${slotClass(`hand-${index}`, 'hand')}`} key={`hand-${index}`} onDragEnter={() => setSlotOver(`hand-${index}`)} onDragOver={() => setSlotOver(`hand-${index}`)}>
+                  <div className={`gb-slot${slotClass(`hand-${index}`, 'hand')}`} data-weapon-slot={index} key={`hand-${index}`} onDragEnter={() => setSlotOver(`hand-${index}`)} onDragOver={() => setSlotOver(`hand-${index}`)} onDrop={event => {
+                    if (!fromHand || handLocked || card(fromHand).type !== 'Arme' || !canEquip(game, fromHand)) return
+                    event.preventDefault()
+                    event.stopPropagation()
+                    setOver(null)
+                    setSlotOver(null)
+                    commitDrop([{ t: 'equip', id: fromHand, hand: index as 0 | 1 }])
+                  }}>
                     <span className="gb-slot-label">
                       {sim.weapons} {index + 1}
                     </span>
-                    {twoHanded && index === 1 ? <div className="gb-two-handed-copy"><GameCard id={boardState.equipment.hands[0]} allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)} equipmentPower={gearIgnored(boardState.equipment.hands[0]) ? 0 : equipmentCardPower(boardState, boardState.equipment.hands[0])} neutralized={gearIgnored(boardState.equipment.hands[0])} playerClass={boardState.klass} locale={locale} onInspect={(el) => inspect(boardState.equipment.hands[0], el)} size="sm" /></div> : renderEquipped(boardState.equipment.hands[index], 'hand')}
+                    {twoHanded && index === 1 ? <div className="gb-two-handed-copy"><GameCard id={boardState.equipment.hands[0]} allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)} equipmentPower={gearIgnored(boardState.equipment.hands[0]) ? 0 : equipmentCardPower(boardState, boardState.equipment.hands[0])} neutralized={gearIgnored(boardState.equipment.hands[0])} playerClass={boardState.klass} locale={locale} onInspect={(el) => inspect(boardState.equipment.hands[0], el)} size="sm" /></div> : renderEquipped(weaponSlots(boardState.equipment)[index], 'hand')}
                   </div>
                 )
               })}

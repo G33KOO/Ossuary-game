@@ -1,4 +1,5 @@
 import { combatRewards } from './combatRewards'
+import { removeWeapon, setWeaponSlots, weaponSlots } from './weaponSlots'
 import { ARMOR_SLOTS, CARDS, COMBAT_ONLY_ACTIONS, SOLO_EXCLUDED_ACTIONS, card, printedPower } from './data'
 import type { ClassName, RaceName } from './data'
 import { activeClass, artifactBoosts, equippedIds, handLimit, hasFlag, isMasteredWeapon, strongestEquipmentPower, computePower, equipmentCardPower } from './power'
@@ -265,7 +266,7 @@ function destroyEquipped(s: GameState, id: string, voluntary = false) {
   for (const slot of ARMOR_SLOTS) {
     if (s.equipment.armors[slot] === id) s.equipment.armors[slot] = null
   }
-  s.equipment.hands = s.equipment.hands.filter((handId) => handId !== id)
+  removeWeapon(s.equipment, id)
   if (s.equipment.extraArmor?.id === id) s.equipment.extraArmor.id = null
   s.lootDiscard.push(id)
   log(s, 'destroyed', { card: id })
@@ -277,7 +278,7 @@ function destroyEquipped(s: GameState, id: string, voluntary = false) {
 
 // ---------- Equipment ----------
 
-function equip(s: GameState, id: string) {
+function equip(s: GameState, id: string, hand?: 0 | 1) {
   const entry = card(id)
   if (!s.hand.includes(id)) return
   if (entry.type === 'Armure') {
@@ -291,12 +292,20 @@ function equip(s: GameState, id: string) {
       s.equipment.armors[entry.subtype] = id
     }
   } else if (entry.type === 'Arme') {
-    const size = (cardId: string) => (card(cardId).subtype === 'Deux mains' ? 2 : 1)
-    while (s.equipment.hands.reduce((sum, handId) => sum + size(handId), 0) + size(id) > 2) {
-      const removed = s.equipment.hands.shift()
-      if (removed) s.hand.push(removed)
+    const slots = weaponSlots(s.equipment)
+    const twoHanded = entry.subtype === 'Deux mains'
+    if (twoHanded || (slots[0] && slots[0] === slots[1])) {
+      s.hand.push(...s.equipment.hands)
+      slots[0] = null
+      slots[1] = null
     }
-    s.equipment.hands.push(id)
+    if (twoHanded) setWeaponSlots(s.equipment, [id, id])
+    else {
+      const target = hand ?? (!slots[0] ? 0 : !slots[1] ? 1 : 0)
+      if (slots[target]) s.hand.push(slots[target]!)
+      slots[target] = id
+      setWeaponSlots(s.equipment, slots)
+    }
   } else if (entry.type === 'Artefact de classe') {
     if (!canEquip(s, id)) return
     if (s.equipment.artifact) s.hand.push(s.equipment.artifact)
@@ -337,7 +346,7 @@ function unequip(s: GameState, id: string) {
   for (const slot of ARMOR_SLOTS) {
     if (s.equipment.armors[slot] === id) s.equipment.armors[slot] = null
   }
-  s.equipment.hands = s.equipment.hands.filter((handId) => handId !== id)
+  removeWeapon(s.equipment, id)
   if (s.equipment.artifact === id) s.equipment.artifact = null
   if (s.equipment.extraArmor?.id === id) s.equipment.extraArmor.id = null
   s.hand.push(id)
@@ -1618,7 +1627,7 @@ function apply(s: GameState, action: GameAction): GameState {
       if (s.phase === 'main' && !s.combat && s.endTurnPending) s.endTurnRequested = true
       break
     case 'equip':
-      if (canEquip(s, action.id)) equip(s, action.id)
+      if (canEquip(s, action.id)) equip(s, action.id, action.hand)
       break
     case 'unequip':
       if (canChangeEquipment(s)) unequip(s, action.id)

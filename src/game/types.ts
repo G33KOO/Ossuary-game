@@ -55,6 +55,7 @@ export type Equipment = {
   extraArmor?: { slot: string; id: string | null }
   armors: Record<string, string | null>
   hands: string[]
+  offhand?: string
   artifact: string | null
 }
 
@@ -139,7 +140,7 @@ export type GameState = {
 
 export type GameAction =
   | { t: 'endTurn' }
-  | { t: 'equip'; id: string }
+  | { t: 'equip'; id: string; hand?: 0 | 1 }
   | { t: 'unequip'; id: string }
   | { t: 'fightMonster' }
   | { t: 'drawLoot' }
