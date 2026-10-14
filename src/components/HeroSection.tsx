@@ -61,10 +61,6 @@ export function HeroSection() {
             </button>
           ))}
         </div>
-        <div className="art-caption">
-          <span>{t('hero.depths')}</span>
-          <span>{t('hero.levelsBosses')}</span>
-        </div>
       </div>
     </section>
   )
