@@ -32,6 +32,7 @@ import { LevelTimeline } from './LevelTimeline'
 import { BossEnrage } from './BossEnrage'
 import { TavernBoard } from './TavernBoard'
 import { BoardChoice } from './BoardChoice'
+import { MonsterCombatBonuses } from './MonsterCombatBonuses'
 import { DrawFlight } from './DrawFlight'
 import { actionVisual } from '../game/actionVisual'
 import { drawPresentations } from '../game/drawPresentations'
@@ -614,7 +615,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         <DropTarget as="section" className={`gb-arena${combat?.kind === 'monster' && (choiceVisible || effectVisible) ? ' gb-arena-with-context' : ''}`} target={playZone} onHover={setOver} onCommit={commitDrop}>
           {combat?.kind === 'monster' && (choiceVisible || effectVisible) ? <aside className="gb-combat-context" aria-label={sim.opponent}>
             <div className="gb-combat-context-cards">
-              {combat.monsters.filter(id => !pendingMonsterIds.has(id)).map(id => <GameCard key={id} id={id} locale={locale} size="lg" onInspect={el => inspect(id, el)} />)}
+              {combat.monsters.filter(id => !pendingMonsterIds.has(id)).map(id => <div key={id}><GameCard id={id} locale={locale} size="lg" onInspect={el => inspect(id, el)} /><MonsterCombatBonuses game={boardState} id={id} locale={locale} compact /></div>)}
             </div>
             {power ? <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} /> : null}
             {power ? <Score label={sim.yourPower} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} /> : null}
@@ -638,6 +639,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   <div className={`gb-monster-encounter${pendingMonsterIds.has(id) ? ' is-awaiting-draw' : ''}`} key={id} inert={pendingMonsterIds.has(id)} aria-hidden={pendingMonsterIds.has(id) || undefined}>
                     <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="lg" />
                     {card(id).text && <div className="gb-monster-effect" key={`${id}-${boardState.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}
+                    <MonsterCombatBonuses game={boardState} id={id} locale={locale} />
                   </div>
                 ))}
                 {combat.kind === 'boss' && combat.bossId ? <div className="gb-boss-formation">

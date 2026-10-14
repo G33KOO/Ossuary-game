@@ -155,11 +155,8 @@ export function computePower(state: GameState): CombatPower | null {
     base = 20 + bossEquipmentPower(combat)
   } else {
     for (const id of combat.monsters) {
-      const monster = card(id)
       base += printedPower(id)
-      if (monster.opponentBonus.includes(`${state.race}s`)) {
-        base += Number.parseInt(monster.opponentBonus, 10) || 0
-      }
+      base += monsterRaceBonus(state, id)
     }
   }
   const opponentBonus = combat.monsterBonus + combat.bossBonus
@@ -173,4 +170,9 @@ export function computePower(state: GameState): CombatPower | null {
   }
 
   return { player, opponent }
+}
+
+export function monsterRaceBonus(state: Pick<GameState, 'race'>, id: string) {
+  const bonus = card(id).opponentBonus
+  return bonus.includes(`${state.race}s`) ? Number.parseInt(bonus, 10) || 0 : 0
 }

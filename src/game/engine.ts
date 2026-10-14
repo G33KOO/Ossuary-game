@@ -1,3 +1,4 @@
+import { combatRewards } from './combatRewards'
 import { ARMOR_SLOTS, CARDS, COMBAT_ONLY_ACTIONS, SOLO_EXCLUDED_ACTIONS, card, printedPower } from './data'
 import type { ClassName, RaceName } from './data'
 import { activeClass, artifactBoosts, equippedIds, handLimit, hasFlag, isMasteredWeapon, strongestEquipmentPower, computePower, equipmentCardPower } from './power'
@@ -10,10 +11,6 @@ const BOSS_LEVEL = 10
 const TAVERN_SIZE = 3
 
 export const BOSS_IDS = CARDS.filter((entry) => entry.type === 'Boss').map((entry) => entry.id)
-
-function num(value: string) {
-  return Number.parseInt(value, 10) || 0
-}
 
 function log(s: GameState, code: string, params?: LogEntry['params']) {
   s.log.push(params ? { code, params } : { code })
@@ -778,22 +775,10 @@ function winMonster(s: GameState, tie: boolean) {
     return
   }
   completeVictoryOaths(s, c, tie)
-  let levels = 0
-  let loot = 0
-  for (const id of c.monsters) {
-    levels += num(card(id).levelGain)
-    loot += num(card(id).loot)
-  }
-  if (names.includes('Cisailleur') && tie) loot += 1
-  if (c.forgoLoot) loot = 0
-  let multiplier = c.lootMultiplier
-  if (names.includes('Immaculée') && c.playerDie === 6) multiplier *= 2
-  loot *= multiplier
-  const sporule = names.includes('Sporule')
-  if (sporule) {
-    levels = 0
-    loot = 0
-  }
+  const rewards = combatRewards(c, tie)
+  const levels = rewards.levels
+  let loot = rewards.loot
+  const sporule = rewards.sporule
   if (names.includes('Sans-Visage')) {
     let index = 0
     while (true) {

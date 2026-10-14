@@ -1747,6 +1747,13 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-monster-encounter { display: grid; grid-template-columns: auto minmax(0, 1fr); }
+.gb-combat-bonuses { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 5px; min-width: 0; }
+.gb-combat-bonus { display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px; border: 1px solid var(--gold); border-radius: 6px; color: var(--gold-light); background: rgb(201 164 92 / 12%); font: 700 10px var(--sans); animation: gb-bonus-arrive 450ms ease both; }
+.gb-combat-bonus.is-negative { border-color: var(--ember); color: var(--bone); background: rgb(185 60 45 / 12%); }
+.gb-combat-bonus img { width: 14px; height: 14px; object-fit: contain; }
+@keyframes gb-bonus-arrive { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .gb-combat-bonus { animation: none; } }
 .gb-opening { width: 100%; margin: auto; text-align: center; color: var(--gold-light); animation: gb-opening-arrive 1600ms ease both; }
 .gb-opening-sigil { display: inline-grid; place-items: center; width: 62px; height: 62px; border: 1px solid var(--gold); border-radius: 50%; font: 700 42px var(--display); box-shadow: 0 0 36px rgb(201 164 92 / 25%); }
 .gb-opening h3 { font: 700 clamp(20px, 3vw, 32px) var(--display); margin: 16px 0 8px; }
