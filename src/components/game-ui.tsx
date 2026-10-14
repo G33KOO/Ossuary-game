@@ -196,10 +196,9 @@ export function Die({ sides, value, rolling, ready = false, label, tone }: { sid
 
 export function Score({ label, total, parts, side }: { label: string; total: number; parts: string; side: 'you' | 'foe' }) {
   return (
-    <div className={`gb-score ${side}`}>
+    <div className={`gb-score ${side}`} title={parts}>
       <span className="gb-score-label">{label}</span>
       <strong key={total} className="gb-power-change">{total}</strong>
-      <span className="gb-score-parts">{parts}</span>
     </div>
   )
 }
