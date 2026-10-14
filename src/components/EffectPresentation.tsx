@@ -4,7 +4,6 @@ import type { Locale } from '../i18n/LocaleProvider'
 import { card } from '../game/data'
 import { localizeCard } from '../i18n/cardTranslations'
 import { actionVisual } from '../game/actionVisual'
-import { Modal } from './Modal'
 import { GameCard } from './game-ui'
 import { DiceResults } from './DiceResults'
 
@@ -28,7 +27,8 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
     return () => window.clearTimeout(timer)
   }, [hasRoll])
   const effect = stage.lines[0].code === 'bossItemDestroyed' ? 'destroy' : stage.id ? actionVisual(card(stage.id).name).effect : 'magic'
-  return <Modal id="game-effect-title" title={stage.lines[0].code.startsWith('boss') ? sim.bossActionTitle : sim.cardEffectTitle} className={`gb-boss-action gb-effect-presentation effect-${effect}`}>
+  return <section aria-labelledby="game-effect-title" className={`gb-boss-action gb-effect-presentation gb-board-effect effect-${effect}`}>
+    <h3 id="game-effect-title">{stage.lines[0].code.startsWith('boss') ? sim.bossActionTitle : sim.cardEffectTitle}</h3>
     <div className="gb-boss-action-layout">
       {stage.id ? <GameCard id={stage.id} locale={locale} onInspect={(el) => inspect(stage.id!, el)} size="lg" className="gb-boss-played-card" /> : null}
       <div className="gb-boss-action-copy" aria-live="polite">
@@ -42,5 +42,5 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
         <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button>
       </div>
     </div>
-  </Modal>
+  </section>
 }

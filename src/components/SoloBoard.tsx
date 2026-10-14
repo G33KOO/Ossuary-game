@@ -31,6 +31,7 @@ import { CombatRecap } from './CombatRecap'
 import { LevelTimeline } from './LevelTimeline'
 import { BossEnrage } from './BossEnrage'
 import { TavernBoard } from './TavernBoard'
+import { BoardChoice } from './BoardChoice'
 import { actionVisual } from '../game/actionVisual'
 import { drawPresentations } from '../game/drawPresentations'
 import type { ActionEffect, ActionTarget } from '../game/actionVisual'
@@ -552,6 +553,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const limit = handLimit(game)
   const bossUnlocked = game.level >= 10
   const tavern = prompt?.purpose === 'tavern' || prompt?.purpose === 'tavern-give'
+  const choiceVisible = prompt && !tavern && prompt.purpose !== 'oath' && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0
+  const effectVisible = bossPresentations[0] && bossPresentations[0].lines[0].code !== 'resolved' && !bossReveal && !reveal && !playedAction
   const dragFrom = (from: Drag['from'], id: string) => ({
     draggable: true,
     onDragEnd: () => {
@@ -612,6 +615,35 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       <span className="gb-slot-empty">{TYPE_ICON[slot.startsWith('hand') ? 'Arme' : slot === 'artifact' ? 'Artefact de classe' : 'Armure']}</span>
     )
 
+  const bossOnBoard = bossReveal ? (
+        <section className="gb-boss-draw gb-board-boss-draw" aria-labelledby="boss-draw-title"><h3 id="boss-draw-title">{sim.bossDrawTitle}</h3>
+            <div className="gb-boss-draw-card">
+              <div className="gb-boss-draw-back"><CardBack kind="boss" size="lg" /></div>
+              <button className="gb-boss-draw-front" type="button" onClick={(event) => inspect(bossReveal, event.currentTarget)} aria-label={sim.inspect}>
+                {getCardIllustration(card(bossReveal)) ? <img alt={localizeCard(card(bossReveal), locale).name} src={getCardIllustration(card(bossReveal))!.src} /> : <span>{localizeCard(card(bossReveal), locale).name}</span>}
+              </button>
+            </div>
+            <div className="gb-boss-draw-info"><h3>{localizeCard(card(bossReveal), locale).name}</h3><p>{localizeCard(card(bossReveal), locale).text}</p></div>
+            <button className="button button-primary gb-boss-draw-continue" disabled={!bossDrawReady} type="button" onClick={() => setBossReveal(null)}>{sim.nextAction} →</button>
+          </section>
+      ) : null
+
+  const revealOnBoard = reveal ? (
+        <div className="gb-reveal gb-board-reveal" key={reveal.seq}>
+          <p className="gb-reveal-title">{reveal.kind === 'monster' ? sim.monsterAppears : sim.drewLootTitle}</p>
+          <div className="gb-reveal-cards">
+            {reveal.cards.map((id, index) => (
+              <div className={`gb-reveal-card from-${reveal.kind}`} key={`${id}-${index}`} style={{ '--d': `${index * (REVEAL_STAGGER / 1000)}s` } as CSSProperties}>
+                <span className="gb-reveal-back">
+                  <CardBack kind={reveal.kind} size="lg" />
+                </span>
+                <GameCard id={id} locale={locale} onInspect={() => undefined} size="lg" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null
+
   return (
     <div className={`gb gb-full${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
@@ -648,7 +680,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
         <div className="gb-center">
         <DropTarget as="section" className="gb-arena" target={playZone} onHover={setOver} onCommit={commitDrop}>
-          {tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} inventory={() => setInventoryOpen(true)} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
+          {bossReveal ? bossOnBoard : reveal ? revealOnBoard : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} inventory={() => setInventoryOpen(true)} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -871,23 +903,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </aside>
       ) : null}
 
-      {reveal ? (
-        <div className="gb-reveal" key={reveal.seq}>
-          <p className="gb-reveal-title">{reveal.kind === 'monster' ? sim.monsterAppears : sim.drewLootTitle}</p>
-          <div className="gb-reveal-cards">
-            {reveal.cards.map((id, index) => (
-              <div className={`gb-reveal-card from-${reveal.kind}`} key={`${id}-${index}`} style={{ '--d': `${index * (REVEAL_STAGGER / 1000)}s` } as CSSProperties}>
-                <span className="gb-reveal-back">
-                  <CardBack kind={reveal.kind} size="lg" />
-                </span>
-                <GameCard id={id} locale={locale} onInspect={() => undefined} size="lg" />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {bossPresentations[0] && bossPresentations[0].lines[0].code !== 'resolved' && !bossReveal && !reveal && !playedAction ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : null}
       {inventoryOpen ? <HeroInventory game={boardState} locale={locale} sim={sim} inspect={(id, el) => inspect(id, el, handActions(id))} actions={handActions} onClose={() => setInventoryOpen(false)} /> : null}
       {recapOpen && final && !bossPresentations.length && !playedAction && !reveal && !bossReveal && !oathCelebrations.length ? <CombatRecap final={final} locale={locale} sim={sim} inspect={inspect} onClose={() => setRecapOpen(false)} /> : null}
 
@@ -902,20 +917,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </div>
       </Modal> : null}
 
-      {bossReveal ? (
-        <Modal id="boss-draw-title" title={sim.bossDrawTitle} className="gb-boss-draw">
-            <div className="gb-boss-draw-card">
-              <div className="gb-boss-draw-back"><CardBack kind="boss" size="lg" /></div>
-              <button className="gb-boss-draw-front" type="button" onClick={(event) => inspect(bossReveal, event.currentTarget)} aria-label={sim.inspect}>
-                {getCardIllustration(card(bossReveal)) ? <img alt={localizeCard(card(bossReveal), locale).name} src={getCardIllustration(card(bossReveal))!.src} /> : <span>{localizeCard(card(bossReveal), locale).name}</span>}
-              </button>
-            </div>
-            <div className="gb-boss-draw-info"><h3>{localizeCard(card(bossReveal), locale).name}</h3><p>{localizeCard(card(bossReveal), locale).text}</p></div>
-            <button className="button button-primary gb-boss-draw-continue" disabled={!bossDrawReady} type="button" onClick={() => setBossReveal(null)}>{sim.nextAction} →</button>
-          </Modal>
-      ) : null}
-
-      {prompt && !tavern && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? (
+      {prompt && prompt.purpose === 'oath' && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? (
         <Modal id="game-prompt-title" title={copy.promptTitles[prompt.purpose]} describedBy="game-prompt-instructions" className="gb-choice-modal" onClose={prompt.optional ? () => send({ t: 'answer', option: null }) : undefined} closeLabel={sim.skip}>
             <p className="sim-prompt-instructions" id="game-prompt-instructions">
               {fill(copy.prompts[prompt.purpose] ?? prompt.purpose, {
