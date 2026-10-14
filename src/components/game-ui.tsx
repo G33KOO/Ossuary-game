@@ -135,29 +135,18 @@ export function Pile({
 }
 
 export function Discard({
-  top,
   count,
   label,
-  locale,
+  linkLabel,
   onOpen,
 }: {
-  top: string | undefined
   count: number
   label: string
-  locale: Locale
+  linkLabel: string
   onOpen: () => void
 }) {
   return (
-    <div className="gb-discard">
-      {top ? (
-        <GameCard id={top} locale={locale} onInspect={onOpen} size="sm" />
-      ) : (
-        <span className="gb-discard-empty" />
-      )}
-      <span className="gb-pile-label">
-        {label} · {count}
-      </span>
-    </div>
+    <button className="gb-discard-link" type="button" aria-label={`${label} : ${count}`} aria-haspopup="dialog" onClick={onOpen}>{linkLabel}</button>
   )
 }
 

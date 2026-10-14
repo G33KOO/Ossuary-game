@@ -579,8 +579,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
   const labels = { level: sim.levelPart, equip: sim.equipPart, bonus: sim.bonusPart, die: sim.diePart }
   const foeLabels = { ...labels, equip: combat?.kind === 'boss' ? sim.equipPart : sim.powerPart }
-  const monsterTop = boardState.monsterDiscard[boardState.monsterDiscard.length - 1]
-  const lootTop = boardState.lootDiscard[boardState.lootDiscard.length - 1]
   const hero = (type: 'Classe' | 'Race', name: string) => heroCard(type, name)
 
   const slotClass = (key: string, slot: string) => {
@@ -645,7 +643,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             label={sim.pileMonster}
             onClick={() => send({ t: 'fightMonster' })}
           />
-          <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} locale={locale} onOpen={() => setDiscardOpen('monster')} top={monsterTop} />
+          <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('monster')} />
         </div>
 
         <div className="gb-center">
@@ -817,7 +815,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             label={sim.pileLoot}
             onClick={() => send({ t: 'drawLoot' })}
           />
-          <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} locale={locale} onOpen={() => setDiscardOpen('loot')} top={lootTop} />
+          <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('loot')} />
         </div>
       </div>
 
