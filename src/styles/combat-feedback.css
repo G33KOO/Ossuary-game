@@ -34,6 +34,11 @@
 .gb-final-scores > section > strong { display: block; font: 700 38px var(--display); color: var(--gold-light); }
 .gb-final-scores p { font-size: 12px; line-height: 1.4; }
 .gb-final-banner { font-size: 12px; }
+.gb-mobile-adventure-hint { display: none; }
+@media (max-width: 760px) {
+  .gb-mobile-adventure-hint { display: block; flex-basis: 100%; margin: 0; color: var(--bone); font-size: 12px; font-weight: 700; line-height: 1.4; }
+  .gb-idle .gb-idle-title { display: none; }
+}
 .gb-flee-control { position: relative; display: inline-flex; }
 .gb-flee-tooltip { position: absolute; bottom: calc(100% + 8px); right: 0; width: min(280px, 75vw); padding: 10px 12px; border: 1px solid var(--gold); border-radius: 6px; background: var(--surface-strong); color: var(--bone); font-size: 12px; line-height: 1.5; box-shadow: 0 6px 18px rgb(0 0 0 / 30%); z-index: 20; visibility: hidden; opacity: 0; pointer-events: none; }
 .gb-flee-control:hover .gb-flee-tooltip, .gb-flee-control:focus-visible .gb-flee-tooltip { visibility: visible; opacity: 1; }
@@ -59,9 +64,6 @@
 .gb-resolution-opponent .gb-native-group { animation: gb-attack-impact 1100ms 250ms both; }
 .gb-resolution-vanquished .gb-monster-encounter { pointer-events: none; animation: gb-monster-vanish 750ms ease-in forwards; }
 @keyframes gb-monster-vanish { 0% { opacity: 1; transform: none; filter: brightness(1.3); } 35% { filter: brightness(1.7) drop-shadow(0 0 18px #d9ad54); } 100% { opacity: 0; transform: translateY(-16px) scale(.88); filter: blur(5px); } }
-.gb-pile-tooltip { position: fixed; z-index: 85; width: min(260px, calc(100vw - 24px)); padding: 12px 14px; border: 1px solid var(--gold); border-radius: 8px; background: var(--surface-strong); color: var(--bone); box-shadow: 0 8px 24px rgb(0 0 0 / 35%); pointer-events: none; font-size: 12px; line-height: 1.5; }
-.gb-pile-tooltip strong { font-family: var(--display); color: var(--gold-light); }
-.gb-pile-tooltip p { margin: 6px 0 0; }
 @media (prefers-reduced-motion: reduce) { .gb-resolution-vanquished .gb-monster-encounter { animation: none; opacity: 0; } }
 .gb-combat-resolution:not(.beat-result) .gb-resolution-emblem { animation: gb-swords-strike 1100ms both; }
 @keyframes gb-hero-strike { 0%, 100% { transform: none; } 25% { transform: translateY(6px) rotate(-3deg); } 45% { transform: translateY(-22px) rotate(4deg); filter: brightness(1.4) drop-shadow(0 -10px 14px #d9ad54); } }

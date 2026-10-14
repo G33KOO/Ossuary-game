@@ -616,6 +616,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <button type="button" onClick={() => jumpTo('.gb-board')}>{sim.yourHero}</button>
           <button type="button" aria-haspopup="dialog" onClick={() => setInformationOpen(true)}>{sim.information}</button>
         </nav>
+        {main && !locked ? <p className="gb-mobile-adventure-hint" role="status">{sim.adventure}</p> : null}
       </div>
 
       <div className="gb-table" ref={tableRef}>
@@ -681,7 +682,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             </>
           ) : (
             <DropTarget className="gb-idle" target={playZone} onHover={setOver} onCommit={commitDrop}>
-              <p className="gb-idle-title">{sim.adventure}</p>
+              {main && !locked ? <p className="gb-idle-title">{sim.adventure}</p> : null}
               <Pile
                 count={BOSS_IDS.length}
                 disabled={locked || !bossUnlocked}
