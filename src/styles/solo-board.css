@@ -1747,6 +1747,11 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-full.gb-boss-battle .gb-foe-hand.is-revealed { flex-direction: row; flex-wrap: wrap; gap: 6px; max-height: 100%; overflow-y: auto; padding: 5px; }
+.gb-full.gb-boss-battle .gb-foe-hand.is-revealed .gb-card-wrap.size-sm { --w: 60px; flex-shrink: 0; animation: gb-boss-hand-reveal 600ms ease var(--reveal-delay, 0ms) both; }
+@keyframes gb-boss-hand-reveal { from { opacity: 0; transform: rotateY(-65deg) scale(.9); } to { opacity: 1; transform: rotateY(0) scale(1); } }
+@media (max-width: 760px) { .gb-full.gb-boss-battle .gb-foe-hand.is-revealed .gb-card-wrap.size-sm { --w: 48px; } }
+@media (prefers-reduced-motion: reduce) { .gb-full.gb-boss-battle .gb-foe-hand.is-revealed .gb-card-wrap.size-sm { animation: none; } }
 .gb-envers-layout { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 16px; }
 .gb-envers-target { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--bone); font-size: 10px; }
 .gb-envers-target > strong { color: var(--gold-light); font-family: var(--display); }

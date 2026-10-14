@@ -647,8 +647,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 {combat.kind === 'boss' && combat.bossId ? <div className="gb-boss-formation">
                   <div className="gb-boss-hand-zone">
                     <span className="gb-boss-zone-label">{sim.bossHandCount} : {combat.bossHand.length} {sim.cards}</span>
-                    <div className="gb-foe-hand" style={{ '--boss-hand-count': combat.bossHand.length } as CSSProperties}>
-                      {combat.bossHand.map((id, index) => <CardBack key={`${id}-${index}`} kind="boss" size="sm" />)}
+                    <div className={`gb-foe-hand${ended && !resolutionPreview && !bossPresentations.length ? ' is-revealed' : ''}`} style={{ '--boss-hand-count': combat.bossHand.length } as CSSProperties}>
+                      {combat.bossHand.map((id, index) => ended && !resolutionPreview && !bossPresentations.length ? <GameCard key={`${id}-${index}`} id={id} locale={locale} size="sm" onInspect={element => inspect(id, element)} style={{ '--reveal-delay': `${index * 80}ms` } as CSSProperties} /> : <CardBack key={`${id}-${index}`} kind="boss" size="sm" />)}
                     </div>
                   </div>
                   <div className="gb-boss-core">

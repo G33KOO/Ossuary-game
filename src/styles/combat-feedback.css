@@ -79,6 +79,12 @@
 .gb-tavern-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
 .gb-tavern-tools > span { font-size: 12px; color: var(--gold-light); }
 .gb-recap-modal > .button { display: flex; margin: 20px auto 0; }
+.gb-recap-modal.app-modal.sim-modal { display: flex; flex-direction: column; }
+.gb-recap-modal > :not(.gb-recap-card-lists) { flex-shrink: 0; }
+.gb-recap-card-lists { min-height: 0; overflow-y: auto; max-height: 42dvh; scrollbar-width: thin; }
+.gb-recap-card-lists h3 { margin: 8px 0; }
+.gb-boss-unplayed .gb-card-wrap { animation: gb-boss-hand-reveal 600ms ease both; }
+@media (prefers-reduced-motion: reduce) { .gb-boss-unplayed .gb-card-wrap { animation: none; } }
 .gb-pile:not(:disabled):hover .gb-pile-stack { filter: brightness(1.9) drop-shadow(0 0 22px rgb(255 224 132 / 95%)); }
 .gb-pile:not(:disabled) .gb-back:nth-child(3) { animation: gb-ready-edge 1800ms ease-in-out infinite; }
 @keyframes gb-ready-edge {
