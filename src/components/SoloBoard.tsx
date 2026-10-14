@@ -30,6 +30,7 @@ import { HeroInventory } from './HeroInventory'
 import { CombatRecap } from './CombatRecap'
 import { LevelTimeline } from './LevelTimeline'
 import { BossEnrage } from './BossEnrage'
+import { TavernBoard } from './TavernBoard'
 import { actionVisual } from '../game/actionVisual'
 import { drawPresentations } from '../game/drawPresentations'
 import type { ActionEffect, ActionTarget } from '../game/actionVisual'
@@ -526,7 +527,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     if (!game.hand.includes(id)) return undefined
     if (!gear && card(id).type !== 'Action') return undefined
     const reason = gear ? equipmentReason(game, id) : undefined
-    return <><button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { setInventoryOpen(false); send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
+    return <>{prompt?.purpose === 'tavern-give' ? <button className="button button-primary" type="button" disabled={handLocked} onClick={() => { setInventoryOpen(false); send({ t: 'answer', option: id }) }}>{sim.tavernTrade}</button> : null}<button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { setInventoryOpen(false); send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
   }
   const status = activeStatus(game)
   const activeCard = heroCard('Classe', status.klass)
@@ -550,7 +551,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const dieModifiers = [game.race === 'Elfe' ? sim.dieElfBonus : '', permanentDieBonus(game) ? sim.dieOathBonus : '', combat?.flags.includes('doubleDie') ? sim.dieDouble : '', combat?.flags.includes('wyrm') ? sim.dieWyrm : ''].filter(Boolean)
   const limit = handLimit(game)
   const bossUnlocked = game.level >= 10
-  const tavern = prompt?.purpose === 'tavern'
+  const tavern = prompt?.purpose === 'tavern' || prompt?.purpose === 'tavern-give'
   const dragFrom = (from: Drag['from'], id: string) => ({
     draggable: true,
     onDragEnd: () => {
@@ -569,8 +570,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
   const fromHand = drag?.from === 'hand' ? drag.id : null
   const fromEquip = drag?.from === 'equip' ? drag.id : null
-  const equipZone = zone('equip', Boolean(fromHand && !locked && canEquip(game, fromHand)), fromHand ? [{ t: 'equip', id: fromHand }] : [])
-  const playZone = zone('play', Boolean(fromHand && !locked && canPlayAction(game, fromHand)), fromHand ? [{ t: 'playAction', id: fromHand }] : [])
+  const equipZone = zone('equip', Boolean(fromHand && !handLocked && canEquip(game, fromHand)), fromHand ? [{ t: 'equip', id: fromHand }] : [])
+  const playZone = zone('play', Boolean(fromHand && !handLocked && canPlayAction(game, fromHand)), fromHand ? [{ t: 'playAction', id: fromHand }] : [])
   const draggedAction = fromHand && !locked && canPlayAction(game, fromHand) ? card(fromHand).name : null
   const targetsOpponent = Boolean(combat && draggedAction && ['Faiblesse', 'Frénésie', 'Apaiser', 'Malchance', 'Dépossession', 'Brise-armure', 'Destruction', 'Corrosion', 'Exécution', 'Peur'].includes(draggedAction))
   const foeZone = zone('foe', targetsOpponent, fromHand ? [{ t: 'playAction', id: fromHand }] : [])
@@ -649,7 +650,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
 
         <div className="gb-center">
         <DropTarget as="section" className="gb-arena" target={playZone} onHover={setOver} onCommit={commitDrop}>
-          {ended && !combat ? (
+          {tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} inventory={() => setInventoryOpen(true)} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -756,7 +757,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               <div className="gb-dice" />
               <div className="gb-score foe"><span className="gb-score-label">{sim.opponent}</span><strong>?</strong><span className="gb-score-parts">{sim.pickMonster}</span></div>
             </div>
-            <div className="gb-playzone"><div className="gb-controls">{preparation ? <><span className="gb-preparation-hint">{sim.preparation}</span><button className="button button-primary" disabled={locked} type="button" onClick={() => send({ t: 'endTurn' })}>{sim.endTurn}</button></> : <><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span></button></>}</div></div>
+            <div className="gb-playzone"><div className="gb-controls">{tavern ? <>{prompt?.purpose === 'tavern-give' ? <button className="button" type="button" disabled={handLocked} onClick={() => send({ t: 'answer', option: 'tavern-back' })}>{sim.tavernBack}</button> : null}<button className="button button-primary" type="button" disabled={handLocked} onClick={() => { if (prompt?.purpose === 'tavern-give') send({ t: 'answer', option: 'tavern-back' }); send({ t: 'answer', option: null }) }}>{sim.noThanks}</button></> : preparation ? <><span className="gb-preparation-hint">{sim.preparation}</span><button className="button button-primary" disabled={locked} type="button" onClick={() => send({ t: 'endTurn' })}>{sim.endTurn}</button></> : <><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span></button></>}</div></div>
           </>}
         </section>
         <section className="gb-board" style={{ '--board-card-count': 9 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) + (boardState.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) } as CSSProperties}>
@@ -931,8 +932,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           </Modal>
       ) : null}
 
-      {prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? (
-        <Modal id="game-prompt-title" title={copy.promptTitles[prompt.purpose]} describedBy="game-prompt-instructions" className={tavern ? 'gb-tavern-modal' : ''} onClose={prompt.optional ? () => send({ t: 'answer', option: null }) : undefined} closeLabel={tavern ? sim.noThanks : sim.skip}>
+      {prompt && !tavern && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? (
+        <Modal id="game-prompt-title" title={copy.promptTitles[prompt.purpose]} describedBy="game-prompt-instructions" className="gb-choice-modal" onClose={prompt.optional ? () => send({ t: 'answer', option: null }) : undefined} closeLabel={sim.skip}>
             <p className="sim-prompt-instructions" id="game-prompt-instructions">
               {fill(copy.prompts[prompt.purpose] ?? prompt.purpose, {
                 count: Number(prompt.ctx.count ?? 0),
@@ -942,23 +943,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 fresh: Number(prompt.ctx.fresh ?? 0),
               })}
             </p>
-            {tavern || prompt.purpose === 'tavern-give' ? <div className="gb-tavern-tools"><button className="button" type="button" onClick={() => setInventoryOpen(true)}>{sim.inspectInventory}</button><span>{fill(sim.tradesRemaining, { count: Number(prompt.ctx.remaining ?? 1) })}</span></div> : null}
-            {tavern ? <p className="sim-note">{sim.tavernHint}</p> : null}
-            {tavern ? <div className="gb-tavern-hand" aria-label={sim.handDock}>
-              {game.hand.map((id) => <GameCard key={id} id={id} locale={locale} size="sm" onInspect={(element) => inspect(id, element, handActions(id))} {...dragFrom('hand', id)} />)}
-            </div> : null}
             <div className="sim-cards">
               {prompt.options.map((option, index) => {
                 if (option.id === 'tavern-back') return null
                 const cardId = option.cardId ?? (option.id.startsWith('OSS-CARD-') ? option.id : undefined)
                 if (cardId) {
-                  const target = tavern
-                    ? zone(`tavern-${cardId}`, Boolean(fromHand), fromHand ? [{ t: 'answer', option: cardId }, { t: 'answer', option: fromHand }] : [])
-                    : null
                   return (
-                    <DropTarget className="sim-pick" target={target} key={`${option.id}-${index}`} onHover={setOver} onCommit={commitDrop}>
+                    <DropTarget className="sim-pick" target={null} key={`${option.id}-${index}`} onHover={setOver} onCommit={commitDrop}>
                       <GameCard id={cardId} locale={locale} onInspect={(el) => inspect(cardId, el)} size="md" />
-                      <button className="button button-primary" disabled={tavern && game.hand.length === 0} onClick={() => send({ t: 'answer', option: option.id })} type="button">
+                      <button className="button button-primary" onClick={() => send({ t: 'answer', option: option.id })} type="button">
                         {prompt.purpose === 'weapon-loot' ? sim.harvest : sim.choose}
                       </button>
                     </DropTarget>
@@ -975,12 +968,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 )
               })}
             </div>
-            {prompt.purpose === 'tavern-give' && prompt.options.some((option) => option.id === 'tavern-back') ? (
-              <button className="button" onClick={() => send({ t: 'answer', option: 'tavern-back' })} type="button">{sim.tavernBack}</button>
-            ) : null}
             {prompt.optional ? (
               <button className="sim-link" onClick={() => send({ t: 'answer', option: null })} type="button">
-                {tavern ? sim.noThanks : sim.skip}
+                {sim.skip}
               </button>
             ) : null}
           </Modal>

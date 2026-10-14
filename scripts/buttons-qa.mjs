@@ -89,8 +89,8 @@ try {
       await viewport(width,height)
       for(const route of ['/','/mecaniques','/cartes']) {await navigate(route);await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await audit(theme+'-'+width+route)}
       await setup('tavern');await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await audit(theme+'-'+width+'-tavern');await screenshot('buttons-tavern-'+theme+'-'+width)
-      await evaluate(`document.querySelector('.gb-tavern-tools button').click()`);await audit(theme+'-'+width+'-inventory')
-      await evaluate(`document.querySelector('.gb-inventory-modal .modal-close').click();document.querySelector('.sim-pick > .button').click()`);await audit(theme+'-'+width+'-trade-back');await screenshot('buttons-trade-'+theme+'-'+width)
+      await evaluate(`document.querySelector('.gb-tavern-inventory').click()`);await audit(theme+'-'+width+'-inventory')
+      await evaluate(`document.querySelector('.gb-inventory-modal .modal-close').click();document.querySelector('.gb-tavern-offer > .button').click()`);await audit(theme+'-'+width+'-trade-back');await screenshot('buttons-trade-'+theme+'-'+width)
       await setup('artifact');await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await audit(theme+'-'+width+'-disabled-combat')
       await evaluate(`document.querySelector('.gb-hand .gb-card').click()`);await wait(600);await audit(theme+'-'+width+'-detail');await screenshot('buttons-detail-'+theme+'-'+width)
       await evaluate(`document.querySelector('.card-dialog .modal-close').click();document.querySelector('.gb-mobile-nav button:last-child')?.click()`);await audit(theme+'-'+width+'-information')

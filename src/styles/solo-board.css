@@ -1753,3 +1753,30 @@ body.solo-playing footer {
 @media (prefers-reduced-motion: reduce) {
   .gb-boss-enrage.is-active strong { animation: none; }
 }
+@media (min-width: 761px) {
+  .gb-full .gb-table { grid-template-columns: clamp(150px, 14vw, 220px) minmax(0, 1fr) clamp(150px, 14vw, 220px); }
+  .gb-full .gb-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 8px; }
+  .gb-full .gb-side .gb-discard { min-width: 0; width: 100%; }
+  .gb-full .gb-side .gb-pile-label { white-space: normal; overflow-wrap: anywhere; }
+}
+.gb-tavern-board { width: min(100%, 660px); margin: auto; padding: 6px 10px; text-align: center; }
+.gb-tavern-heading { display: flex; align-items: baseline; justify-content: center; gap: 12px; }
+.gb-tavern-heading h3 { margin: 0; font-family: var(--display); color: var(--gold-light); font-size: 19px; }
+.gb-tavern-heading > span { font-size: 11px; color: var(--muted); }
+.gb-tavern-heading .gb-tavern-inventory { padding: 4px 8px; min-height: 28px; font-size: 10px; }
+.gb-tavern-mobile-controls { display: none; }
+.gb-tavern-board > p { margin: 6px 0 10px; font-size: 12px; line-height: 1.4; }
+.gb-tavern-offers { display: flex; justify-content: center; gap: clamp(8px, 2vw, 22px); }
+.gb-tavern-offer { display: flex; flex-direction: column; align-items: center; gap: 5px; border-radius: 8px; }
+.gb-full .gb-tavern-offer .gb-card-wrap.size-md { --w: clamp(56px, 8dvh, 80px); }
+.gb-tavern-offer .button { min-height: 30px; padding: 6px 10px; font-size: 10px; }
+.gb-tavern-offer.is-selected { outline: 2px solid var(--gold); outline-offset: 4px; box-shadow: 0 0 16px color-mix(in srgb, var(--gold) 35%, transparent); }
+.gb-tavern-offer.is-drop-target { outline: 2px dashed var(--gold); outline-offset: 4px; }
+.gb-tavern-board.is-dealing .gb-tavern-offer { pointer-events: none; }
+@media (max-width: 760px) {
+  .gb-tavern-board { padding: 8px 0; }
+  .gb-full .gb-tavern-offer .gb-card-wrap.size-md { --w: clamp(65px, 23vw, 100px); }
+  .gb-tavern-heading { flex-wrap: wrap; gap: 4px 10px; }
+  .gb-tavern-mobile-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
+  .gb-tavern-mobile-controls .button { min-height: 40px; padding: 8px 10px; font-size: 11px; }
+}
