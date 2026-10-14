@@ -319,7 +319,7 @@ function equip(s: GameState, id: string, hand?: 0 | 1) {
 }
 
 export function canManageHand(s: GameState) {
-  return s.promptQueue.every((prompt) => prompt.purpose === 'tavern' || prompt.purpose === 'tavern-give')
+  return s.promptQueue.every((prompt) => prompt.purpose === 'tavern' || prompt.purpose === 'tavern-give' || prompt.purpose === 'discard-excess')
 }
 
 export function canChangeEquipment(s: GameState) {
@@ -1779,8 +1779,13 @@ export function reduce(state: GameState, action: GameAction): GameState {
   const s = structuredClone(state)
   s.draws = []
   const result = apply(s, action)
+  result.promptQueue = result.promptQueue.filter(prompt => prompt.purpose !== 'discard-excess' || result.hand.length > handLimit(result))
   for (const prompt of result.promptQueue) {
     if (prompt.purpose === 'tavern-give') prompt.options = [...handOptions(result), { id: 'tavern-back' }]
+    if (prompt.purpose === 'discard-excess') {
+      prompt.options = handOptions(result)
+      prompt.ctx.count = result.hand.length - handLimit(result)
+    }
   }
   if (result.draws.length > 0) result.drawSeq += 1
   return result
