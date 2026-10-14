@@ -1526,12 +1526,12 @@ function answerPrompt(s: GameState, option: string | null) {
 // ---------- Turn flow ----------
 
 function endTurnNow(s: GameState) {
+  const limit = handLimit(s)
+  if (s.hand.length > limit) {
+    queue(s, { purpose: 'discard-excess', options: handOptions(s), optional: false, ctx: { count: s.hand.length - limit } })
+    return
+  }
   if (!s.tavernDone) {
-    const limit = handLimit(s)
-    if (s.hand.length > limit) {
-      queue(s, { purpose: 'discard-excess', options: handOptions(s), optional: false, ctx: { count: s.hand.length - limit } })
-      return
-    }
 
     s.tavernDone = true
     // The Tavern is a trade: with an empty hand there is nothing to swap, so it stays closed.
@@ -1609,6 +1609,13 @@ function apply(s: GameState, action: GameAction): GameState {
     settle(s)
     return s
   }
+  // Managing the hand reopens preparation; only an explicit end-turn request
+  // may advance it, including after actions played while visiting the Tavern.
+  if (!s.combat && canManageHand(s) && (
+    (action.t === 'playAction' && canPlayAction(s, action.id)) ||
+    (action.t === 'equip' && canEquip(s, action.id)) ||
+    (action.t === 'unequip' && canChangeEquipment(s))
+  )) s.endTurnRequested = false
   if (s.promptQueue.length > 0) {
     if (!canManageHand(s) || !['equip', 'unequip', 'playAction'].includes(action.t)) return s
     const tavern = s.promptQueue.splice(0)

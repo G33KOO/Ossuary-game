@@ -39,7 +39,7 @@ describe('manual turn preparation', () => {
     expect(game.promptQueue).toEqual([])
     expect(game.turn).toBe(2)
   })
-  it('does not add another discard step after playing a draw Action in the Tavern', () => {
+  it('returns to preparation and rechecks the hand after a draw Action in the Tavern', () => {
     let game = ready()
     game.hand = [id('Trouvaille'), ...CARDS.filter((entry) => entry.type === 'Armure').slice(0, 5).map((entry) => entry.id)]
     game.endTurnPending = true
@@ -49,8 +49,13 @@ describe('manual turn preparation', () => {
     expect(game.hand).toHaveLength(7)
     game = reduce(game, { t: 'answer', option: null })
     expect(game.promptQueue).toEqual([])
-    expect(game.turn).toBe(2)
+    expect(game.turn).toBe(1)
     expect(game.hand).toHaveLength(7)
+    game = reduce(game, { t: 'endTurn' })
+    expect(game.promptQueue[0].purpose).toBe('discard-excess')
+    game = reduce(game, { t: 'answer', option: game.hand[0] })
+    expect(game.turn).toBe(2)
+    expect(game.hand).toHaveLength(6)
   })
   it('keeps victory on the same turn and permits drawing and equipping before Tavern', () => {
     let game = ready()
@@ -119,6 +124,8 @@ describe('manual turn preparation', () => {
     expect(game.promptQueue[0].options.map((option) => option.id)).toEqual([...game.hand, 'tavern-back'])
     game = reduce(game, { t: 'answer', option: game.hand[0] })
     expect(game.hand).toContain(offer)
+    expect(game.turn).toBe(1)
+    game = reduce(game, { t: 'endTurn' })
     expect(game.turn).toBe(2)
   })
 
@@ -133,6 +140,8 @@ describe('manual turn preparation', () => {
     expect(reduce(game, { t: 'answer', option: offer }).hand).toEqual([])
     expect(game.promptQueue[0].purpose).toBe('tavern')
     game = reduce(game, { t: 'answer', option: null })
+    expect(game.turn).toBe(1)
+    game = reduce(game, { t: 'endTurn' })
     expect(game.turn).toBe(2)
   })
 
