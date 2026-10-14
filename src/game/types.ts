@@ -28,6 +28,7 @@ export type PromptPurpose =
   | 'necro-pick'
   | 'warrior-pick'
   | 'mage-keep'
+  | 'flee-result'
   | 'vow'
   | 'mimic'
   | 'envers'
@@ -61,6 +62,7 @@ export type Equipment = {
 }
 
 export type Combat = {
+  fleeRoll?: DiceRoll
   playerRoll?: DiceRoll
   bossRoll?: DiceRoll
   monsterRolls?: Record<string, DiceRoll>

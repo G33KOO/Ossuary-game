@@ -919,6 +919,24 @@ function attemptFlee(s: GameState, automatic: boolean) {
   const roll = guaranteed ? null : rollPlayerDice(s, 6, 'single', s.equipment.hands.some((id) => cardName(id) === 'Dague Lunefeuille') ? 1 : 0)
   const value = roll?.total ?? 0
   if (roll) log(s, 'fleeRolled', { card: c.monsters[0], ...rollParams(roll) })
+  if (roll) {
+    c.fleeRoll = roll
+    if (activeClass(s) === 'Mage' && activeStatus(s).available) {
+      queueFleeResult(s, c)
+      return
+    }
+    delete c.fleeRoll
+  }
+  finishFlee(s, c, value, guaranteed)
+}
+
+function queueFleeResult(s: GameState, c: Combat) {
+  const canReroll = activeClass(s) === 'Mage' && activeStatus(s).available
+  queue(s, { purpose: 'flee-result', optional: false, options: [{ id: 'accept-flee' }, ...(canReroll ? [{ id: 'mage-flee' }] : [])], ctx: { old: c.fleeRoll!.total } })
+}
+
+function finishFlee(s: GameState, c: Combat, value: number, guaranteed = false) {
+  delete c.fleeRoll
   if (guaranteed || value >= 4) {
     s.stats.flees += 1
     log(s, 'fled', { card: c.monsters[0], value, automatic: guaranteed ? 1 : 0 })
@@ -1197,7 +1215,7 @@ export function activeStatus(s: GameState): ActiveStatus {
       if (!s.hand.some((id) => card(id).type === 'Armure')) reasons.push({ code: 'armor-cost' })
       if (!equippedOptions(s, true).some((option) => !c?.doubledArmors.includes(option.id))) reasons.push({ code: 'armor-equipped' })
       break
-    case 'Mage': if (c && c.playerDie === null) reasons.push({ code: 'roll-first' }); break
+    case 'Mage': if (c && c.playerDie === null && !c.fleeRoll) reasons.push({ code: 'roll-first' }); break
     case 'Nécromancien': if (!s.monsterDiscard.length) reasons.push({ code: 'monster-discard-empty' }); break
     case 'Chasseur': if (!s.monsterDeck.length && s.level < BOSS_LEVEL) reasons.push({ code: 'monster-deck-empty' }); break
   }
@@ -1253,6 +1271,14 @@ function finishPay(s: GameState, kind: string) {
       break
     }
     case 'mage': {
+      if (c?.fleeRoll) {
+        const old = c.fleeRoll
+        const fresh = rollPlayerDice(s, 6, 'single', s.equipment.hands.some(id => cardName(id) === 'Dague Lunefeuille') ? 1 : 0)
+        c.fleeRoll = fresh
+        log(s, 'mageReroll', { ...rollParams(fresh) })
+        queue(s, { purpose: 'mage-keep', optional: false, options: [{ id: 'keep-old' }, { id: 'keep-new' }], ctx: { flee: 1, old: old.total, fresh: fresh.total, oldRaw: old.raw.join(','), oldSides: old.sides, oldBonus: old.bonus, oldTotal: old.total, oldMode: old.mode } }, true)
+        break
+      }
       if (!c || c.playerDie === null) break
       c.used.push('Mage')
       const old = c.playerDie
@@ -1456,7 +1482,10 @@ function answerPrompt(s: GameState, option: string | null) {
       }
       break
     case 'pay': {
-      if (option === null) break
+      if (option === null) {
+        if (c?.fleeRoll && prompt.ctx.kind === 'mage') queueFleeResult(s, c)
+        break
+      }
       const paid = [...(prompt.ctx.paid as string[]), option]
       const n = prompt.ctx.n as number
       if (paid.length < n) {
@@ -1508,11 +1537,22 @@ function answerPrompt(s: GameState, option: string | null) {
       break
     case 'mage-keep':
       if (c) {
+        if (prompt.ctx.flee && c.fleeRoll) {
+          if (option === 'keep-old') c.fleeRoll = { raw: String(prompt.ctx.oldRaw).split(',').map(Number), sides: Number(prompt.ctx.oldSides), bonus: Number(prompt.ctx.oldBonus), total: Number(prompt.ctx.oldTotal), mode: prompt.ctx.oldMode as DiceRoll['mode'] }
+          queueFleeResult(s, c)
+          break
+        }
         c.playerDie = option === 'keep-new' ? (prompt.ctx.fresh as number) : (prompt.ctx.old as number)
         if (option === 'keep-old' && typeof prompt.ctx.oldRaw === 'string') {
           c.playerRoll = prompt.ctx.oldRaw ? { raw: prompt.ctx.oldRaw.split(',').map(Number), sides: Number(prompt.ctx.oldSides), bonus: Number(prompt.ctx.oldBonus), total: Number(prompt.ctx.oldTotal), mode: prompt.ctx.oldMode as DiceRoll['mode'] } : undefined
           c.playerDieModifier = Number(prompt.ctx.oldModifier)
         }
+      }
+      break
+    case 'flee-result':
+      if (c?.fleeRoll) {
+        if (option === 'mage-flee' && activeStatus(s).available) activateClassActive(s)
+        else finishFlee(s, c, c.fleeRoll.total)
       }
       break
     case 'vow':

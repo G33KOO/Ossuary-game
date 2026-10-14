@@ -212,7 +212,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     let retained = Math.min(previousLogs.length, nextLogs.length)
     while (retained > 0 && !previousLogs.slice(-retained).every((entry, index) => entry === nextLogs[index])) retained -= 1
     const newLogs = next.log.slice(retained)
-    const activeTriggered = (action.t === 'useActive' && activeStatus(previous).available) || newLogs.some(entry => ['warriorThrow', 'necroBonus', 'thiefPick', 'armorDoubled'].includes(entry.code));
+    const activeTriggered = (action.t === 'answer' && action.option === 'mage-flee' && previous.promptQueue[0]?.purpose === 'flee-result' && next.promptQueue[0]?.purpose === 'pay') || (action.t === 'useActive' && activeStatus(previous).available) || newLogs.some(entry => ['warriorThrow', 'necroBonus', 'thiefPick', 'armorDoubled'].includes(entry.code));
     const activeEntry = activeTriggered ? heroCard('Classe', activeStatus(previous).klass) : undefined;
     const animatedId = action.t === 'playAction' && newLogs.some(entry => entry.code === 'actionPlayed') ? action.id : activeEntry?.id;
     if (animatedId) {
