@@ -601,9 +601,9 @@ function startBoss(s: GameState, bossId: string) {
     }
     case 'L’Envers': {
       const armor = equippedIds(s).filter((id) => card(id).type === 'Armure')
-        .sort((a, b) => printedPower(b) - printedPower(a))[0]
+        .sort((a, b) => equipmentCardPower(s, b, c) - equipmentCardPower(s, a, c))[0]
       if (armor) {
-        queue(s, { purpose: 'envers', options: [...handOptions(s), { id: 'decline' }], optional: false, ctx: { armor } })
+        queue(s, { purpose: 'envers', options: [...handOptions(s), { id: 'decline' }], optional: false, ctx: { armor, armorPower: equipmentCardPower(s, armor, c) } })
       }
       break
     }
@@ -1524,7 +1524,7 @@ function answerPrompt(s: GameState, option: string | null) {
       if (c) {
         if (option === 'decline') {
           c.stolenArmor = prompt.ctx.armor as string
-          c.bossBonus += printedPower(prompt.ctx.armor as string)
+          c.bossBonus += Number(prompt.ctx.armorPower ?? equipmentCardPower(s, prompt.ctx.armor as string, c))
           log(s, 'enversSteals', { card: prompt.ctx.armor as string })
         } else if (option) {
           discardFromHand(s, option)

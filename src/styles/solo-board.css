@@ -1747,6 +1747,18 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-envers-layout { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 16px; }
+.gb-envers-target { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--bone); font-size: 10px; }
+.gb-envers-target > strong { color: var(--gold-light); font-family: var(--display); }
+.gb-envers-response { min-width: 0; }
+.gb-envers-response h4 { margin: 0 0 10px; color: var(--gold-light); font: 700 12px var(--display); }
+.gb-envers-response .gb-board-choice-options > .button { min-height: 36px; padding: 8px 12px; font-size: 10px; letter-spacing: .03em; }
+.gb-envers-threat .gb-card { outline: 2px solid var(--ember); outline-offset: 3px; box-shadow: 0 0 18px rgb(185 60 45 / 30%); }
+@media (max-width: 760px) {
+  .gb-envers-layout { grid-template-columns: 82px minmax(0, 1fr); gap: 10px; align-items: start; }
+  .gb-full .gb-envers-target .gb-card-wrap.size-md { --w: 70px; }
+  .gb-envers-response h4 { font-size: 10px; }
+}
 .gb-boss-drawn-cards { display: flex; justify-content: center; gap: 6px; margin: 8px 0; }
 .gb-boss-drawn-cards > span { animation: gb-bonus-arrive 600ms ease both; }
 @media (prefers-reduced-motion: reduce) { .gb-boss-drawn-cards > span { animation: none; } }

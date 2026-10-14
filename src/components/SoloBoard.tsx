@@ -544,6 +544,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const renderEquipped = (id: string | null | undefined, slot: string) =>
     id ? (
       <GameCard
+        className={prompt?.purpose === 'envers' && prompt.ctx.armor === id ? 'gb-envers-threat' : undefined}
         playerClass={game.klass}
         allWeaponMastery={oathCompleted(game, OATH.foreignIron)}
         equipmentPower={gearIgnored(id) ? 0 : equipmentCardPower(boardState, id)}
