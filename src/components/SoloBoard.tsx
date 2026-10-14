@@ -411,10 +411,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               entry={heroCard('Classe', name)}
               key={name}
               label={heroName('Classe', name)}
+              warning={name === 'Voleur' ? sim.rogueSoloLabel : undefined}
+              warningDetails={name === 'Voleur' ? sim.rogueSoloWarning : undefined}
               onClick={() => { setKlass(name); setRandomizedHero(null) }}
             />
           ))}
         </div>
+        {klass === 'Voleur' ? <p className="sim-class-warning" role="status"><span aria-hidden="true">⚠</span> {sim.rogueSoloWarning}</p> : null}
         </section>
         <section className="sim-choice-section" aria-labelledby="setup-race">
         <div className="sim-choice-heading"><span className="sim-step" aria-hidden="true">02</span><div><h4 id="setup-race">{sim.chooseRace}</h4><p>{sim.raceHint}</p></div></div>
@@ -923,18 +926,23 @@ function HeroChoice({
   label,
   onClick,
   gender = 'male',
+  warning,
+  warningDetails,
 }: {
   active: boolean
   entry: (typeof CARDS)[number] | undefined
   label: string
   onClick: () => void
   gender?: CardGender
+  warning?: string
+  warningDetails?: string
 }) {
   const art = entry ? getCardIllustration(entry, gender) : undefined
   return (
     <button aria-pressed={active} className={`sim-choice${active ? ' is-active' : ''}`} onClick={onClick} type="button">
       {art ? <img alt="" loading="lazy" src={art.src} /> : null}
       <span className="sim-choice-name">{label}</span>
+      {warning ? <span className="sim-choice-warning" title={warningDetails}><span aria-hidden="true">⚠</span> {warning}</span> : null}
       <span aria-hidden="true" className="sim-choice-check">{active ? '✓' : '+'}</span>
     </button>
   )

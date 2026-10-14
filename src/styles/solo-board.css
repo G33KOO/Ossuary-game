@@ -1590,6 +1590,9 @@ body.solo-playing footer {
 .sim-setup .sim-choice img { display: block; width: 100%; height: auto; aspect-ratio: auto; object-fit: contain; border-radius: 0; }
 .sim-setup .sim-gender-switch { justify-content: flex-start; margin: 0 0 18px; }
 .sim-choice-name { display: block; width: 100%; padding: 13px 6px; font-size: clamp(10px, 1.1vw, 13px); overflow-wrap: anywhere; }
+.sim-choice-warning { display: block; margin: 0 6px 10px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 5px; color: var(--gold-light); background: var(--surface-strong); font: 600 11px/1.4 var(--sans); letter-spacing: 0; text-transform: none; }
+.sim-class-warning { margin: 14px 0 0; padding: 10px 12px; border-left: 2px solid var(--gold); background: var(--surface-strong); color: var(--bone); font-size: 13px; line-height: 1.5; }
+.sim-class-warning > span { color: var(--gold-light); margin-right: 4px; }
 .sim-choice-check { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: rgb(0 0 0 / 75%); color: var(--bone); border: 1px solid rgb(255 255 255 / 25%); }
 .sim-setup .sim-choice.is-active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); background: var(--surface-strong); }
 .sim-choice.is-active .sim-choice-check { background: var(--gold); color: #100c0a; border-color: var(--gold); }
