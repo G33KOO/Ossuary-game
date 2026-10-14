@@ -115,6 +115,7 @@ export type GameState = {
   lootDiscard: string[]
   monsterDeck: string[]
   monsterDiscard: string[]
+  removedMonsters?: string[]
   strongMonsters: string[]
   strongAdded: boolean
   dieSides: 6 | 8

@@ -72,6 +72,7 @@ describe('solo engine', () => {
         const monsters =
           state.monsterDeck.length +
           state.monsterDiscard.length +
+          (state.removedMonsters?.length ?? 0) +
           state.strongMonsters.length * (state.strongAdded ? 0 : 1) +
           (state.combat?.monsters.length ?? 0) +
           (state.retainedMonsters?.length ?? 0) +

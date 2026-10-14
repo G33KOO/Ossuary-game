@@ -137,11 +137,21 @@ function drawLoot(s: GameState, count: number) {
   }
 }
 
+export function retireWeakMonsters(s: GameState) {
+  if (!s.strongAdded) return
+  const retired = s.monsterDeck.filter((id) => [4, 6, 7].includes(printedPower(id)))
+  if (!retired.length) return
+  s.removedMonsters = [...(s.removedMonsters ?? []), ...retired]
+  s.monsterDeck = s.monsterDeck.filter((id) => ![4, 6, 7].includes(printedPower(id)))
+}
+
 function drawMonster(s: GameState) {
+  retireWeakMonsters(s)
   if (s.monsterDeck.length === 0 && s.monsterDiscard.length > 0) {
     s.monsterDeck = shuffle(s, s.monsterDiscard)
     s.monsterDiscard = []
     log(s, 'monstersReshuffled')
+    retireWeakMonsters(s)
   }
   const id = s.monsterDeck.shift()
   if (id) s.draws.push({ id, kind: 'monster' })
@@ -196,6 +206,7 @@ function checkMilestone(s: GameState) {
   if (s.level >= 5 && !s.strongAdded) {
     s.strongAdded = true
     s.monsterDeck = shuffle(s, [...s.monsterDeck, ...s.strongMonsters])
+    retireWeakMonsters(s)
     log(s, 'strongMonsters')
   }
 }
@@ -1566,6 +1577,9 @@ function endTurnNow(s: GameState) {
     s.forcedMonsterId = null
     const index = s.monsterDeck.indexOf(id)
     if (index >= 0) s.monsterDeck.splice(index, 1)
+    // A pending rematch belongs to the previous encounter, not to a new draw.
+    const retiredIndex = s.removedMonsters?.indexOf(id) ?? -1
+    if (retiredIndex >= 0) s.removedMonsters!.splice(retiredIndex, 1)
     startMonsterCombat(s, id)
     if (s.combat) addFlag(s.combat, 'pest-retry')
     s.draws.push({ id, kind: 'monster' })

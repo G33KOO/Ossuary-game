@@ -25,7 +25,7 @@ const fr: SoloCopy = {
         'Choisissez une Classe et une Race : vous êtes l’unique héros. Vous démarrez au niveau 1 avec 5 Butins.',
         'Le Butin solo retire les Actions purement multijoueur (Pillage, Usurpation, Permutation, Interversion, Paralysie, Priorité, Exclusion, Achat forcé, Incapacité, Contre-sort et les 4 Échanges de Taverne) et ne garde que l’Artefact de votre Classe.',
         'Vous piochez 3 Serments compatibles avec le solo et en gardez 1 (2 pour le Revenant). Leur accomplissement est suivi et leurs récompenses sont appliquées. Les Serments qui exigent un autre joueur sont exclus. Ils ne conditionnent pas le Boss. Il n’y a ni Marchand à échanger, ni Esprits.',
-        'La pioche Monstre contient les 48 Monstres initiaux. Au niveau 5, les 18 Monstres puissants (Puissance 15, 18 et 20) y sont mélangés, une seule fois.',
+        'La pioche Monstre contient les 48 Monstres initiaux. Au niveau 5, Danger + : les 18 Monstres forts (Puissance 15, 18 et 20) y sont mélangés une seule fois, et les Monstres de Puissance 4, 6 et 7 en sont retirés définitivement.',
       ],
     },
     {
@@ -123,6 +123,7 @@ const fr: SoloCopy = {
     timelineNodeLabel: 'Niveau {level}',
     timelineCurrentLevel: 'Vous êtes au niveau {level}.',
     timelineAwakening: 'Éveil',
+    timelineDanger: 'Danger +',
     timelineBoss: 'Boss',
     timelineEnrage: 'Enrage',
     bossEnrageLabel: 'Enrage du Boss',
@@ -132,6 +133,7 @@ const fr: SoloCopy = {
     timelineEnrageCount: 'Enrage du Boss : {n} carte(s) supplémentaire(s).',
     timelineLevel5: 'Le danger augmente et votre héros peut s’éveiller.',
     timelineStrongMonsters: 'Les Monstres forts (Puissance 15, 18 et 20) rejoignent la pioche une seule fois.',
+    timelineRemovedMonsters: 'Les Monstres de Puissance 4, 6 et 7 sont retirés de la pioche et ne reviennent plus au remélange.',
     timelineAwakened: 'Votre héros utilise déjà un D8.',
     timelineCanAwaken: 'Vous pouvez jouer Éveil pour remplacer votre D6 par un D8.',
     timelineLevel10: 'La confrontation finale est disponible.',
@@ -428,7 +430,7 @@ const fr: SoloCopy = {
     newTurn: '— Tour {turn} —',
     drewLoot: 'Vous piochez {count} Butin(s).',
     rolled: 'Vous obtenez {value} au dé.',
-    strongMonsters: 'Niveau 5 : les Monstres puissants rejoignent la pioche.',
+    strongMonsters: 'Danger + : les Monstres forts rejoignent la pioche. Ceux de Puissance 4, 6 et 7 sont retirés.',
   },
 }
 
@@ -443,7 +445,7 @@ const en: SoloCopy = {
         'Pick a Class and a Race: you are the only hero. You start at level 1 with 5 Loot cards.',
         'The solo Loot deck removes purely multiplayer Actions (Pillage, Usurpation, Permutation, Interversion, Paralysis, Priority, Exclusion, Forced Purchase, Incapacity, Counterspell and the 4 Tavern trades) and keeps only your Class Artifact.',
         'Draw 3 solo-compatible Oaths and keep 1 (2 for the Revenant). Fulfillment is tracked and rewards are applied. Oaths requiring another player are excluded. They do not gate the Boss. There are no Merchant trades or Spirits.',
-        'The Monster deck holds the 48 starting Monsters. At level 5, the 18 powerful Monsters (Power 15, 18 and 20) are shuffled in, once only.',
+        'The Monster deck holds the 48 starting Monsters. At level 5, Danger +: the 18 strong Monsters (Power 15, 18 and 20) are shuffled in once, and Power 4, 6 and 7 Monsters are permanently removed from the deck.',
       ],
     },
     {
@@ -541,6 +543,7 @@ const en: SoloCopy = {
     timelineNodeLabel: 'Level {level}',
     timelineCurrentLevel: 'You are at level {level}.',
     timelineAwakening: 'Awakening',
+    timelineDanger: 'Danger +',
     timelineBoss: 'Boss',
     timelineEnrage: 'Enrage',
     bossEnrageLabel: 'Boss enrage',
@@ -550,6 +553,7 @@ const en: SoloCopy = {
     timelineEnrageCount: 'Boss enrage: {n} additional cards.',
     timelineLevel5: 'The danger increases and your hero can awaken.',
     timelineStrongMonsters: 'Strong Monsters (Power 15, 18 and 20) join the deck once.',
+    timelineRemovedMonsters: 'Power 4, 6 and 7 Monsters leave the deck and do not return when it is reshuffled.',
     timelineAwakened: 'Your hero already uses a D8.',
     timelineCanAwaken: 'You can play Awakening to replace your D6 with a D8.',
     timelineLevel10: 'The final confrontation is available.',
@@ -846,7 +850,7 @@ const en: SoloCopy = {
     newTurn: '— Turn {turn} —',
     drewLoot: 'You draw {count} Loot card(s).',
     rolled: 'You roll {value}.',
-    strongMonsters: 'Level 5: the powerful Monsters join the deck.',
+    strongMonsters: 'Danger +: strong Monsters join the deck. Power 4, 6 and 7 Monsters are removed.',
   },
 }
 
