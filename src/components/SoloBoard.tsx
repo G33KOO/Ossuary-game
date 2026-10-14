@@ -45,8 +45,10 @@ import '../styles/immersion.css'
 import '../styles/solo-mobile.css'
 import '../styles/combat-feedback.css'
 import '../styles/solo-desktop.css'
+import '../styles/combat-die.css'
 
 const ROLL_DELAY = 1100
+const COMBAT_ROLL_DELAY = 1700
 const RESOLVE_DELAY = 150
 const REVEAL_BASE = 1900
 const REVEAL_STAGGER = 250
@@ -720,9 +722,16 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               <DropTarget className="gb-playzone" target={playZone} onHover={setOver} onCommit={commitDrop}>
                 {busy ? <span className="gb-playzone-hint">{busy === 'rolling' ? sim.rolling : sim.resolving}</span> : null}
                 <div className="gb-controls">
+                  <div className="gb-combat-die-stage">
+                    <span className="gb-combat-die-heading">{busy === 'rolling' ? sim.rolling : combat.playerDie === null ? sim.combatDiePrompt : sim.combatDieResult}</span>
+                    <PlayerDie prominent roll={combat.playerRoll} count={diceCount} modifier={combat.playerDieModifier ?? dieBonus}
+                      sides={boardState.dieSides} value={combat.playerDie} rolling={busy === 'rolling'}
+                      disabled={locked || combat.playerDie !== null} reasons={dieReasons} possible={possibleRolls} modifiers={dieModifiers} sim={sim}
+                      onRoll={() => delayed('rolling', window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 250 : COMBAT_ROLL_DELAY, { t: 'roll' })} />
+                  </div>
                   {combat.playerDie === 1 && !combat.oathRerollUsed && oathCompleted(boardState, OATH.misfortune) ? <button className="button" disabled={locked} type="button" onClick={() => delayed('rolling', ROLL_DELAY, { t: 'oathReroll' })}>{sim.oathReroll}</button> : null}
                   <button
-                    className="button button-primary"
+                    className={combat.playerDie === null ? 'button gb-resolve-without-die' : 'button button-primary'}
                     disabled={locked}
                     onClick={() => (combat.kind === 'boss' ? runBossSequence() : delayed('resolving', RESOLVE_DELAY, { t: 'resolve' }))}
                     type="button"
@@ -774,7 +783,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             <DropTarget as="section" className="gb-board-group gb-equipment-group" labelledBy="board-equipment-title" target={equipZone} onHover={setOver} onCommit={commitDrop}>
             <div className="gb-player-combat-status">
               <HeroPower power={power?.player ?? computePlayerPower(boardState)} sim={sim} />
-              <PlayerDie roll={combat?.playerRoll} count={diceCount} modifier={combat?.playerDieModifier ?? dieBonus} sides={boardState.dieSides} value={combat?.playerDie ?? null} rolling={busy === 'rolling'} disabled={locked || !combat || combat.playerDie !== null} reasons={dieReasons} possible={possibleRolls} modifiers={dieModifiers} sim={sim} onRoll={() => delayed('rolling', ROLL_DELAY, { t: 'roll' })} />
               <ClassActive klass={status.klass} name={heroName('Classe', status.klass)} effect={activeEffect} passive={fill(sim.classPassive, { klass: heroName('Classe', boardState.klass) })} reasons={activeReasons} disabled={locked || !status.available} sim={sim} onActivate={() => send({ t: 'useActive' })} />
             </div>
             <h4 id="board-equipment-title">{sim.equipment}</h4>
