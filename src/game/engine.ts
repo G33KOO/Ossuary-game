@@ -161,12 +161,16 @@ function rollParams(roll: DiceRoll): Record<string, string | number> {
 }
 
 function playerEffectRoll(s: GameState, c: Combat | null) {
-  return diceRoll(s, s.dieSides, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s), c && hasFlag(c, 'wyrm') ? 'lowest' : 'single')
+  return rollPlayerDice(s, s.dieSides, c && hasFlag(c, 'wyrm') ? 'lowest' : 'single')
+}
+
+function rollPlayerDice(s: GameState, sides: number, mode: DiceRoll['mode'] = 'single', extraBonus = 0) {
+  return diceRoll(s, sides, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s) + extraBonus, mode)
 }
 
 function combatRoll(s: GameState, c: Combat) {
   c.hasRolled = true
-  c.playerRoll = diceRoll(s, s.dieSides, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s), hasFlag(c, 'doubleDie') ? 'sum' : hasFlag(c, 'wyrm') ? 'lowest' : 'single')
+  c.playerRoll = rollPlayerDice(s, s.dieSides, hasFlag(c, 'doubleDie') ? 'sum' : hasFlag(c, 'wyrm') ? 'lowest' : 'single')
   c.playerDieModifier = c.playerRoll.bonus
   return c.playerRoll.total
 }
@@ -847,7 +851,7 @@ function attemptFlee(s: GameState, automatic: boolean) {
   if (!c || c.kind !== 'monster' || hasFlag(c, 'noFlee')) return
   if (!automatic && (c.hasRolled || c.playerDie !== null)) return
   const guaranteed = automatic || s.race === 'Vesskar'
-  const roll = guaranteed ? null : diceRoll(s, 6, (s.race === 'Elfe' ? 1 : 0) + permanentDieBonus(s) + (s.equipment.hands.some((id) => cardName(id) === 'Dague Lunefeuille') ? 1 : 0))
+  const roll = guaranteed ? null : rollPlayerDice(s, 6, 'single', s.equipment.hands.some((id) => cardName(id) === 'Dague Lunefeuille') ? 1 : 0)
   const value = roll?.total ?? 0
   if (roll) log(s, 'fleeRolled', { card: c.monsters[0], ...rollParams(roll) })
   if (guaranteed || value >= 4) {
@@ -1171,16 +1175,19 @@ function finishPay(s: GameState, kind: string) {
     case 'mage': {
       if (!c || c.playerDie === null) break
       c.used.push('Mage')
+      const old = c.playerDie
+      const oldRoll = c.playerRoll
+      const oldModifier = c.playerDieModifier ?? 0
       const fresh = combatRoll(s, c)
       log(s, 'mageReroll', { ...rollParams(c.playerRoll!) })
       if (artifactBoosts(s, 'Mage') && !s.turnFlags.includes('mage-artifact')) {
         s.turnFlags.push('mage-artifact')
-        c.playerDie += fresh
+        c.playerDie = old + fresh
         c.playerDieModifier = (c.playerRoll?.bonus ?? 0) + c.playerDie - fresh
       } else {
         queue(
           s,
-          { purpose: 'mage-keep', options: [{ id: 'keep-old' }, { id: 'keep-new' }], optional: false, ctx: { old: c.playerDie, fresh } },
+          { purpose: 'mage-keep', options: [{ id: 'keep-old' }, { id: 'keep-new' }], optional: false, ctx: { old, fresh, oldModifier, oldRaw: oldRoll?.raw.join(',') ?? '', oldSides: oldRoll?.sides ?? s.dieSides, oldBonus: oldRoll?.bonus ?? 0, oldTotal: oldRoll?.total ?? old, oldMode: oldRoll?.mode ?? 'single' } },
           true,
         )
       }
@@ -1414,7 +1421,13 @@ function answerPrompt(s: GameState, option: string | null) {
       }
       break
     case 'mage-keep':
-      if (c) c.playerDie = option === 'keep-new' ? (prompt.ctx.fresh as number) : (prompt.ctx.old as number)
+      if (c) {
+        c.playerDie = option === 'keep-new' ? (prompt.ctx.fresh as number) : (prompt.ctx.old as number)
+        if (option === 'keep-old' && typeof prompt.ctx.oldRaw === 'string') {
+          c.playerRoll = prompt.ctx.oldRaw ? { raw: prompt.ctx.oldRaw.split(',').map(Number), sides: Number(prompt.ctx.oldSides), bonus: Number(prompt.ctx.oldBonus), total: Number(prompt.ctx.oldTotal), mode: prompt.ctx.oldMode as DiceRoll['mode'] } : undefined
+          c.playerDieModifier = Number(prompt.ctx.oldModifier)
+        }
+      }
       break
     case 'vow':
       if (option) {
