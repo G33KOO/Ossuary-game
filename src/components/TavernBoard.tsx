@@ -35,7 +35,7 @@ export function TavernBoard({ prompt, locale, sim, instructions, canTrade, inspe
     <p role="status">{exchanging ? sim.tavernSelectHand : fill(instructions, { count: choices.length })}</p>
     <div className="gb-tavern-offers">{choices.map((id) => <div className={`gb-tavern-offer${prompt.ctx.taken === id ? ' is-selected' : ''}${dragging && ready ? ' is-drop-target' : ''}`} key={id} onDragOver={(event) => { if (dragging && ready && canTrade) event.preventDefault() }} onDrop={(event) => { if (dragging && ready && canTrade) { event.preventDefault(); trade(id) } }}>
       <GameCard id={id} locale={locale} size="md" onInspect={(element) => inspect(id, element)} />
-      <button className="button button-primary" type="button" disabled={!ready || !canTrade || exchanging} onClick={() => answer(id)}>{prompt.ctx.taken === id ? sim.tavernSelected : sim.choose}</button>
+      <button className="button button-primary" type="button" aria-pressed={prompt.ctx.taken === id} disabled={!ready || !canTrade || prompt.ctx.taken === id} onClick={() => { if (exchanging) answer('tavern-back'); answer(id) }}>{prompt.ctx.taken === id ? sim.tavernSelected : sim.choose}</button>
     </div>)}</div>
     <div className="gb-tavern-mobile-controls">
       {exchanging ? <button className="button" type="button" disabled={!ready} onClick={() => answer('tavern-back')}>{sim.tavernBack}</button> : null}
