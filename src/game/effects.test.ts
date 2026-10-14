@@ -158,9 +158,35 @@ describe('card effects', () => {
     state.hand=[id('Invocation')]
     state=reduce(state,{t:'playAction',id:state.hand[0]})
     expect(state.promptQueue[0].purpose).toBe('fournaise')
-    state=reduce(state,{t:'answer',option:id('Fournaise')})
-    expect(state.combat!.monsters).toEqual([id('Tranchebec'),id('Fournaise')])
+    expect(state.promptQueue[0].options.map((option) => option.id)).not.toContain(id('Fournaise'))
+    const selected = state.promptQueue[0].options[0].id
+    state=reduce(state,{t:'answer',option:selected})
+    expect(state.combat!.monsters).toEqual([id('Tranchebec'),selected])
     expect(state.combat!.playerBonus).toBe(7)
+    expect(state.monsterDeck).toContain(id('Fournaise'))
+  })
+  it('excludes Fournaise from its own trial and rejects selecting it', () => {
+    let state = newGame('Mage', 'Humain', 42)
+    state.promptQueue = []
+    state.monsterDeck = [id('Fournaise'), id('Tranchebec'), id('Gobeur')]
+    state = reduce(state, { t: 'fightMonster' })
+    expect(state.promptQueue[0].options.map((option) => option.id)).toEqual([id('Tranchebec'), id('Gobeur')])
+    expect(reduce(state, { t: 'answer', option: id('Fournaise') }).promptQueue).toEqual(state.promptQueue)
+    state = reduce(state, { t: 'answer', option: id('Tranchebec') })
+    expect(state.combat!.monsters).toEqual([id('Tranchebec')])
+    expect(state.promptQueue).toEqual([])
+    expect(state.monsterDeck.sort()).toEqual([id('Fournaise'), id('Gobeur')].sort())
+  })
+  it('finishes the trial without a blocking choice if no other Monster is available', () => {
+    let state = newGame('Mage', 'Humain', 42)
+    state.promptQueue = []
+    state.monsterDeck = [id('Fournaise')]
+    state.monsterDiscard = []
+    state = reduce(state, { t: 'fightMonster' })
+    expect(state.promptQueue).toEqual([])
+    expect(state.combat).toBeNull()
+    expect(state.endTurnPending).toBe(true)
+    expect(state.monsterDeck).toEqual([id('Fournaise')])
   })
   it('requires the Cataclysme discard immediately upon revealing it', () => {
     let state=newGame('Mage','Humain',42)

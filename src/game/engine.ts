@@ -334,15 +334,26 @@ function unequip(s: GameState, id: string) {
 
 // ---------- Combat start ----------
 
+function fournaiseTrial(s: GameState, id: string, summoned = false) {
+  const choices = [id]
+  for (let index = 0; index < 2; index++) {
+    const extra = drawMonster(s)
+    if (extra) choices.push(extra)
+  }
+  const options = choices.filter((choice) => cardName(choice) !== 'Fournaise').map((choice) => ({ id: choice, cardId: choice }))
+  log(s, 'fournaise')
+  if (options.length) {
+    queue(s, { purpose: 'fournaise', options, optional: false, ctx: { choices, summoned: summoned ? 1 : 0 } })
+  } else {
+    s.monsterDeck.push(...shuffle(s, choices))
+    log(s, 'fournaiseNoOpponent', { card: id })
+    if (!summoned) s.endTurnPending = true
+  }
+}
+
 function startMonsterCombat(s: GameState, id: string, skipFournaise = false) {
   if (!skipFournaise && cardName(id) === 'Fournaise') {
-    const choices = [id]
-    for (let index = 0; index < 2; index += 1) {
-      const extra = drawMonster(s)
-      if (extra) choices.push(extra)
-    }
-    log(s, 'fournaise')
-    queue(s, { purpose: 'fournaise', options: choices.map((choice) => ({ id: choice, cardId: choice })), optional: false, ctx: { choices } })
+    fournaiseTrial(s, id)
     return
   }
 
@@ -453,11 +464,8 @@ function applyMonsterStart(s: GameState, c: Combat, id: string) {
       addFlag(c, 'fielpeau')
       break
     case 'Fournaise': {
-      const choices = [id]
       c.monsters = c.monsters.filter((monster) => monster !== id)
-      for (let index = 0; index < 2; index++) { const extra = drawMonster(s); if (extra) choices.push(extra) }
-      queue(s, { purpose: 'fournaise', options: choices.map((id) => ({ id, cardId: id })), optional: false, ctx: { choices, summoned: 1 } })
-      log(s, 'fournaise')
+      fournaiseTrial(s, id, true)
       break
     }
     case 'Cataclysme':
