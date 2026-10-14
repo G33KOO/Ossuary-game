@@ -44,6 +44,7 @@ import '../styles/solo-board.css'
 import '../styles/immersion.css'
 import '../styles/solo-mobile.css'
 import '../styles/combat-feedback.css'
+import '../styles/solo-desktop.css'
 
 const ROLL_DELAY = 1100
 const RESOLVE_DELAY = 150
@@ -594,7 +595,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       ) : null
 
   return (
-    <div className={`gb gb-full${opening || effectVisible || (choiceVisible && !discarding) ? ' gb-has-decision' : ''}${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
+    <div className={`gb gb-full${combat ? ' gb-in-combat' : ''}${opening || effectVisible || (choiceVisible && !discarding) ? ' gb-has-decision' : ''}${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
         <LevelTimeline game={boardState} />
         {boardState.level >= 10 || boardState.bossPressure > 0 ? <BossEnrage count={boardState.bossPressure} sim={sim} className="gb-boss-enrage-mobile" /> : null}
