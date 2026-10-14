@@ -456,7 +456,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             })}
           </div>
           <div className="sim-launch">
-          <p>{sim.startingKit}</p>
+          <p>{fill(sim.startingKit, { count: race === 'Humain' ? 6 : 5 })}</p>
         <button className="button button-primary" onClick={start} type="button">
           {sim.start}
         </button>

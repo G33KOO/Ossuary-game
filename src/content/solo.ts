@@ -22,7 +22,7 @@ const fr: SoloCopy = {
     {
       title: 'Préparation',
       items: [
-        'Choisissez une Classe et une Race : vous êtes l’unique héros. Vous démarrez au niveau 1 avec 5 Butins.',
+        'Choisissez une Classe et une Race : vous êtes l’unique héros. Vous démarrez au niveau 1 avec 5 Butins, ou 6 si vous jouez un Humain.',
         'Le Butin solo retire les Actions purement multijoueur (Pillage, Usurpation, Permutation, Interversion, Paralysie, Priorité, Exclusion, Achat forcé, Incapacité, Contre-sort et les 4 Échanges de Taverne) et ne garde que l’Artefact de votre Classe.',
         'Vous piochez 3 Serments compatibles avec le solo et en gardez 1 (2 pour le Revenant). Leur accomplissement est suivi et leurs récompenses sont appliquées. Les Serments qui exigent un autre joueur sont exclus. Ils ne conditionnent pas le Boss. Il n’y a ni Marchand à échanger, ni Esprits.',
         'La pioche Monstre contient les 48 Monstres initiaux. Au niveau 5, Danger + : les 18 Monstres forts (Puissance 15, 18 et 20) y sont mélangés une seule fois, et les Monstres de Puissance 4, 6 et 7 en sont retirés définitivement.',
@@ -84,7 +84,7 @@ const fr: SoloCopy = {
     classHint: 'Choisissez votre style de jeu et votre capacité active.',
     raceHint: 'Complétez votre héros avec un talent de race.',
     yourHero: 'Votre héros',
-    startingKit: 'Niveau 1 · 5 Butins de départ · Choix des Serments à suivre',
+    startingKit: 'Niveau 1 · {count} Butins de départ · Choix des Serments à suivre',
     chooseClass: 'Votre Classe',
     chooseRace: 'Votre Race',
     start: 'Entrer dans l’Ossuaire',
@@ -477,7 +477,7 @@ const en: SoloCopy = {
     {
       title: 'Setup',
       items: [
-        'Pick a Class and a Race: you are the only hero. You start at level 1 with 5 Loot cards.',
+        'Pick a Class and a Race: you are the only hero. You start at level 1 with 5 Loot cards, or 6 as a Human.',
         'The solo Loot deck removes purely multiplayer Actions (Pillage, Usurpation, Permutation, Interversion, Paralysis, Priority, Exclusion, Forced Purchase, Incapacity, Counterspell and the 4 Tavern trades) and keeps only your Class Artifact.',
         'Draw 3 solo-compatible Oaths and keep 1 (2 for the Revenant). Fulfillment is tracked and rewards are applied. Oaths requiring another player are excluded. They do not gate the Boss. There are no Merchant trades or Spirits.',
         'The Monster deck holds the 48 starting Monsters. At level 5, Danger +: the 18 strong Monsters (Power 15, 18 and 20) are shuffled in once, and Power 4, 6 and 7 Monsters are permanently removed from the deck.',
@@ -539,7 +539,7 @@ const en: SoloCopy = {
     classHint: 'Choose your playstyle and active ability.',
     raceHint: 'Complete your hero with a racial talent.',
     yourHero: 'Your hero',
-    startingKit: 'Level 1 · 5 starting Loot cards · Choose your Oaths next',
+    startingKit: 'Level 1 · {count} starting Loot cards · Choose your Oaths next',
     chooseClass: 'Your Class',
     chooseRace: 'Your Race',
     start: 'Enter the Ossuary',

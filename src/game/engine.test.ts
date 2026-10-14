@@ -40,6 +40,11 @@ function seededRng(seed: number) {
 }
 
 describe('solo engine', () => {
+  it.each(['Humain', 'Elfe', 'Nain', 'Orc', 'Revenant', 'Vesskar'] as const)('deals the correct starting hand for %s', race => {
+    const state = newGame('Guerrier', race, 42)
+    expect(state.hand).toHaveLength(race === 'Humain' ? 6 : 5)
+    expect(new Set(state.hand).size).toBe(state.hand.length)
+  })
   it('builds a solo deck without multiplayer-only actions and with a single artifact', () => {
     const state = newGame('Mage', 'Elfe', 1)
     const all = [...state.lootDeck, ...state.hand]

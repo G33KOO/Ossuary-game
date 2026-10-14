@@ -95,7 +95,7 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.hand = []
   s.draws = []
   s.drawSeq = 0
-  drawLoot(s, 5)
+  drawLoot(s, race === 'Humain' ? 6 : 5)
   s.draws = []
   s.oaths = []
   s.completedOaths = []
