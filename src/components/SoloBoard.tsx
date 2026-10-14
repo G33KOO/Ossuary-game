@@ -49,7 +49,19 @@ const REVEAL_STAGGER = 250
 type Busy = 'rolling' | 'resolving' | 'boss' | 'flee' | null
 type Drag = { id: string; from: 'hand' | 'equip' }
 type Reveal = { seq: number; kind: 'loot' | 'monster'; cards: string[] }
-type PlayedAction = { id: string; effect: ActionEffect; target: ActionTarget; seq: number; x: number; y: number; dx: number; dy: number; result: string; lines: GameState['log']; destroyed?: { id: string; x: number; y: number } }
+type PlayedAction = { active?: boolean; id: string; effect: ActionEffect; target: ActionTarget; seq: number; x: number; y: number; dx: number; dy: number; result: string; lines: GameState['log']; destroyed?: { id: string; x: number; y: number } }
+
+function classActiveVisual(klass: string): { effect: ActionEffect; target: ActionTarget } {
+  switch (klass) {
+    case 'Guerrier': return { effect: 'strike', target: 'foe' }
+    case 'Druide': return { effect: 'boost', target: 'hero' }
+    case 'Mage': return { effect: 'dice', target: 'player-die' }
+    case 'Nécromancien': return { effect: 'summon', target: 'hero' }
+    case 'Chasseur': return { effect: 'summon', target: 'foe' }
+    case 'Voleur': return { effect: 'draw', target: 'hand' }
+    default: return { effect: 'magic', target: 'hero' }
+  }
+}
 
 function heroCard(type: 'Classe' | 'Race', name: string) {
   return CARDS.find((entry) => entry.type === type && entry.name === name)
@@ -274,8 +286,11 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     let retained = Math.min(previousLogs.length, nextLogs.length)
     while (retained > 0 && !previousLogs.slice(-retained).every((entry, index) => entry === nextLogs[index])) retained -= 1
     const newLogs = next.log.slice(retained)
-    if (action.t === 'playAction' && newLogs.some((entry) => entry.code === 'actionPlayed')) {
-      const visual = actionVisual(card(action.id).name, newLogs.some((entry) => entry.code === 'actionCancelled'))
+    const activeTriggered = (action.t === 'useActive' && activeStatus(previous).available) || newLogs.some(entry => ['warriorThrow', 'necroBonus', 'thiefPick', 'armorDoubled'].includes(entry.code));
+    const activeEntry = activeTriggered ? heroCard('Classe', activeStatus(previous).klass) : undefined;
+    const animatedId = action.t === 'playAction' && newLogs.some(entry => entry.code === 'actionPlayed') ? action.id : activeEntry?.id;
+    if (animatedId) {
+      const visual = activeEntry ? classActiveVisual(activeStatus(previous).klass) : actionVisual(card(animatedId).name, newLogs.some((entry) => entry.code === 'actionCancelled'))
       const arena = document.querySelector('.gb-arena')
       const table = tableRef.current
       if (arena && table) {
@@ -283,16 +298,16 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         if (a.top < t.top || a.bottom > t.bottom) table.scrollTo({ top: table.scrollTop + a.top - t.top - 8, behavior: 'instant' })
       }
       const target = arena?.getBoundingClientRect()
-      const source = document.querySelector(`.gb-hand [data-card-id="${action.id}"]`)?.getBoundingClientRect()
+      const source = document.querySelector(activeEntry ? ".gb-class-active" : `.gb-hand [data-card-id="${animatedId}"]`)?.getBoundingClientRect()
       const x = Math.max(75, Math.min(window.innerWidth - 75, target ? target.left + target.width / 2 : window.innerWidth / 2))
       const y = Math.max(110, Math.min(window.innerHeight - 110, target ? target.top + target.height / 2 : window.innerHeight / 2))
       const destroyedId = newLogs.find((entry) => entry.code === 'bossItemDestroyed')?.params?.card
       const destroyedBounds = typeof destroyedId === 'string' ? document.querySelector(`.gb-foe-equip [data-card-id="${destroyedId}"]`)?.getBoundingClientRect() : undefined
       const previousPower = computePower(previous)
       const nextPower = computePower(next)
-      const delta = visual.target === 'player-die' ? (next.combat?.playerDie ?? 0) - (previous.combat?.playerDie ?? 0) : visual.target === 'foe-die' ? (next.combat?.bossDie ?? 0) - (previous.combat?.bossDie ?? 0) : visual.target === 'foe' && previousPower && nextPower ? nextPower.opponent.total - previousPower.opponent.total : visual.target === 'hero' ? computePlayerPower(next).total - computePlayerPower(previous).total : 0
+      const delta = activeEntry ? computePlayerPower(next).total - computePlayerPower(previous).total : visual.target === 'player-die' ? (next.combat?.playerDie ?? 0) - (previous.combat?.playerDie ?? 0) : visual.target === 'foe-die' ? (next.combat?.bossDie ?? 0) - (previous.combat?.bossDie ?? 0) : visual.target === 'foe' && previousPower && nextPower ? nextPower.opponent.total - previousPower.opponent.total : visual.target === 'hero' ? computePlayerPower(next).total - computePlayerPower(previous).total : 0
       const result = visual.effect === 'cancelled' ? sim.cancelledAction : next.dieSides !== previous.dieSides ? `D${previous.dieSides} → D${next.dieSides}` : delta !== 0 ? `${delta > 0 ? '+' : ''}${delta}` : next.draws.filter((draw) => draw.kind === 'loot').length > 0 ? `+${next.draws.filter((draw) => draw.kind === 'loot').length} ${sim.cards}` : ''
-      setPlayedAction({ id: action.id, ...visual, seq: ++actionAnimationSeq.current, x, y, dx: source ? source.left + source.width / 2 - x : 0, dy: source ? source.top + source.height / 2 - y : 120, result, lines: newLogs.filter((entry) => entry.code !== 'actionPlayed'), destroyed: typeof destroyedId === 'string' && destroyedBounds ? { id: destroyedId, x: destroyedBounds.left + destroyedBounds.width / 2, y: destroyedBounds.top + destroyedBounds.height / 2 } : undefined })
+      setPlayedAction({ active: Boolean(activeEntry), id: animatedId, ...visual, seq: ++actionAnimationSeq.current, x, y, dx: source ? source.left + source.width / 2 - x : 0, dy: source ? source.top + source.height / 2 - y : 120, result, lines: newLogs.filter((entry) => entry.code !== 'actionPlayed'), destroyed: typeof destroyedId === 'string' && destroyedBounds ? { id: destroyedId, x: destroyedBounds.left + destroyedBounds.width / 2, y: destroyedBounds.top + destroyedBounds.height / 2 } : undefined })
       window.clearTimeout(actionAnimationTimer.current)
       actionAnimationTimer.current = window.setTimeout(() => { setPlayedAction(null); if (next.draws.length > 0 && !pendingReveal.current) showReveal(next) }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1800)
     }
@@ -315,7 +330,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     if (next.finalCombat && !previous.finalCombat) setRecapOpen(true)
     gameRef.current = next
     setGame(next)
-    if (next.draws.length > 0 && !pendingReveal.current && !(action.t === 'playAction' && newLogs.some((entry) => entry.code === 'actionPlayed'))) showReveal(next)
+    if (next.draws.length > 0 && !pendingReveal.current && !animatedId) showReveal(next)
   }
 
   const start = () => {
@@ -891,7 +906,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           {playedAction.result ? <strong className="gb-action-result">{playedAction.result}</strong> : null}
         </div>
         {playedAction.destroyed ? <div className="gb-destroyed-card-ghost" style={{ left: playedAction.destroyed.x, top: playedAction.destroyed.y }}><GameCard decorative id={playedAction.destroyed.id} locale={locale} onInspect={() => undefined} size="sm" /></div> : null}
-        <div className="gb-action-announcement"><strong>{localizeCard(card(playedAction.id), locale).name}</strong><p>{playedAction.lines.length ? playedAction.lines.slice(0, 2).map(formatLog).join(' ') : localizeCard(card(playedAction.id), locale).text}</p></div>
+        <div className="gb-action-announcement"><strong>{playedAction.active ? `${sim.active} : ` : ''}{localizeCard(card(playedAction.id), locale).name}</strong><p>{playedAction.active && !playedAction.lines.length ? activeEffect : playedAction.lines.length ? playedAction.lines.slice(0, 2).map(formatLog).join(' ') : localizeCard(card(playedAction.id), locale).text}</p></div>
       </div>, document.body) : null}
 
       {oathCelebrations[0] && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 ? (
