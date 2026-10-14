@@ -4,12 +4,11 @@ import type { Prompt } from '../game/types'
 import { fill } from '../content/solo'
 import { GameCard } from './game-ui'
 
-export function TavernBoard({ prompt, locale, sim, instructions, canTrade, inspect, answer, dragging, trade, inventory }: {
+export function TavernBoard({ prompt, locale, sim, instructions, canTrade, inspect, answer, dragging, trade }: {
   prompt: Prompt; locale: Locale; sim: Record<string, string>; instructions: string; canTrade: boolean
   inspect: (id: string, element: HTMLElement) => void
   answer: (option: string | null) => void
   dragging: boolean; trade: (offer: string) => void
-  inventory: () => void
 }) {
   const root = useRef<HTMLElement>(null)
   const [readySignature, setReadySignature] = useState<string | null>(null)
@@ -32,7 +31,7 @@ export function TavernBoard({ prompt, locale, sim, instructions, canTrade, inspe
     return () => { window.clearTimeout(timer); animations.forEach((animation) => animation.cancel()) }
   }, [signature, choices.length])
   return <section ref={root} className={`gb-tavern-board${ready ? '' : ' is-dealing'}`} aria-labelledby="board-tavern-title" aria-busy={!ready}>
-    <div className="gb-tavern-heading"><h3 id="board-tavern-title">{sim.tavernTitle}</h3><span>{fill(sim.tradesRemaining, { count: Number(prompt.ctx.remaining ?? 1) })}</span><button className="button gb-tavern-inventory" type="button" onClick={inventory}>{sim.yourHero}</button></div>
+    <div className="gb-tavern-heading"><h3 id="board-tavern-title">{sim.tavernTitle}</h3><span>{fill(sim.tradesRemaining, { count: Number(prompt.ctx.remaining ?? 1) })}</span></div>
     <p role="status">{exchanging ? sim.tavernSelectHand : fill(instructions, { count: choices.length })}</p>
     <div className="gb-tavern-offers">{choices.map((id) => <div className={`gb-tavern-offer${prompt.ctx.taken === id ? ' is-selected' : ''}${dragging && ready ? ' is-drop-target' : ''}`} key={id} onDragOver={(event) => { if (dragging && ready && canTrade) event.preventDefault() }} onDrop={(event) => { if (dragging && ready && canTrade) { event.preventDefault(); trade(id) } }}>
       <GameCard id={id} locale={locale} size="md" onInspect={(element) => inspect(id, element)} />
