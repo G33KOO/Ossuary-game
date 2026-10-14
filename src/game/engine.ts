@@ -81,7 +81,6 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.nextMonsterPenalty = 0
   s.bossPressure = 0
   s.bossEnrageArmed = false
-  s.bossEnrageGraceUsed = false
   s.tavernDone = false
   s.combat = null
   s.promptQueue = []
@@ -1555,13 +1554,11 @@ function endTurnNow(s: GameState) {
   s.turnFlags = []
   s.excessDiscarded = 0
   if (s.level >= BOSS_LEVEL) {
-    // The level-up turn and the first full turn at level 10 both grant grace.
+    // Only the level-up turn grants grace; the next completed turn adds enrage.
     // Existing saves with pressure already accumulated keep their active enrage.
-    if ((s.bossEnrageArmed && s.bossEnrageGraceUsed) || s.bossPressure > 0) {
+    if (s.bossEnrageArmed || s.bossPressure > 0) {
       s.bossPressure += 1
       log(s, 'bossGrows', { count: s.bossPressure })
-    } else if (s.bossEnrageArmed) {
-      s.bossEnrageGraceUsed = true
     }
     s.bossEnrageArmed = true
   }

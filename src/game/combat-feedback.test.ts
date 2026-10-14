@@ -21,7 +21,7 @@ function suzeraine() {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('visible combat consequences', () => {
-  it('adds no enrage on the level-up turn or the first full level-10 turn', () => {
+  it('adds enrage on the first completed turn after the level-up turn', () => {
     let state = monster('Tranchebec')
     state.level = 9; state.hand = []; state.lootDeck = []; state.combat!.playerBonus = 100
     state = reduce(state, { t: 'resolve' })
@@ -33,10 +33,9 @@ describe('visible combat consequences', () => {
     expect(state.log.some((entry) => entry.code === 'bossGrows')).toBe(false)
     state = reduce(state, { t: 'drawLoot' })
     state = reduce(state, { t: 'endTurn' })
-    expect(state.bossPressure).toBe(0)
-    expect(state.bossEnrageGraceUsed).toBe(true)
-    expect(state.log.some((entry) => entry.code === 'bossGrows')).toBe(false)
-    for (const expected of [1, 2]) {
+    expect(state.bossPressure).toBe(1)
+    expect(state.log.some((entry) => entry.code === 'bossGrows')).toBe(true)
+    for (const expected of [2, 3]) {
       state = reduce(state, { t: 'drawLoot' })
       state = reduce(state, { t: 'endTurn' })
       expect(state.bossPressure).toBe(expected)
@@ -54,16 +53,15 @@ describe('visible combat consequences', () => {
     expect(state.bossEnrageArmed).toBe(true)
     expect(state.bossPressure).toBe(0)
     state = reduce(state, { t: 'drawLoot' })
-      state = reduce(state, { t: 'endTurn' })
-    expect(state.bossPressure).toBe(0)
-    state = reduce(state, { t: 'answer', option: null })
-    expect(state.bossPressure).toBe(0)
-    expect(state.bossEnrageGraceUsed).toBe(true)
-    state = reduce(state, { t: 'drawLoot' })
     state = reduce(state, { t: 'endTurn' })
     expect(state.bossPressure).toBe(0)
     state = reduce(state, { t: 'answer', option: null })
     expect(state.bossPressure).toBe(1)
+    state = reduce(state, { t: 'drawLoot' })
+    state = reduce(state, { t: 'endTurn' })
+    expect(state.bossPressure).toBe(1)
+    state = reduce(state, { t: 'answer', option: null })
+    expect(state.bossPressure).toBe(2)
   })
   it('keeps accumulated enrage on an older save, without granting another grace turn', () => {
     const state = newGame('Mage', 'Humain', 42)
