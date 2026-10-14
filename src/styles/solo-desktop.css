@@ -14,12 +14,12 @@
   .solo-page .gb-full .gb-boss-summary { font-size: 14px; }
 
   .solo-page .gb-full .gb-deck-row { grid-template-columns: repeat(3, 190px); gap: 30px; }
-  .solo-page .gb-full .gb-deck-row .gb-side { position: relative; transform: translateX(57px); }
-  .solo-page .gb-full .gb-deck-row .gb-pile { grid-template-columns: 76px 106px; align-items: center; gap: 8px; }
-  .solo-page .gb-full .gb-deck-row .gb-pile-stack { width: 76px; height: 108px; }
-  .solo-page .gb-full .gb-deck-row .gb-pile-stack .gb-back { width: 72px; height: 101px; }
+  .solo-page .gb-full .gb-deck-row .gb-side { position: relative; transform: translateX(67px); }
+  .solo-page .gb-full .gb-deck-row .gb-pile { grid-template-columns: 56px 106px; align-items: center; gap: 8px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-stack { width: 56px; height: 76px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-stack .gb-back { width: 52px; height: 73px; }
   .solo-page .gb-full .gb-deck-row .gb-pile-label { font-size: 12px; text-align: left; justify-self: start; }
-  .solo-page .gb-full .gb-deck-row .gb-discard-link { position: absolute; left: 84px; bottom: 2px; font-size: 12px; min-height: 24px; }
+  .solo-page .gb-full .gb-deck-row .gb-discard-link { position: absolute; left: 64px; bottom: -4px; font-size: 12px; min-height: 24px; }
 
   .solo-page .gb-full .gb-hero-level-row { justify-content: center; min-height: 46px; }
   .solo-page .gb-full .gb-player-combat-status { position: relative; justify-content: center; min-height: 46px; padding-inline: 170px; gap: 16px; }
@@ -46,11 +46,14 @@
   .solo-page .gb-full .gb-monster-effect .eyebrow { font-size: 12px; }
   .solo-page .gb-full .gb-idle-title { font-size: 20px; }
   .solo-page .gb-full .gb-preparation-hint { font-size: 15px; }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-side { transform: translateX(69px); }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-pile { grid-template-columns: 52px 106px; }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-pile-stack { width: 52px; height: 62px; }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-pile-stack .gb-back { width: 40px; height: 56px; }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-discard-link { left: 60px; bottom: -4px; }
+  .solo-page .gb-full .gb-combat-context { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .solo-page .gb-full .gb-combat-context-cards { grid-column: 1 / -1; }
+  .solo-page .gb-full .gb-arena .gb-combat-context .gb-card-wrap.size-lg { --w: 120px; }
+  .solo-page .gb-full.gb-boss-battle .gb-deck-row .gb-side { transform: translateX(69px); }
+  .solo-page .gb-full.gb-boss-battle .gb-deck-row .gb-pile { grid-template-columns: 52px 106px; }
+  .solo-page .gb-full.gb-boss-battle .gb-deck-row .gb-pile-stack { width: 52px; height: 62px; }
+  .solo-page .gb-full.gb-boss-battle .gb-deck-row .gb-pile-stack .gb-back { width: 40px; height: 56px; }
+  .solo-page .gb-full.gb-boss-battle .gb-deck-row .gb-discard-link { left: 60px; bottom: -4px; }
   .solo-page .gb-full.gb-in-combat .gb-center { min-height: calc(var(--central-card-width) * 1.4); }
 }
 @media (min-width: 1400px) and (min-height: 760px) {
@@ -67,6 +70,10 @@
 }
 @media (min-width: 1400px) and (min-height: 760px) and (max-height: 920px) {
   .solo-page .gb-full { --hand-card-width: clamp(100px, 11.8dvh, 112px); --central-card-width: clamp(108px, 13.5dvh, 124px); }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-pile-stack { height: 60px; }
-  .solo-page .gb-full.gb-in-combat .gb-deck-row .gb-pile-stack .gb-back { height: 56px; }
+  .solo-page .gb-full .gb-deck-row .gb-side { transform: translateX(69px); }
+  .solo-page .gb-full .gb-deck-row .gb-pile { grid-template-columns: 52px 106px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-stack { width: 52px; height: 60px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-stack .gb-back { width: 40px; height: 56px; }
+  .solo-page .gb-full .gb-deck-row .gb-discard-link { left: 60px; }
+  .solo-page .gb-full .gb-arena .gb-combat-context .gb-card-wrap.size-lg { --w: 110px; }
 }

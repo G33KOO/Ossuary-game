@@ -9,15 +9,15 @@ import { localizeCard } from '../i18n/cardTranslations'
 const REVEALED_CHOICES = new Set(['oath', 'fournaise', 'hunter-pick', 'hunter-boss-pick', 'thief-pick'])
 
 /** Resolve game decisions on the table while keeping the hero and hand visible. */
-export function BoardChoice({ prompt, title, instructions, locale, sim, label, inspect, answer }: {
+export function BoardChoice({ prompt, title, instructions, locale, sim, label, inspect, answer, skipDealAnimation = false }: {
   prompt: Prompt; title: string; instructions: string; locale: Locale; sim: Record<string, string>
   label: (id: string) => string; inspect: (id: string, element: HTMLElement) => void
-  answer: (id: string | null) => void
+  answer: (id: string | null) => void; skipDealAnimation?: boolean
 }) {
   const signature = `${prompt.purpose}:${prompt.options.map((option) => option.id).join(',')}`
   const targetArmor = prompt.purpose === 'envers' && typeof prompt.ctx.armor === 'string' ? prompt.ctx.armor : null
   const root = useBoardFocus(signature)
-  const animated = REVEALED_CHOICES.has(prompt.purpose)
+  const animated = !skipDealAnimation && REVEALED_CHOICES.has(prompt.purpose)
   const [dealt, setDealt] = useState<string | null>(null)
   const ready = !animated || dealt === signature
   useLayoutEffect(() => {

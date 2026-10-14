@@ -10,10 +10,10 @@ import { useBoardFocus } from '../hooks/useBoardFocus'
 
 export type EffectStage = { id?: string; lines: GameState['log']; seq: number }
 
-export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onNext }: {
+export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onNext, paused = false }: {
   stage: EffectStage; locale: Locale; sim: Record<string, string>
   formatLog: (entry: GameState['log'][number]) => string
-  inspect: (id: string, element: HTMLElement) => void; onNext: () => void
+  inspect: (id: string, element: HTMLElement) => void; onNext: () => void; paused?: boolean
 }) {
   const root = useBoardFocus(stage.seq)
   const params = stage.lines[0].params ?? {}
@@ -25,15 +25,15 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
   const automatic = ['victory', 'merchantFavor', 'weaponHarvest'].includes(stage.lines[0].code)
   const [ready, setReady] = useState(!roll)
   useEffect(() => {
-    if (!hasRoll) return
+    if (!hasRoll || paused) return
     const timer = window.setTimeout(() => setReady(true), window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900)
     return () => window.clearTimeout(timer)
-  }, [hasRoll])
+  }, [hasRoll, paused])
   useEffect(() => {
-    if (!automatic || !ready) return
+    if (!automatic || !ready || paused) return
     const timer = window.setTimeout(onNext, stage.lines[0].code === 'victory' ? 200 : 1200)
     return () => window.clearTimeout(timer)
-  }, [automatic, ready, onNext, stage.lines])
+  }, [automatic, ready, paused, onNext, stage.lines])
   const effect = stage.lines[0].code === 'bossItemDestroyed' ? 'destroy' : stage.id ? actionVisual(card(stage.id).name).effect : 'magic'
   return <section ref={root} aria-labelledby="game-effect-title" className={`gb-boss-action gb-effect-presentation gb-board-effect effect-${effect}`}>
     <h3 id="game-effect-title">{stage.lines[0].code.startsWith('boss') ? sim.bossActionTitle : sim.cardEffectTitle}</h3>

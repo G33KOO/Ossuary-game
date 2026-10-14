@@ -1764,7 +1764,7 @@ body.solo-playing footer {
 }
 .gb-draw-flights { position: fixed; inset: 0; z-index: 65; pointer-events: none; background: none; perspective: 1200px; }
 .gb-draw-flight { position: absolute; width: var(--flight-width, 100px); height: calc(var(--flight-width, 100px) * 1.4); transform-style: preserve-3d; opacity: 0; }
-.gb-draw-flight > .gb-card-wrap.size-lg { --w: var(--flight-width, 100px); position: absolute; inset: 0; backface-visibility: hidden; }
+.gb-draw-flight-rotator > .gb-card-wrap.size-lg { --w: var(--flight-width, 100px); position: absolute; inset: 0; backface-visibility: hidden; }
 .gb-draw-flight-back { position: absolute; inset: 0; transform: rotateY(180deg); backface-visibility: hidden; }
 .gb-draw-flight-back .gb-back.size-lg { width: var(--flight-width, 100px); height: calc(var(--flight-width, 100px) * 1.4); }
 .gb-card-wrap.is-awaiting-draw, .gb-monster-encounter.is-awaiting-draw { opacity: 0 !important; pointer-events: none; }
@@ -1900,3 +1900,12 @@ body.solo-playing footer {
   .gb-full.gb-boss-battle .gb-board-boss-draw { grid-template-columns: 120px minmax(0, 1fr); }
   .gb-full.gb-boss-battle .gb-board-boss-draw .gb-boss-draw-card, .gb-full.gb-boss-battle .gb-board-boss-draw .gb-boss-draw-back .gb-back { width: 120px; height: 168px; }
 }
+
+.gb-draw-flight-rotator { position: absolute; inset: 0; transform-style: preserve-3d; }
+.gb-monster-information { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.gb-arena-with-context .gb-board-effect .gb-boss-played-card { display: none; }
+.gb-drawing-monster .gb-arena-with-context > :not(.gb-combat-context),
+.gb-drawing-monster .gb-arena > .gb-board-choice,
+.gb-drawing-monster .gb-arena > .gb-board-effect,
+.gb-drawing-monster .gb-combat-context,
+.is-awaiting-monster-context { visibility: hidden; pointer-events: none; }

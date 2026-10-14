@@ -36,7 +36,7 @@ import { BossEnrage } from './BossEnrage'
 import { TavernBoard } from './TavernBoard'
 import { BoardChoice } from './BoardChoice'
 import { MonsterCombatBonuses } from './MonsterCombatBonuses'
-import { DrawFlight } from './DrawFlight'
+import { DrawFlight, type DrawOrigin } from './DrawFlight'
 import { actionVisual } from '../game/actionVisual'
 import { drawPresentations } from '../game/drawPresentations'
 import type { ActionEffect, ActionTarget } from '../game/actionVisual'
@@ -55,7 +55,7 @@ const REVEAL_STAGGER = 250
 
 type Busy = 'rolling' | 'resolving' | 'boss' | 'flee' | null
 type Drag = { id: string; from: 'hand' | 'equip' }
-type Reveal = { seq: number; kind: 'loot' | 'monster'; cards: string[] }
+type Reveal = { seq: number; kind: 'loot' | 'monster'; cards: string[]; origin?: DrawOrigin; arrivalStage?: EffectStage }
 type PlayedAction = { active?: boolean; id: string; effect: ActionEffect; target: ActionTarget; seq: number; x: number; y: number; dx: number; dy: number; result: string; lines: GameState['log']; destroyed?: { id: string; x: number; y: number } }
 
 function classActiveVisual(klass: string): { effect: ActionEffect; target: ActionTarget } {
@@ -188,10 +188,14 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     const frames = drawPresentations(next.draws)
     if (!frames.length) return
     window.clearTimeout(revealTimer.current)
+    const origins = Object.fromEntries(['monster', 'loot'].map(kind => {
+      const bounds = document.querySelector(`.gb-side-${kind === 'loot' ? 'right' : 'left'} .gb-pile-stack .gb-back:nth-child(3)`)?.getBoundingClientRect()
+      return [kind, bounds ? { left: bounds.left, top: bounds.top, width: bounds.width, height: bounds.height } : undefined]
+    }))
     const show = (index: number) => {
       const frame = frames[index]
       if (!frame) { setReveal(null); if (afterReveal.current.length) { setBossPresentations(afterReveal.current); afterReveal.current = [] } return }
-      setReveal({ seq: next.drawSeq * 100 + index, ...frame })
+      setReveal({ seq: next.drawSeq * 100 + index, ...frame, origin: origins[frame.kind], arrivalStage: afterReveal.current[0] })
       revealTimer.current = window.setTimeout(() => show(index + 1), REVEAL_BASE + frame.cards.length * REVEAL_STAGGER)
     }
     show(0)
@@ -520,6 +524,12 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const discarding = prompt?.purpose === 'discard-excess'
   const choiceVisible = prompt && !opening && !tavern && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0
   const effectVisible = bossPresentations[0] && bossPresentations[0].lines[0].code !== 'resolved' && !bossReveal && !reveal && !playedAction
+  // Reserve the same layout during the flight as the arrival effect or choice.
+  const monsterDrawing = reveal?.kind === 'monster'
+  const arrivalStage = bossPresentations[0] ?? (monsterDrawing ? reveal.arrivalStage : undefined)
+  const arrivalEffect = effectVisible || (monsterDrawing && arrivalStage && arrivalStage.lines[0].code !== 'resolved' && !playedAction)
+  const arrivalChoice = choiceVisible || (monsterDrawing && prompt && !tavern && !playedAction && !arrivalStage)
+  const monsterContext = combat?.kind === 'monster' && (arrivalChoice || arrivalEffect)
   const dragFrom = (from: Drag['from'], id: string) => ({
     draggable: true,
     onDragEnd: () => {
@@ -596,7 +606,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       ) : null
 
   return (
-    <div className={`gb gb-full${combat ? ' gb-in-combat' : ''}${opening || effectVisible || (choiceVisible && !discarding) ? ' gb-has-decision' : ''}${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
+    <div className={`gb gb-full${combat ? ' gb-in-combat' : ''}${monsterDrawing ? ' gb-drawing-monster' : ''}${opening || arrivalEffect || (arrivalChoice && !discarding) ? ' gb-has-decision' : ''}${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
         <LevelTimeline game={boardState} />
         {boardState.level >= 10 || boardState.bossPressure > 0 ? <BossEnrage count={boardState.bossPressure} sim={sim} className="gb-boss-enrage-mobile" /> : null}
@@ -654,15 +664,15 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           </div>
         </div>
         <div className="gb-center">
-        <DropTarget as="section" className={`gb-arena${combat?.kind === 'monster' && (choiceVisible || effectVisible) ? ' gb-arena-with-context' : ''}`} target={playZone} onHover={setOver} onCommit={commitDrop}>
-          {combat?.kind === 'monster' && (choiceVisible || effectVisible) ? <aside className="gb-combat-context" aria-label={sim.opponent}>
+        <DropTarget as="section" className={`gb-arena${monsterContext ? ' gb-arena-with-context' : ''}`} target={playZone} onHover={setOver} onCommit={commitDrop}>
+          {monsterContext && combat ? <aside className="gb-combat-context" aria-label={sim.opponent}>
             <div className="gb-combat-context-cards">
-              {combat.monsters.filter(id => !pendingMonsterIds.has(id)).map(id => <div key={id}><GameCard id={id} locale={locale} size="lg" onInspect={el => inspect(id, el)} /><MonsterCombatBonuses game={boardState} id={id} locale={locale} compact /></div>)}
+              {combat.monsters.map(id => <div key={id} className={pendingMonsterIds.has(id) ? 'is-awaiting-monster-context' : undefined}><GameCard id={id} locale={locale} size="lg" onInspect={el => inspect(id, el)} /><MonsterCombatBonuses game={boardState} id={id} locale={locale} compact /></div>)}
             </div>
             {power ? <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} /> : null}
             {power ? <Score label={sim.yourPower} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} /> : null}
           </aside> : null}
-          {opening ? <section ref={openingRef} className="gb-opening" aria-live="polite"><span className="gb-opening-sigil" aria-hidden="true">O</span><h3>{sim.start}</h3><p>{heroName('Race', race)} &middot; {heroName('Classe', klass)}</p></section> : bossReveal ? bossOnBoard : reveal?.kind === 'monster' && !combat ? <div className="gb-monster-landing" aria-hidden="true" /> : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <div className="gb-discard-preparation"><DropTarget as="section" className="gb-preparation-play" target={playZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.preparation}</h3><p>{sim.discardPlayHint}</p></DropTarget><DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.discardBin}</h3><p role="status">{fill(sim.discardRemaining, { count: Number(prompt.ctx.count) })}</p><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7" /></svg><p>{sim.discardDropHint}</p></DropTarget></div> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
+          {opening ? <section ref={openingRef} className="gb-opening" aria-live="polite"><span className="gb-opening-sigil" aria-hidden="true">O</span><h3>{sim.start}</h3><p>{heroName('Race', race)} &middot; {heroName('Classe', klass)}</p></section> : bossReveal ? bossOnBoard : monsterDrawing && !combat && !arrivalEffect && !arrivalChoice ? <div className="gb-monster-landing" aria-hidden="true" /> : arrivalEffect ? <EffectPresentation paused={monsterDrawing} key={arrivalStage!.seq} stage={arrivalStage!} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <div className="gb-discard-preparation"><DropTarget as="section" className="gb-preparation-play" target={playZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.preparation}</h3><p>{sim.discardPlayHint}</p></DropTarget><DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.discardBin}</h3><p role="status">{fill(sim.discardRemaining, { count: Number(prompt.ctx.count) })}</p><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7" /></svg><p>{sim.discardDropHint}</p></DropTarget></div> : arrivalChoice ? <BoardChoice skipDealAnimation={prompt.purpose === 'fournaise' && game.draws.some(draw => draw.kind === 'monster')} prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -680,8 +690,10 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 {combat.monsters.filter(() => !(monsterVictory && combatBeat === 'result')).map((id) => (
                   <div className={`gb-monster-encounter${pendingMonsterIds.has(id) ? ' is-awaiting-draw' : ''}`} key={id} inert={pendingMonsterIds.has(id)} aria-hidden={pendingMonsterIds.has(id) || undefined}>
                     <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="lg" />
+                    <div className="gb-monster-information">
                     {card(id).text && <div className="gb-monster-effect" key={`${id}-${boardState.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}
                     <MonsterCombatBonuses game={boardState} id={id} locale={locale} />
+                    </div>
                   </div>
                 ))}
                 {combat.kind === 'boss' && combat.bossId ? <div className="gb-boss-formation">
@@ -703,7 +715,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                     {combat.bossEquip.map(id => <GameCard id={id} key={id} equipmentPower={bossEquipmentCardPower(combat, id)} locale={locale} onInspect={el => inspect(id, el)} size="sm" />)}
                   </div></div>
                 </div> : null}
-                {combat.kind !== 'boss' && power && pendingMonsterIds.size === 0 && !(monsterVictory && combatBeat === 'result') ? <div className="gb-opponent-status"><Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />{power.opponent.die !== null ? <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={6} value={power.opponent.die} compact sim={sim} /> : null}</div> : null}
+                {combat.kind !== 'boss' && power && !(monsterVictory && combatBeat === 'result') ? <div className={`gb-opponent-status${pendingMonsterIds.size ? ' is-awaiting-monster-context' : ''}`}><Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />{power.opponent.die !== null ? <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={6} value={power.opponent.die} compact sim={sim} /> : null}</div> : null}
               </DropTarget>
 
 
@@ -860,7 +872,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </div>
       </DropTarget>
 
-      {reveal ? <DrawFlight key={reveal.seq} kind={reveal.kind} cards={reveal.cards} locale={locale} /> : null}
+      {reveal ? <DrawFlight key={reveal.seq} kind={reveal.kind} cards={reveal.cards} origin={reveal.origin} locale={locale} /> : null}
 
       {playedAction ? createPortal(<div className={`gb-action-animation effect-${playedAction.effect}`} key={playedAction.seq} aria-live="polite">
         <div className="gb-action-flight" style={{ left: playedAction.x, top: playedAction.y, '--action-dx': `${playedAction.dx}px`, '--action-dy': `${playedAction.dy}px` } as CSSProperties}>
