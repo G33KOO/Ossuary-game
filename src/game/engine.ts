@@ -1516,6 +1516,12 @@ function answerPrompt(s: GameState, option: string | null) {
 
 function endTurnNow(s: GameState) {
   if (!s.tavernDone) {
+    const limit = handLimit(s)
+    if (s.hand.length > limit) {
+      queue(s, { purpose: 'discard-excess', options: handOptions(s), optional: false, ctx: { count: s.hand.length - limit } })
+      return
+    }
+
     s.tavernDone = true
     // The Tavern is a trade: with an empty hand there is nothing to swap, so it stays closed.
     if (s.hand.length > 0) {
@@ -1535,11 +1541,6 @@ function endTurnNow(s: GameState) {
         return
       }
     }
-  }
-  const limit = handLimit(s)
-  if (s.hand.length > limit) {
-    queue(s, { purpose: 'discard-excess', options: handOptions(s), optional: false, ctx: { count: s.hand.length - limit } })
-    return
   }
   s.tavernDone = false
   s.endTurnPending = false

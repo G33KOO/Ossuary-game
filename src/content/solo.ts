@@ -33,7 +33,7 @@ const fr: SoloCopy = {
       items: [
         'Équipez ou retirez Armures, Armes et Artefact avant, pendant ou après un combat, y compris après le jet de dé (une Armure par emplacement, 2 mains, 1 Artefact). Vous pouvez aussi utiliser votre main dans la Taverne. Les conditions propres à chaque carte restent applicables.',
         'Choisissez ensuite une aventure : affronter un Monstre, piocher 1 Butin (2 pour un Nain), ou — dès le niveau 10 — tirer un Boss au hasard et le défier.',
-        'Après votre aventure, prenez le temps de vous équiper et de jouer vos Actions autorisées. Cliquez sur « Fin de tour » pour ouvrir la Taverne : 3 Butins sont proposés. Échangez-en un contre une carte de votre main ou choisissez « Non merci ». Avec une main vide, la Taverne reste fermée. Puis défaussez jusqu’à votre limite de main (5 cartes, 6 pour un Humain) et commencez le tour suivant. Votre équipement ne compte pas dans la main.',
+        'Après votre aventure, prenez le temps de vous équiper et de jouer vos Actions autorisées. Cliquez sur « Fin de tour », puis défaussez les cartes en trop pour respecter votre limite de main (5 cartes, 6 pour un Humain). La Taverne ouvre ensuite : 3 Butins sont proposés. Échangez-en un contre une carte de votre main ou choisissez « Non merci », puis commencez le tour suivant. Avec une main vide, la Taverne reste fermée. Votre équipement ne compte pas dans la main.',
       ],
     },
     {
@@ -306,7 +306,7 @@ const fr: SoloCopy = {
     'hunter-boss-pick': 'Choisissez le Boss à affronter parmi les cartes révélées.',
     'weapon-loot': 'Sacrifiez la Hache Fétiche pour gagner 2 Butins supplémentaires, ou conservez-la.',
     'druid-pick': 'Choisissez une Armure équipée dont vous souhaitez doubler la Puissance pour ce combat.',
-    'discard-excess': 'Fin de tour : défaussez {count} carte(s) pour respecter votre limite de main.',
+    'discard-excess': 'Avant la Taverne : défaussez {count} carte(s) pour respecter votre limite de main.',
     'discard-one': 'Défaussez 1 carte.',
     tavern: 'Choisissez l’un des {count} Butins proposés, puis la carte de votre main à échanger. Vous pouvez aussi glisser votre carte sur une offre.',
     'tavern-give': 'Quelle carte de votre main donnez-vous en échange ?',
@@ -451,7 +451,7 @@ const en: SoloCopy = {
       items: [
         'Equip or remove Armor, Weapons and Artifact before, during or after combat, including after rolling (one Armor per slot, 2 hands, 1 Artifact). You can also use your hand in the Tavern. Each card’s own conditions still apply.',
         'Then pick an adventure: fight a Monster, draw 1 Loot (2 for a Dwarf), or — from level 10 — draw a random Boss and challenge it.',
-        'After your adventure, take time to equip items and play available Actions. Click “End turn” to open the Tavern: 3 Loot cards are offered. Trade one for a card from your hand or choose “No thanks”. With an empty hand the Tavern stays closed. Then discard down to your hand limit (5 cards, 6 for a Human) and begin the next turn. Equipment does not count toward the hand.',
+        'After your adventure, take time to equip items and play available Actions. Click “End turn”, then discard excess cards to meet your hand limit (5 cards, 6 for a Human). The Tavern opens next: 3 Loot cards are offered. Trade one for a card from your hand or choose “No thanks”, then begin the next turn. With an empty hand the Tavern stays closed. Equipment does not count toward the hand.',
       ],
     },
     {
@@ -724,7 +724,7 @@ const en: SoloCopy = {
     'hunter-boss-pick': 'Choose the Boss to face from the revealed cards.',
     'weapon-loot': 'Sacrifice the Fetish Axe to gain 2 extra Loot cards, or keep it.',
     'druid-pick': 'Choose an equipped Armor to double its Power for this combat.',
-    'discard-excess': 'End of turn: discard {count} card(s) to respect your hand limit.',
+    'discard-excess': 'Before the Tavern: discard {count} card(s) to respect your hand limit.',
     'discard-one': 'Discard 1 card.',
     tavern: 'Pick one of the {count} offered Loot cards, then a card from your hand to trade. You can also drag your card onto an offer.',
     'tavern-give': 'Which card from your hand do you give in exchange?',

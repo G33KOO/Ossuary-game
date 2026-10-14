@@ -320,6 +320,7 @@ describe('card effects', () => {
     state = reduce(state, { t: 'resolve' })
     expect(state.retainedMonsters).toContain(id('Vitrail'))
     state = reduce(state, { t: 'endTurn' })
+    while (state.promptQueue[0]?.purpose === 'discard-excess') state = reduce(state, { t: 'answer', option: state.hand.at(-1)! })
     expect(state.promptQueue[0].purpose).toBe('tavern')
     for (let index = 0; index < 2; index++) {
       state = reduce(state, { t: 'answer', option: state.promptQueue[0].options[0].id })

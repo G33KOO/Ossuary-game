@@ -52,7 +52,7 @@ describe('solo Oaths', () => {
     state.hand = CARDS.filter((entry) => entry.type === 'Action').slice(0, 7).map((entry) => entry.id)
     state.endTurnPending = true
     state.endTurnRequested = true
-    state.tavernDone = true
+    state.tavernDone = false
     state.promptQueue = [{ purpose: 'discard-excess', options: state.hand.map((id) => ({ id, cardId: id })), optional: false, ctx: { count: 2 } }]
     state = reduce(state, { t: 'answer', option: state.hand[0] })
     expect(state.completedOaths).toEqual([])

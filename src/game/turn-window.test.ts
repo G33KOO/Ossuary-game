@@ -13,6 +13,45 @@ function ready() {
 }
 
 describe('manual turn preparation', () => {
+  it('discards excess cards before drawing Tavern offers and opening exchanges', () => {
+    let game = ready()
+    game.hand = CARDS.filter((entry) => entry.type === 'Action').slice(0, 8).map((entry) => entry.id)
+    game.endTurnPending = true
+    const deck = [...game.lootDeck]
+    const discarded = game.hand.slice(0, 2)
+    game = reduce(game, { t: 'endTurn' })
+    expect(game.promptQueue[0].purpose).toBe('discard-excess')
+    expect(game.promptQueue[0].ctx.count).toBe(2)
+    expect(game.tavernDone).toBe(false)
+    expect(game.lootDeck).toEqual(deck)
+    game = reduce(game, { t: 'answer', option: discarded[0] })
+    expect(game.promptQueue[0].purpose).toBe('discard-excess')
+    expect(game.promptQueue[0].ctx.count).toBe(1)
+    expect(game.lootDeck).toEqual(deck)
+    game = reduce(game, { t: 'answer', option: discarded[1] })
+    expect(game.hand).toHaveLength(6)
+    expect(game.promptQueue[0].purpose).toBe('tavern')
+    expect(game.turn).toBe(1)
+    game = reduce(game, { t: 'answer', option: game.promptQueue[0].options[0].id })
+    expect(game.promptQueue[0].purpose).toBe('tavern-give')
+    expect(game.promptQueue[0].options.some((option) => discarded.includes(option.id))).toBe(false)
+    game = reduce(game, { t: 'answer', option: game.hand[0] })
+    expect(game.promptQueue).toEqual([])
+    expect(game.turn).toBe(2)
+  })
+  it('does not add another discard step after playing a draw Action in the Tavern', () => {
+    let game = ready()
+    game.hand = [id('Trouvaille'), ...CARDS.filter((entry) => entry.type === 'Armure').slice(0, 5).map((entry) => entry.id)]
+    game.endTurnPending = true
+    game = reduce(game, { t: 'endTurn' })
+    expect(game.promptQueue[0].purpose).toBe('tavern')
+    game = reduce(game, { t: 'playAction', id: id('Trouvaille') })
+    expect(game.hand).toHaveLength(7)
+    game = reduce(game, { t: 'answer', option: null })
+    expect(game.promptQueue).toEqual([])
+    expect(game.turn).toBe(2)
+    expect(game.hand).toHaveLength(7)
+  })
   it('keeps victory on the same turn and permits drawing and equipping before Tavern', () => {
     let game = ready()
     game.monsterDeck = [id('Tranchebec')]
