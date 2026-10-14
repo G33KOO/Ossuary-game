@@ -146,3 +146,21 @@
 }
 
 .solo-playing .sim-modal { grid-auto-rows: max-content; align-content: start; }
+
+.solo-page .gb-full .gb-table { grid-template-columns: minmax(0, 1fr); grid-template-rows: max-content minmax(max-content, 1fr) max-content max-content; }
+.solo-page .gb-full .gb-deck-row { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 110px)); justify-content: center; gap: 24px; align-items: start; min-width: 0; }
+.solo-page .gb-full .gb-deck-row .gb-side { display: grid; grid-column: auto; grid-row: auto; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 0; border: 0; background: none; min-width: 0; }
+.solo-page .gb-full .gb-deck-row .gb-pile { display: grid; padding: 0; }
+.solo-page .gb-full .gb-deck-row .gb-pile-stack { width: 64px; height: 90px; }
+.solo-page .gb-full .gb-deck-row .gb-pile-stack .gb-back { width: 60px; height: 84px; }
+.solo-page .gb-full .gb-deck-row .gb-pile-label { font-size: 10px; line-height: 1.4; }
+.solo-page .gb-full .gb-center { grid-column: 1; grid-row: 2; }
+.solo-page .gb-full .gb-stage-actions { grid-column: 1; grid-row: 3; }
+.solo-page .gb-full .gb-board { grid-column: 1; grid-row: 4; }
+@media (max-width: 760px) {
+  .solo-page .gb-full .gb-table { grid-template-rows: max-content max-content max-content max-content; }
+  .solo-page .gb-full .gb-deck-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-stack { width: 52px; height: 74px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-stack .gb-back { width: 48px; height: 67px; }
+  .solo-page .gb-full .gb-deck-row .gb-pile-label { font-size: 9px; }
+}

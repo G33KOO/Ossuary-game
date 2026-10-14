@@ -51,7 +51,7 @@ await call('Runtime.enable');try{
  }else{await evaluate(`document.querySelector('.gb-board-choice button.button-primary, .gb-board-choice-options button').click()`);await wait(300);}
  console.log(JSON.stringify({width,mode,layout}));
  }
- await setup('boss');await evaluate(`document.querySelector('.gb-arena .kind-boss').click()`);await wait(1700);const boss=await evaluate(`({inline:!!document.querySelector('.gb-arena .gb-board-boss-draw'),modal:!!document.querySelector('dialog[open]'),ready:!document.querySelector('.gb-board-boss-draw .gb-boss-draw-continue').disabled})`);if(!boss.inline||boss.modal||!boss.ready)throw Error(JSON.stringify(boss));console.log(JSON.stringify({width,boss}));
+ await setup('boss');await evaluate(`document.querySelector('.gb-side-boss .kind-boss').click()`);await wait(1700);const boss=await evaluate(`({inline:!!document.querySelector('.gb-arena .gb-board-boss-draw'),modal:!!document.querySelector('dialog[open]'),ready:!document.querySelector('.gb-board-boss-draw .gb-boss-draw-continue').disabled})`);if(!boss.inline||boss.modal||!boss.ready)throw Error(JSON.stringify(boss));console.log(JSON.stringify({width,boss}));
  }
  if(errors.length)throw Error(errors.join('\n'));
 }finally{ws.close()}

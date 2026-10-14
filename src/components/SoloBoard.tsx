@@ -614,19 +614,43 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       </div>
 
       <div className="gb-table" ref={tableRef}>
-        <div className="gb-side gb-side-left">
-          <Pile
-            count={boardState.monsterDeck.length}
-            disabled={locked || !main}
-            hint={sim.pickMonster}
-            actionLabel={sim.fight}
-            kind="monster"
-            label={sim.pileMonster}
-            onClick={() => send({ t: 'fightMonster' })}
-          />
-          {combat?.kind !== 'boss' ? <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('monster')} /> : null}
-        </div>
+        <div className="gb-deck-row">
+          <div className="gb-side gb-side-left">
+            <Pile
+              count={boardState.monsterDeck.length}
+              disabled={locked || !main}
+              hint={sim.pickMonster}
+              actionLabel={sim.fight}
+              kind="monster"
+              label={sim.pileMonster}
+              onClick={() => send({ t: 'fightMonster' })}
+            />
+            {combat?.kind !== 'boss' ? <Discard count={boardState.monsterDiscard.length} label={sim.tableMonster} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('monster')} /> : null}
+          </div>
 
+          <div className="gb-side gb-side-boss">
+            <Pile
+              count={BOSS_IDS.length}
+              disabled={locked || !bossUnlocked}
+              hint={bossUnlocked ? sim.boss : sim.bossLocked}
+              kind="boss"
+              label={bossUnlocked ? sim.boss : sim.bossLocked}
+              onClick={() => send({ t: 'drawBoss' })}
+            />
+          </div>
+          <div className="gb-side gb-side-right">
+            <Pile
+              count={boardState.lootDeck.length}
+              disabled={locked || !main}
+              hint={sim.pickLoot}
+              actionLabel={boardState.race === 'Nain' ? sim.drawLootNain : sim.drawLoot}
+              kind="loot"
+              label={sim.pileLoot}
+              onClick={() => send({ t: 'drawLoot' })}
+            />
+            {combat?.kind !== 'boss' ? <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('loot')} /> : null}
+          </div>
+        </div>
         <div className="gb-center">
         <DropTarget as="section" className={`gb-arena${combat?.kind === 'monster' && (choiceVisible || effectVisible) ? ' gb-arena-with-context' : ''}`} target={playZone} onHover={setOver} onCommit={commitDrop}>
           {combat?.kind === 'monster' && (choiceVisible || effectVisible) ? <aside className="gb-combat-context" aria-label={sim.opponent}>
@@ -685,14 +709,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           ) : (
             <DropTarget className="gb-idle" target={playZone} onHover={setOver} onCommit={commitDrop}>
               {main && !locked ? <p className="gb-idle-title">{sim.adventure}</p> : null}
-              <Pile
-                count={BOSS_IDS.length}
-                disabled={locked || !bossUnlocked}
-                hint={bossUnlocked ? sim.boss : sim.bossLocked}
-                kind="boss"
-                label={bossUnlocked ? sim.boss : sim.bossLocked}
-                onClick={() => send({ t: 'drawBoss' })}
-              />
               {!bossUnlocked ? <p className="sim-note">{sim.bossWaits}</p> : null}
             </DropTarget>
           )}
@@ -800,18 +816,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <p className="gb-board-hint">{sim.dropEquip}</p>
         </section>
 
-        <div className="gb-side gb-side-right">
-          <Pile
-            count={boardState.lootDeck.length}
-            disabled={locked || !main}
-            hint={sim.pickLoot}
-            actionLabel={boardState.race === 'Nain' ? sim.drawLootNain : sim.drawLoot}
-            kind="loot"
-            label={sim.pileLoot}
-            onClick={() => send({ t: 'drawLoot' })}
-          />
-          {combat?.kind !== 'boss' ? <Discard count={boardState.lootDiscard.length} label={sim.tableLoot} linkLabel={sim.discardPile} onOpen={() => setDiscardOpen('loot')} /> : null}
-        </div>
+
       </div>
 
       <DropTarget className={`gb-dock${discarding ? ' is-discarding' : ''}`} target={handZone} onHover={setOver} onCommit={commitDrop}>

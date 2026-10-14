@@ -22,7 +22,7 @@ export function BoardChoice({ prompt, title, instructions, locale, sim, label, i
   const ready = !animated || dealt === signature
   useLayoutEffect(() => {
     if (!animated) return
-    const source = (prompt.purpose === 'oath' ? root.current : document.querySelector(prompt.purpose === 'thief-pick' ? '.gb-side-right .gb-pile-stack' : prompt.purpose === 'hunter-boss-pick' ? '.gb-arena .kind-boss .gb-pile-stack' : '.gb-side-left .gb-pile-stack'))?.getBoundingClientRect() ?? root.current?.getBoundingClientRect()
+    const source = (prompt.purpose === 'oath' ? root.current : document.querySelector(prompt.purpose === 'thief-pick' ? '.gb-side-right .gb-pile-stack' : prompt.purpose === 'hunter-boss-pick' ? '.gb-side-boss .gb-pile-stack' : '.gb-side-left .gb-pile-stack'))?.getBoundingClientRect() ?? root.current?.getBoundingClientRect()
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const animations: Animation[] = []
     if (source && !reduced) root.current?.querySelectorAll<HTMLElement>('.gb-choice-card').forEach((element, index) => {
