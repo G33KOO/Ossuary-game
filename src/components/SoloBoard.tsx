@@ -828,7 +828,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             const playable = (!handLocked && ((isGear ? canEquip(game, id) : canPlayAction(game, id)) || (prompt?.purpose === 'tavern-give' && prompt.options.some(option => option.id === id)))) || (choiceVisible && prompt.options.some(option => option.cardId === id))
             return (
               <GameCard
-                className={`${playable ? 'is-playable' : ''}${drag?.id === id ? ' is-dragging' : ''}`}
+                className={`${playable && entry.type !== 'Arme' ? 'is-playable' : ''}${drag?.id === id ? ' is-dragging' : ''}`}
                 unavailableReason={reason}
                 playerClass={boardState.klass}
                 allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)}
