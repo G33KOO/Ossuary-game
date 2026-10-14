@@ -8,15 +8,15 @@ export function IntroSection() {
 
   return (
     <section className="intro-section section-wrap" id="univers">
-      <SectionLabel number="01">{t('universe.section')}</SectionLabel>
       <div className="intro-content">
         <div>
-          <p className="eyebrow">{t('universe.eyebrow')}</p>
+          <SectionLabel number="01">{t('universe.section')}</SectionLabel>
           <h2>
             {t('universe.titleOne')}
             <br />
             <em>{t('universe.titleTwo')}</em>
           </h2>
+          <p className="intro-tagline">{t('universe.eyebrow')}</p>
         </div>
         <div className="intro-text">
           <p>{t('universe.paragraphOne')}</p>
