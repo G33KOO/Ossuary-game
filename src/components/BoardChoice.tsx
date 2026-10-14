@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
+import { useBoardFocus } from '../hooks/useBoardFocus'
 import type { Locale } from '../i18n/LocaleProvider'
 import type { Prompt } from '../game/types'
 import { GameCard } from './game-ui'
@@ -11,8 +12,8 @@ export function BoardChoice({ prompt, title, instructions, locale, sim, label, i
   label: (id: string) => string; inspect: (id: string, element: HTMLElement) => void
   answer: (id: string | null) => void
 }) {
-  const root = useRef<HTMLElement>(null)
   const signature = `${prompt.purpose}:${prompt.options.map((option) => option.id).join(',')}`
+  const root = useBoardFocus(signature)
   const animated = REVEALED_CHOICES.has(prompt.purpose)
   const [dealt, setDealt] = useState<string | null>(null)
   const ready = !animated || dealt === signature
@@ -30,7 +31,7 @@ export function BoardChoice({ prompt, title, instructions, locale, sim, label, i
     })
     const timer = window.setTimeout(() => setDealt(signature), reduced ? 0 : 600 + Math.max(0, prompt.options.length - 1) * 100)
     return () => { window.clearTimeout(timer); animations.forEach((animation) => animation.cancel()) }
-  }, [animated, signature, prompt.purpose, prompt.options.length])
+  }, [animated, signature, prompt.purpose, prompt.options.length, root])
   return <section ref={root} className="gb-board-choice" aria-labelledby="board-choice-title" aria-busy={!ready}>
     <h3 id="board-choice-title">{title}</h3>
     <p role="status">{instructions}</p>

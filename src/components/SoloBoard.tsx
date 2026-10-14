@@ -9,13 +9,13 @@ import { BOSS_IDS, activeStatus, canManageHand, canChangeEquipment, canEquip, ca
 import { loadGame, saveGame } from '../game/save'
 import { bossEquipmentCardPower, computePlayerPower, computePower, equipmentCardPower, handLimit } from '../game/power'
 import type { PowerBreakdown } from '../game/power'
-import type { DiceRoll, GameAction, GameState, Prompt } from '../game/types'
+import type { GameAction, GameState, Prompt } from '../game/types'
 import { useCardDialog } from '../hooks/useCardDialog'
 import { localizeCard } from '../i18n/cardTranslations'
 import { useLocale } from '../hooks/useLocale'
+import { useBoardFocus } from '../hooks/useBoardFocus'
 import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
 import type { CardGender } from '../utils/cardIllustration'
-import { getClassIcon } from '../utils/cardClass'
 import { OATH, oathCompleted } from '../game/oaths'
 import { permanentDieBonus } from '../game/oaths'
 import { Modal } from './Modal'
@@ -26,7 +26,7 @@ import type { CombatBeat } from './CombatResolution'
 import { DiceResults } from './DiceResults'
 import type { EffectStage } from './EffectPresentation'
 import { EffectPresentation } from './EffectPresentation'
-import { HeroInventory } from './HeroInventory'
+import { HeroPower, ClassActive, PlayerDie } from './HeroCombatControls'
 import { CombatRecap } from './CombatRecap'
 import { LevelTimeline } from './LevelTimeline'
 import { BossEnrage } from './BossEnrage'
@@ -73,90 +73,6 @@ function slotAccepts(slot: string, id: string) {
   if (entry.type === 'Arme') return slot.startsWith('hand')
   if (entry.type === 'Artefact de classe') return slot === 'artifact'
   return false
-}
-
-function HeroPower({ power, sim }: { power: PowerBreakdown; sim: Record<string, string> }) {
-  const [open, setOpen] = useState(false)
-  const anchor = useRef<HTMLButtonElement>(null)
-  const [position, setPosition] = useState({ left: 0, bottom: 0 })
-  const show = () => {
-    const bounds = anchor.current?.getBoundingClientRect()
-    if (!bounds) return
-    setPosition({ left: Math.max(12, Math.min(bounds.left, window.innerWidth - Math.min(300, window.innerWidth * .8) - 12)), bottom: window.innerHeight - bounds.top + 10 })
-    setOpen(true)
-  }
-  useEffect(() => {
-    if (!open) return
-    const close = () => setOpen(false)
-    window.addEventListener('scroll', close, true)
-    window.addEventListener('resize', close)
-    return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
-  }, [open])
-  return <div className={`gb-hero-power${open ? ' is-open' : ''}`}>
-    <button ref={anchor} className="gb-hero-power-button" type="button" aria-expanded={open} aria-controls="hero-power-calculation" aria-label={`${sim.yourPower} : ${power.total}. ${sim.powerDetails}`} aria-describedby={open ? "hero-power-calculation" : undefined} onPointerEnter={(event) => { if (event.pointerType === "mouse") show() }} onPointerLeave={(event) => { if (event.pointerType === "mouse") setOpen(false) }} onFocus={show} onClick={show} onBlur={() => setOpen(false)} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
-      <span>{sim.yourPower}</span><strong aria-live="polite" key={power.total} className="gb-power-change">{power.total}</strong><span aria-hidden="true" className="gb-power-info">ⓘ</span>
-    </button>
-    {open ? createPortal(<div id="hero-power-calculation" className="gb-power-tooltip gb-power-tooltip-floating" role="tooltip" style={{ left: position.left, bottom: position.bottom }}>
-      <strong>{sim.powerDetails}</strong>
-      <dl><div><dt>{sim.levelPart}</dt><dd>{power.level}</dd></div><div><dt>{sim.equipPart}</dt><dd>{power.equipment}</dd></div><div><dt>{sim.bonusPart}</dt><dd>{power.bonus > 0 ? '+' : ''}{power.bonus}</dd></div><div><dt>{sim.diePart}</dt><dd>{power.die ?? sim.notRolled}</dd></div><div className="gb-power-total"><dt>{sim.totalPart}</dt><dd>{power.total}</dd></div></dl>
-      <p>{sim.powerCalculationHint}</p>
-    </div>, document.body) : null}
-  </div>
-}
-
-function ClassActive({ klass, name, effect, passive, reasons, disabled, sim, onActivate }: {
-  klass: ClassName; name: string; effect: string; passive: string; reasons: string[]; disabled: boolean; sim: Record<string, string>; onActivate: () => void
-}) {
-  const anchor = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false)
-  const [position, setPosition] = useState({ left: 0, bottom: 0, maxHeight: 500 })
-  const show = () => {
-    const bounds = anchor.current?.getBoundingClientRect()
-    if (!bounds) return
-    const width = Math.min(420, window.innerWidth * .88)
-    setPosition({ left: Math.max(12, Math.min(bounds.left, window.innerWidth - width - 12)), bottom: window.innerHeight - bounds.top + 10, maxHeight: Math.max(120, bounds.top - 24) })
-    setOpen(true)
-  }
-  useEffect(() => {
-    if (!open) return
-    const close = () => setOpen(false)
-    window.addEventListener('scroll', close, true)
-    window.addEventListener('resize', close)
-    return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
-  }, [open])
-  return <div ref={anchor} className="gb-class-active" tabIndex={disabled ? 0 : -1} aria-label={`${sim.active} · ${name}`} aria-describedby={open ? 'class-active-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setOpen(false) }} onFocus={show} onBlur={() => setOpen(false)} onClick={() => { if (disabled) show() }} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
-    <button className="button" disabled={disabled} onClick={onActivate} type="button" aria-describedby={open ? 'class-active-tooltip' : undefined}><img alt="" src={getClassIcon(klass)} /><span>{sim.active} · {name}</span></button>
-    {open ? createPortal(<div className="gb-active-tooltip" id="class-active-tooltip" role="tooltip" style={position}>
-      <strong>{sim.active} · {name}</strong><p>{effect}</p><p className="gb-active-passive">{passive}</p>
-      <div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.activeUnavailable : sim.activeAvailable}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div>
-    </div>, document.body) : null}
-  </div>
-}
-
-function PlayerDie({ roll, count, modifier, sides, value, rolling, disabled, reasons, possible, modifiers, sim, onRoll }: {
-  roll?: DiceRoll; count: number; modifier?: number; sides: number; value: number | null; rolling: boolean; disabled: boolean; reasons: string[]; possible: string; modifiers: string[]; sim: Record<string, string>; onRoll: () => void
-}) {
-  const ready = !disabled && !rolling && value === null
-  const anchor = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false)
-  const [position, setPosition] = useState({ left: 0, bottom: 0 })
-  const show = () => {
-    const bounds = anchor.current?.getBoundingClientRect()
-    if (!bounds) return
-    setPosition({ left: Math.max(12, Math.min(bounds.left, window.innerWidth - Math.min(360, window.innerWidth * .88) - 12)), bottom: window.innerHeight - bounds.top + 10 })
-    setOpen(true)
-  }
-  useEffect(() => {
-    if (!open) return
-    const close = () => setOpen(false)
-    window.addEventListener('scroll', close, true)
-    window.addEventListener('resize', close)
-    return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close) }
-  }, [open])
-  return <div ref={anchor} className={`gb-player-die-control${ready ? ' is-ready' : ''}`} tabIndex={disabled ? 0 : -1} aria-label={`D${sides}`} aria-describedby={open ? 'player-die-tooltip' : undefined} onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }} onPointerLeave={(event) => { if (event.pointerType === 'mouse') setOpen(false) }} onFocus={show} onBlur={() => setOpen(false)} onClick={() => { if (disabled) show() }} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.blur() } }}>
-    <button className="gb-player-die-button" type="button" disabled={disabled} onClick={() => { setOpen(false); onRoll() }} aria-label={sim.roll} aria-describedby={open ? 'player-die-tooltip' : undefined}><DiceResults roll={roll} count={count} modifier={modifier} sides={sides} value={value} rolling={rolling} ready={ready} compact sim={sim} />{ready ? <span className="gb-die-invitation" aria-hidden="true">{sim.dieInvite}</span> : null}</button>
-    {open ? createPortal(<div className="gb-active-tooltip gb-die-tooltip" id="player-die-tooltip" role="tooltip" style={position}><strong>D{sides} · {sim.diePossible}</strong><p>{possible}</p><p>{sim.dieCommitment}</p>{roll ? <DiceResults roll={roll} value={value} modifier={modifier} sim={sim} /> : null}{modifiers.map((text, index) => <p className="gb-active-passive" key={index}>{text}</p>)}<div className={`gb-active-availability${disabled ? ' is-disabled' : ''}`}><strong>{disabled ? sim.dieUnavailable : sim.dieReady}</strong>{reasons.length ? <ul>{reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul> : null}</div></div>, document.body) : null}
-  </div>
 }
 
 function breakdownText(b: PowerBreakdown, labels: { level: string; equip: string; bonus: string; die: string }) {
@@ -208,7 +124,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const [resolutionPreview, setResolutionPreview] = useState<GameState | null>(null)
   const [combatBeat, setCombatBeat] = useState<CombatBeat>('hero')
   const [busy, setBusy] = useState<Busy>(null)
-  const [inventoryOpen, setInventoryOpen] = useState(false)
   const [recapOpen, setRecapOpen] = useState(false)
   const pendingReveal = useRef<GameState | null>(null)
   const [drawDeferred, setDrawDeferred] = useState(false)
@@ -216,6 +131,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const [informationOpen, setInformationOpen] = useState(false)
   const [playedAction, setPlayedAction] = useState<PlayedAction | null>(null)
   const [opening, setOpening] = useState(false)
+  const openingRef = useBoardFocus(opening ? 'opening' : 'idle')
   useEffect(() => {
     if (!opening) return
     const openingTimer = window.setTimeout(() => setOpening(false), window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : 1600)
@@ -350,7 +266,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     setDrawDeferred(false)
     afterReveal.current = []
     setRecapOpen(false)
-    setInventoryOpen(false)
     setBossPresentations([])
     setOathCelebrations([])
     setDiscardOpen(null)
@@ -372,7 +287,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     setDrawDeferred(false)
     afterReveal.current = []
     setRecapOpen(false)
-    setInventoryOpen(false)
     setBossPresentations([])
     setOathCelebrations([])
     setDiscardOpen(null)
@@ -555,12 +469,12 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const handActions = (id: string) => {
     const gear = ['Armure', 'Arme', 'Artefact de classe'].includes(card(id).type)
     const equipped = [...Object.values(game.equipment.armors), ...game.equipment.hands, game.equipment.artifact, game.equipment.extraArmor?.id].includes(id)
-    if (equipped) return <button className="button" type="button" disabled={!equipmentEditable} onClick={() => { setInventoryOpen(false); send({ t: 'unequip', id }) }}>{sim.unequipBtn}</button>
+    if (equipped) return <button className="button" type="button" disabled={!equipmentEditable} onClick={() => { send({ t: 'unequip', id }) }}>{sim.unequipBtn}</button>
     if (!game.hand.includes(id)) return undefined
     if (prompt?.purpose === 'discard-excess') return <button className="button button-primary" type="button" onClick={() => send({ t: 'answer', option: id })}>{sim.discardPile}</button>
     if (!gear && card(id).type !== 'Action') return undefined
     const reason = gear ? equipmentReason(game, id) : undefined
-    return <>{prompt?.purpose === 'tavern-give' ? <button className="button button-primary" type="button" disabled={handLocked} onClick={() => { setInventoryOpen(false); send({ t: 'answer', option: id }) }}>{sim.tavernTrade}</button> : null}<button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { setInventoryOpen(false); send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
+    return <>{prompt?.purpose === 'tavern-give' ? <button className="button button-primary" type="button" disabled={handLocked} onClick={() => { send({ t: 'answer', option: id }) }}>{sim.tavernTrade}</button> : null}<button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
   }
   const status = activeStatus(game)
   const activeCard = heroCard('Classe', status.klass)
@@ -663,7 +577,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       ) : null
 
   return (
-    <div className={`gb gb-full${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
+    <div className={`gb gb-full${opening || effectVisible || (choiceVisible && !discarding) ? ' gb-has-decision' : ''}${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
         <LevelTimeline game={boardState} />
         {boardState.level >= 10 || boardState.bossPressure > 0 ? <BossEnrage count={boardState.bossPressure} sim={sim} className="gb-boss-enrage-mobile" /> : null}
@@ -705,7 +619,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             {power ? <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} /> : null}
             {power ? <Score label={sim.yourPower} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} /> : null}
           </aside> : null}
-          {opening ? <section className="gb-opening" aria-live="polite"><span className="gb-opening-sigil" aria-hidden="true">O</span><h3>{sim.start}</h3><p>{heroName('Race', race)} &middot; {heroName('Classe', klass)}</p></section> : bossReveal ? bossOnBoard : reveal?.kind === 'monster' && !combat ? <div className="gb-monster-landing" aria-hidden="true" /> : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{copy.promptTitles['discard-excess']}</h3><p role="status">{fill(copy.prompts['discard-excess'], { count: Number(prompt.ctx.count) })}</p><strong>{sim.discardPile}</strong><p>{sim.dropDiscard}</p></DropTarget> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
+          {opening ? <section ref={openingRef} className="gb-opening" aria-live="polite"><span className="gb-opening-sigil" aria-hidden="true">O</span><h3>{sim.start}</h3><p>{heroName('Race', race)} &middot; {heroName('Classe', klass)}</p></section> : bossReveal ? bossOnBoard : reveal?.kind === 'monster' && !combat ? <div className="gb-monster-landing" aria-hidden="true" /> : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{copy.promptTitles['discard-excess']}</h3><p role="status">{fill(copy.prompts['discard-excess'], { count: Number(prompt.ctx.count) })}</p><strong>{sim.discardPile}</strong><p>{sim.dropDiscard}</p></DropTarget> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -928,7 +842,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </aside>
       ) : null}
 
-      {inventoryOpen ? <HeroInventory game={boardState} locale={locale} sim={sim} inspect={(id, el) => inspect(id, el, handActions(id))} actions={handActions} onClose={() => setInventoryOpen(false)} /> : null}
       {recapOpen && final && !bossPresentations.length && !playedAction && !reveal && !bossReveal && !oathCelebrations.length ? <CombatRecap final={final} locale={locale} sim={sim} inspect={inspect} onClose={() => setRecapOpen(false)} /> : null}
 
       {discardOpen ? <DiscardGallery ids={discardOpen === 'monster' ? game.monsterDiscard : game.lootDiscard} title={discardOpen === 'monster' ? sim.tableMonster : sim.tableLoot} locale={locale} closeLabel={sim.close} onClose={() => setDiscardOpen(null)} onInspect={inspect} /> : null}

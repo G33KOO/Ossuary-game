@@ -20,8 +20,20 @@
   .gb-full .gb-level-timeline { flex-basis: 100%; padding: 4px 6px; }
   .gb-full .gb-mobile-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
   .gb-full .gb-hud > .gb-level-timeline, .gb-full .gb-side .gb-discard { display: none; }
-  .gb-mobile-nav button { min-height: 44px; padding: 8px 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: var(--bone); font-family: var(--display); font-size: 11px; }
-  .gb-mobile-nav button:active { border-color: var(--gold); background: var(--surface-strong); }
+  .gb-mobile-nav button { min-height: 44px; padding: 8px 6px; font-size: 11px; }
+  .gb-full .gb-board .gb-player-combat-status { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .gb-player-combat-status .gb-class-active { grid-column: 1 / -1; }
+  .gb-full .gb-board .gb-hero-power-button { width: 100%; padding: 6px; gap: 6px; }
+  .gb-full.gb-has-decision .gb-hand .gb-mobile-card-actions { display: none; }
+  .gb-full.gb-has-decision .gb-hand .gb-card-wrap.size-hand { --w: 64px; flex-basis: 64px; }
+  .gb-arena-with-context .gb-board-effect .gb-boss-played-card { display: none; }
+  .gb-full .gb-arena-with-context .gb-board-effect { padding: 4px; }
+  .gb-full .gb-arena-with-context .gb-board-effect h3 { font-size: 14px; }
+  .gb-full .gb-arena-with-context .gb-boss-action-copy p { font-size: 11px; }
+  .gb-full .gb-arena-with-context .gb-combat-context .gb-card-wrap.size-lg { --w: 56px; }
+  .gb-full .gb-arena-with-context > .gb-combat-context { align-self: start; gap: 4px; }
+  .gb-combat-context .gb-score strong { line-height: 1; }
+  .gb-combat-context .gb-score-label { line-height: 1.2; }
 
   .solo-page .gb-full .gb-table { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: max-content max-content max-content; gap: 12px; padding: 12px 8px 20px; border-width: 2px; border-radius: 12px; overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: 8px; }
   .gb-full .gb-side-left { grid-column: 1; grid-row: 1; }

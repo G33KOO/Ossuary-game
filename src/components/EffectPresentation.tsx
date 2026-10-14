@@ -6,6 +6,7 @@ import { localizeCard } from '../i18n/cardTranslations'
 import { actionVisual } from '../game/actionVisual'
 import { GameCard } from './game-ui'
 import { DiceResults } from './DiceResults'
+import { useBoardFocus } from '../hooks/useBoardFocus'
 
 export type EffectStage = { id?: string; lines: GameState['log']; seq: number }
 
@@ -14,6 +15,7 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
   formatLog: (entry: GameState['log'][number]) => string
   inspect: (id: string, element: HTMLElement) => void; onNext: () => void
 }) {
+  const root = useBoardFocus(stage.seq)
   const params = stage.lines[0].params ?? {}
   const roll: DiceRoll | undefined = typeof params.raw === 'string' ? {
     raw: params.raw.split(',').map(Number), sides: Number(params.sides), bonus: Number(params.bonus ?? 0),
@@ -33,7 +35,7 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
     return () => window.clearTimeout(timer)
   }, [automatic, ready, onNext, stage.lines])
   const effect = stage.lines[0].code === 'bossItemDestroyed' ? 'destroy' : stage.id ? actionVisual(card(stage.id).name).effect : 'magic'
-  return <section aria-labelledby="game-effect-title" className={`gb-boss-action gb-effect-presentation gb-board-effect effect-${effect}`}>
+  return <section ref={root} aria-labelledby="game-effect-title" className={`gb-boss-action gb-effect-presentation gb-board-effect effect-${effect}`}>
     <h3 id="game-effect-title">{stage.lines[0].code.startsWith('boss') ? sim.bossActionTitle : sim.cardEffectTitle}</h3>
     <div className="gb-boss-action-layout">
       {stage.id ? <GameCard id={stage.id} locale={locale} onInspect={(el) => inspect(stage.id!, el)} size="lg" className="gb-boss-played-card" /> : null}
