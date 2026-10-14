@@ -48,6 +48,17 @@
   .gb-flee-note { display: block; flex-basis: 100%; margin: 4px 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
 }
 .gb-combat-resolution { grid-column: 1 / -1; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto; align-items: center; gap: 16px; min-height: 64px; }
+/* The verdict belongs above the hero board, rather than in the die sidebar. */
+.solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) { position: relative; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(max-content, 1fr) max-content max-content; }
+.solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) .gb-deck-row { position: absolute; inset: 6px 14px auto; visibility: hidden; pointer-events: none; }
+.solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) .gb-center { grid-column: 1; grid-row: 1; }
+.solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) .gb-stage-actions { grid-column: 1; grid-row: 2; width: 96%; align-self: end; }
+.solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) .gb-board { grid-column: 1; grid-row: 3; }
+.gb-combat-resolution { width: 100%; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-strong); }
+@media (max-width: 760px) {
+  .solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) { grid-template-rows: max-content max-content max-content; }
+  .solo-page .gb-full.gb-in-combat .gb-table:has(.gb-combat-resolution) .gb-stage-actions { width: 100%; }
+}
 .gb-resolution-emblem { color: var(--gold-light); width: 40px; }
 .gb-resolution-emblem svg { display: block; width: 100%; }
 .gb-resolution-copy { min-width: 0; }
