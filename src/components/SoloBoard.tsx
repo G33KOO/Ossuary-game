@@ -755,7 +755,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             <div className="gb-scoreboard">
               <Score label={sim.you} parts={breakdownText(computePlayerPower(game), labels)} side="you" total={computePlayerPower(game).total} />
               <div className="gb-dice" />
-              <div className="gb-score foe"><span className="gb-score-label">{sim.opponent}</span><strong>?</strong><span className="gb-score-parts">{sim.pickMonster}</span></div>
             </div>
             <div className="gb-playzone"><div className="gb-controls">{tavern ? <>{prompt?.purpose === 'tavern-give' ? <button className="button" type="button" disabled={handLocked} onClick={() => send({ t: 'answer', option: 'tavern-back' })}>{sim.tavernBack}</button> : null}<button className="button button-primary" type="button" disabled={handLocked} onClick={() => { if (prompt?.purpose === 'tavern-give') send({ t: 'answer', option: 'tavern-back' }); send({ t: 'answer', option: null }) }}>{sim.noThanks}</button></> : preparation ? <><span className="gb-preparation-hint">{sim.preparation}</span><button className="button button-primary" disabled={locked} type="button" onClick={() => send({ t: 'endTurn' })}>{sim.endTurn}</button></> : null}</div></div>
           </>}
