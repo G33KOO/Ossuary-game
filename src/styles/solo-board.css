@@ -1536,6 +1536,12 @@ body.solo-playing footer {
   gap: 0;
 }
 
+.sim-random-control { position: relative; display: inline-block; margin-top: 8px; }
+.sim-random-button { gap: 8px; }
+.sim-random-button > span { font-size: 22px; line-height: 1; }
+.sim-random-tooltip { position: absolute; top: calc(100% + 8px); left: 0; z-index: 10; width: min(320px, calc(100vw - 64px)); padding: 12px 14px; border: 1px solid var(--gold); border-radius: 8px; background: var(--surface-strong); color: var(--bone); box-shadow: 0 8px 24px rgb(0 0 0 / 25%); font-size: 13px; line-height: 1.6; opacity: 0; visibility: hidden; pointer-events: none; }
+.sim-random-control:hover .sim-random-tooltip, .sim-random-control:focus-within .sim-random-tooltip { opacity: 1; visibility: visible; }
+.sim-random-result { color: var(--gold-light); font-size: 14px; line-height: 1.6; margin: 12px 0 0; }
 .sim-setup-heading {
   padding: 30px 32px;
   border-bottom: 1px solid var(--line);

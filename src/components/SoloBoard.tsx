@@ -7,6 +7,7 @@ import { ARMOR_SLOTS, CARDS, CLASS_NAMES, RACE_NAMES, card } from '../game/data'
 import type { ClassName, RaceName } from '../game/data'
 import { BOSS_IDS, activeStatus, canManageHand, canChangeEquipment, canEquip, canPlayAction, canWeaponReroll, fleeBlocked, newGame, reduce } from '../game/engine'
 import { loadGame, saveGame } from '../game/save'
+import { randomHero } from '../game/randomHero'
 import { bossEquipmentCardPower, computePlayerPower, computePower, equipmentCardPower, handLimit } from '../game/power'
 import type { PowerBreakdown } from '../game/power'
 import type { GameAction, GameState, Prompt } from '../game/types'
@@ -150,6 +151,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const [bossDrawReady, setBossDrawReady] = useState(false)
   const [klass, setKlass] = useState<ClassName>('Guerrier')
   const [race, setRace] = useState<RaceName>('Humain')
+  const [randomizedHero, setRandomizedHero] = useState<GameState | null>(null)
   const [heroGender, setHeroGender] = useState<CardGender>('male')
   const timer = useRef<number | undefined>(undefined)
   const revealTimer = useRef<number | undefined>(undefined)
@@ -273,12 +275,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     setDiscardOpen(null)
     setReveal(null)
     setBossReveal(null)
-    gameRef.current = newGame(klass, race)
+    gameRef.current = randomizedHero ?? newGame(klass, race)
     setOpening(true)
     setGame(gameRef.current)
   }
 
   const reset = () => {
+    setRandomizedHero(null)
     setOpening(false)
     window.clearTimeout(actionAnimationTimer.current)
     setPlayedAction(null)
@@ -374,6 +377,16 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <p className="eyebrow">{sim.setupEyebrow}</p>
           <h3>{sim.setupTitle}</h3>
           <p className="sim-intro">{sim.intro}</p>
+          <span className="sim-random-control">
+            <button className="button sim-random-button" type="button" aria-describedby="random-hero-hint" onClick={() => {
+              const hero = randomHero()
+              setKlass(hero.klass)
+              setRace(hero.race)
+              setRandomizedHero(hero)
+            }}><span aria-hidden="true">⚄</span> {sim.randomHero}</button>
+            <span id="random-hero-hint" className="sim-random-tooltip" role="tooltip">{sim.randomHeroHint}</span>
+          </span>
+          {randomizedHero ? <p className="sim-random-result" role="status">{heroName('Race', race)} · {heroName('Classe', klass)} · {randomizedHero.oaths.map(id => localizeCard(card(id), locale).name).join(' · ')}</p> : null}
         </div>
         <div className="sim-builder">
         <div className="sim-mobile-launch">
@@ -390,7 +403,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               entry={heroCard('Classe', name)}
               key={name}
               label={heroName('Classe', name)}
-              onClick={() => setKlass(name)}
+              onClick={() => { setKlass(name); setRandomizedHero(null) }}
             />
           ))}
         </div>
@@ -417,7 +430,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               gender={heroGender}
               key={name}
               label={heroName('Race', name)}
-              onClick={() => setRace(name)}
+              onClick={() => { setRace(name); setRandomizedHero(null) }}
             />
           ))}
         </div>
