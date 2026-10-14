@@ -1747,6 +1747,12 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-opening { width: 100%; margin: auto; text-align: center; color: var(--gold-light); animation: gb-opening-arrive 1600ms ease both; }
+.gb-opening-sigil { display: inline-grid; place-items: center; width: 62px; height: 62px; border: 1px solid var(--gold); border-radius: 50%; font: 700 42px var(--display); box-shadow: 0 0 36px rgb(201 164 92 / 25%); }
+.gb-opening h3 { font: 700 clamp(20px, 3vw, 32px) var(--display); margin: 16px 0 8px; }
+.gb-opening p { color: var(--muted); font-size: 13px; }
+@keyframes gb-opening-arrive { 0% { opacity: 0; transform: translateY(15px) scale(.94); } 25%, 80% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: scale(1.03); } }
+@media (prefers-reduced-motion: reduce) { .gb-opening { animation: none; } }
 .gb-discard-zone { width: min(100%, 620px); margin: auto; padding: 20px; text-align: center; border: 2px dashed var(--gold); border-radius: 12px; background: rgb(201 164 92 / 8%); transition: background 160ms, box-shadow 160ms; }
 .gb-discard-zone h3 { margin: 0 0 10px; font-family: var(--display); color: var(--gold-light); }
 .gb-discard-zone p { font-size: 12px; line-height: 1.5; }
