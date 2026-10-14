@@ -1,6 +1,8 @@
 import type { GameState } from './types'
 import { retireWeakMonsters } from './engine'
-import { CARDS } from './data'
+import { CARDS, SOLO_EXCLUDED_ACTIONS } from './data'
+import { handLimit } from './power'
+import { availableSoloOaths } from './oaths'
 import { shuffle } from './rng'
 
 const KEY = 'ossuaire.solo.v1'
@@ -24,6 +26,35 @@ export function loadGame(): GameState | null {
       resumed.counterspellsEnabled = true
     }
     retireWeakMonsters(resumed)
+    if (resumed.phase !== 'won' && resumed.phase !== 'lost') {
+      const excluded = new Set(CARDS.filter(card => card.type === 'Action' && SOLO_EXCLUDED_ACTIONS.has(card.name)).map(card => card.id))
+      const allowed = (id: string) => !excluded.has(id)
+      resumed.hand = resumed.hand.filter(allowed)
+      resumed.lootDeck = resumed.lootDeck.filter(allowed)
+      resumed.lootDiscard = resumed.lootDiscard.filter(allowed)
+      if (resumed.combat) resumed.combat.bossHand = resumed.combat.bossHand.filter(allowed)
+      resumed.promptQueue = resumed.promptQueue.flatMap(prompt => {
+        prompt.options = prompt.options.filter(option => allowed(option.cardId ?? option.id))
+        if (Array.isArray(prompt.ctx.choices)) prompt.ctx.choices = prompt.ctx.choices.filter(allowed)
+        if (prompt.purpose === 'oath') {
+          const available = availableSoloOaths(resumed.race)
+          prompt.options = prompt.options.filter(option => available.includes(option.id))
+          if (Array.isArray(prompt.ctx.choices)) prompt.ctx.choices = prompt.ctx.choices.filter(id => available.includes(id))
+        }
+        if (prompt.purpose === 'tavern-give' && !allowed(String(prompt.ctx.taken))) {
+          prompt.purpose = 'tavern'
+          prompt.optional = true
+          prompt.options = (prompt.ctx.choices as string[]).map(id => ({ id, cardId: id }))
+          delete prompt.ctx.taken
+        }
+        if (prompt.purpose === 'discard-excess') {
+          if (resumed.hand.length <= handLimit(resumed)) return []
+          prompt.options = resumed.hand.map(id => ({ id, cardId: id }))
+          prompt.ctx.count = resumed.hand.length - handLimit(resumed)
+        }
+        return prompt.options.length || prompt.optional ? [prompt] : []
+      })
+    }
     return resumed
   } catch {
     return null

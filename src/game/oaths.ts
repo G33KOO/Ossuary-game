@@ -7,6 +7,9 @@ export const OATH = {
 } as const
 
 export const SOLO_OATH_IDS: readonly string[] = Object.values(OATH)
+export function availableSoloOaths(race: GameState['race']) {
+  return SOLO_OATH_IDS.filter(id => race !== 'Humain' || id !== OATH.burden)
+}
 export function oathCompleted(state: GameState, id: string) {
   return (state.completedOaths ?? []).includes(id)
 }

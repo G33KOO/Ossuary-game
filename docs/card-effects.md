@@ -4,7 +4,7 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 
 ## Périmètre solo
 
-214 cartes sont utilisables ou adaptées au solo ; 26 copies demandent des interactions entre joueurs et restent exclues des pioches solo. Les 13 Actions multijoueur et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
+211 cartes sont utilisables ou adaptées au solo ; 29 copies sont incompatibles avec le solo et restent exclues des pioches. Les 14 Actions exclues et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
 
 ## Vérification
 
@@ -21,7 +21,7 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-002 | Druide | Actif de classe + coût + choix | Choix, dé, puissance ou pioche |
 | OSS-CARD-003 | Chasseur | Actif de classe + coût + choix | Choix, dé, puissance ou pioche |
 | OSS-CARD-004 | Mage | Actif de classe + coût + choix | Choix, dé, puissance ou pioche |
-| OSS-CARD-005 | Voleur | Adaptation solo : choix d’un Butin parmi cinq | Choix, dé, puissance ou pioche |
+| OSS-CARD-005 | Voleur | Adaptation solo : choix de Butin hors combat ou échange d’équipement avec le Boss | Choix, dé, puissance ou pioche |
 | OSS-CARD-006 | Nécromancien | Actif de classe + coût + choix | Choix, dé, puissance ou pioche |
 | OSS-CARD-007 | Nain | Passif : main, dé, armes, pioche, serments ou fuite | Puissance, dé, choix ou pioche |
 | OSS-CARD-008 | Humain | Passif : main, dé, armes, pioche, serments ou fuite | Puissance, dé, choix ou pioche |
@@ -115,25 +115,25 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-096 | Force | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-097 | Dépossession | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-098 | Brise-armure | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-099 | Pillage | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-100 | Pillage | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-101 | Frénésie | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-102 | Frénésie | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-103 | Frénésie | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
+| OSS-CARD-099 | Pillage | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-100 | Pillage | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-101 | Frénésie | Exclue du solo : renforce uniquement votre adversaire | Catalogue uniquement |
+| OSS-CARD-102 | Frénésie | Exclue du solo : renforce uniquement votre adversaire | Catalogue uniquement |
+| OSS-CARD-103 | Frénésie | Exclue du solo : renforce uniquement votre adversaire | Catalogue uniquement |
 | OSS-CARD-104 | Apaiser | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-105 | Apaiser | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-106 | Apaiser | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-107 | Usurpation | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-107 | Usurpation | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
 | OSS-CARD-108 | Cupidité | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-109 | Cupidité | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-110 | Cupidité | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-111 | Corrosion | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-112 | Corrosion | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-113 | Permutation | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-114 | Permutation | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-115 | Interversion | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-116 | Interversion | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-117 | Paralysie | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-113 | Permutation | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-114 | Permutation | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-115 | Interversion | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-116 | Interversion | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-117 | Paralysie | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
 | OSS-CARD-118 | Exécution | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-119 | Exécution | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-120 | Renoncement | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
@@ -148,18 +148,18 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-129 | Contre-sort | Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur | Carte jouée, annulation et choix de réponse |
 | OSS-CARD-130 | Contre-sort | Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur | Carte jouée, annulation et choix de réponse |
 | OSS-CARD-131 | Mimétisme | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-132 | Priorité | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-133 | Priorité | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-134 | Priorité | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-135 | Exclusion | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-136 | Exclusion | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-137 | Exclusion | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-132 | Priorité | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-133 | Priorité | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-134 | Priorité | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-135 | Exclusion | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-136 | Exclusion | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-137 | Exclusion | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
 | OSS-CARD-138 | Invocation | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-139 | Invocation | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-140 | Incapacité | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-141 | Incapacité | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-142 | Achat forcé | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-143 | Achat forcé | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-140 | Incapacité | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-141 | Incapacité | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-142 | Achat forcé | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-143 | Achat forcé | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
 | OSS-CARD-144 | Voie du Guerrier | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-145 | Voie du Druide | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-146 | Voie du Chasseur | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
@@ -169,10 +169,10 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-150 | Éveil | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-151 | Éveil | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-152 | Éveil | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-153 | Réquisition | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-154 | Troc aveugle | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-155 | Larcin | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-156 | Prise de gage | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-153 | Réquisition | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-154 | Troc aveugle | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-155 | Larcin | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-156 | Prise de gage | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
 | OSS-CARD-157 | Fouisseur | Début, restriction, choix ou conséquence de combat | Révélation, effet à côté de la carte, dé ou choix |
 | OSS-CARD-158 | Fouisseur | Début, restriction, choix ou conséquence de combat | Révélation, effet à côté de la carte, dé ou choix |
 | OSS-CARD-159 | Lacéreur | Début, restriction, choix ou conséquence de combat | Révélation, effet à côté de la carte, dé ou choix |
@@ -245,8 +245,8 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-226 | Le Martyr | Préparation solo et réactions selon les priorités du Boss | Pioche, préparation, cartes jouées et étape Suivant |
 | OSS-CARD-227 | L’Envers | Préparation solo et réactions selon les priorités du Boss | Pioche, préparation, cartes jouées et étape Suivant |
 | OSS-CARD-228 | Zénith | Préparation solo et réactions selon les priorités du Boss | Pioche, préparation, cartes jouées et étape Suivant |
-| OSS-CARD-229 | Serment du Silence | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-230 | Serment du Fardeau | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
+| OSS-CARD-229 | Serment du Silence | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-230 | Serment du Fardeau | Condition + limite de main à six ; non proposé à l’Humain qui possède déjà ce bonus | Carte et bonus célébrés avant de continuer |
 | OSS-CARD-231 | Serment de l’Infortune | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
 | OSS-CARD-232 | Serment de la Seconde Peau | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
 | OSS-CARD-233 | Serment du Fer Étranger | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
@@ -254,6 +254,6 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-235 | Serment du Conquérant | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
 | OSS-CARD-236 | Serment de l’Éveil refusé | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
 | OSS-CARD-237 | Serment des Arcanes épuisées | Condition d’accomplissement + récompense permanente | Carte et bonus célébrés avant de continuer |
-| OSS-CARD-238 | Serment du Pacte des Cendres | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-239 | Serment de la Dette de sang | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-240 | Serment de la Main invisible | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-238 | Serment du Pacte des Cendres | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-239 | Serment de la Dette de sang | Exclue du solo : interaction entre joueurs | Catalogue uniquement |
+| OSS-CARD-240 | Serment de la Main invisible | Exclue du solo : interaction entre joueurs | Catalogue uniquement |

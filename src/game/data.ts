@@ -23,8 +23,9 @@ export const ARMOR_SLOTS = ['Plastron', 'Bottes', 'Gants', 'Casque'] as const
 export type ClassName = (typeof CLASS_NAMES)[number]
 export type RaceName = (typeof RACE_NAMES)[number]
 
-// Multiplayer-only Actions are removed from the solo Butin deck.
+// Multiplayer-only or counterproductive Actions are removed from solo Loot.
 export const SOLO_EXCLUDED_ACTIONS = new Set([
+  'Frénésie',
   'Pillage',
   'Usurpation',
   'Permutation',

@@ -11,8 +11,8 @@ const excludedActions = new Set([...excludedSection.matchAll(/'([^']+)'/g)].map(
 const soloOaths = new Set([...oaths.matchAll(/'OSS-CARD-\d+'/g)].map((match) => match[0].slice(1, -1)))
 const fieldMonsters = new Set(['Reliquaire', 'Vigile', 'Inachevé', 'Sans-Maître'])
 function inspect(card) {
-  if (card.type === 'Action' && excludedActions.has(card.name) || card.type === 'Serment' && !soloOaths.has(card.id)) return ['Multijoueur : exclue du solo', 'Catalogue uniquement']
-  if (card.type === 'Classe') return [card.name === 'Voleur' ? 'Adaptation solo : choix d’un Butin parmi cinq' : 'Actif de classe + coût + choix', 'Choix, dé, puissance ou pioche']
+  if (card.type === 'Action' && excludedActions.has(card.name) || card.type === 'Serment' && !soloOaths.has(card.id)) return [card.name === 'Frénésie' ? 'Exclue du solo : renforce uniquement votre adversaire' : 'Exclue du solo : interaction entre joueurs', 'Catalogue uniquement']
+  if (card.type === 'Classe') return [card.name === 'Voleur' ? 'Adaptation solo : choix de Butin hors combat ou échange d’équipement avec le Boss' : 'Actif de classe + coût + choix', 'Choix, dé, puissance ou pioche']
   if (card.type === 'Race') return ['Passif : main, dé, armes, pioche, serments ou fuite', 'Puissance, dé, choix ou pioche']
   if (card.type === 'Armure') return ['Puissance imprimée, emplacement et doublement', 'Valeur dorée + puissance']
   if (card.type === 'Artefact de classe') return ['Niveau 10 + classe requise + amélioration de l’actif', 'Actif, dé, choix ou pioche']
@@ -34,18 +34,18 @@ function inspect(card) {
     if (!engine.includes(card.name)) throw new Error(`Boss missing: ${card.name}`)
     return ['Préparation solo et réactions selon les priorités du Boss', 'Pioche, préparation, cartes jouées et étape Suivant']
   }
-  if (card.type === 'Serment') return ['Condition d’accomplissement + récompense permanente', 'Carte et bonus célébrés avant de continuer']
+  if (card.type === 'Serment') return [card.name === 'Serment du Fardeau' ? 'Condition + limite de main à six ; non proposé à l’Humain qui possède déjà ce bonus' : 'Condition d’accomplissement + récompense permanente', 'Carte et bonus célébrés avant de continuer']
   throw new Error(`Unclassified type: ${card.type}`)
 }
 const rows = cards.map((card) => ({ card, behavior: inspect(card) }))
-const excluded = rows.filter((row) => row.behavior[0].startsWith('Multijoueur'))
+const excluded = rows.filter((row) => row.behavior[0].startsWith('Exclue'))
 const text = `# Audit des effets de cartes
 
 Le catalogue contient ${cards.length} cartes physiques. Chaque copie est classée ci-dessous ; les doublons partagent leur comportement. Cet inventaire vérifie le raccordement au moteur, pas une preuve exhaustive de toutes les combinaisons possibles.
 
 ## Périmètre solo
 
-${cards.length - excluded.length} cartes sont utilisables ou adaptées au solo ; ${excluded.length} copies demandent des interactions entre joueurs et restent exclues des pioches solo. Les ${excludedActions.size} Actions multijoueur et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
+${cards.length - excluded.length} cartes sont utilisables ou adaptées au solo ; ${excluded.length} copies sont incompatibles avec le solo et restent exclues des pioches. Les ${excludedActions.size} Actions exclues et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
 
 ## Vérification
 

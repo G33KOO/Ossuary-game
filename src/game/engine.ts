@@ -6,7 +6,7 @@ import type { ClassName, RaceName } from './data'
 import { activeClass, artifactBoosts, equippedIds, handLimit, hasFlag, isMasteredWeapon, strongestEquipmentPower, computePower, equipmentCardPower } from './power'
 import { randomInt, shuffle } from './rng'
 import type { Combat, DiceRoll, GameAction, GameState, LogEntry, Prompt, PromptOption } from './types'
-import { OATH, SOLO_OATH_IDS, oathCompleted, permanentDieBonus } from './oaths'
+import { OATH, availableSoloOaths, oathCompleted, permanentDieBonus } from './oaths'
 
 const MAX_LEVEL = 10
 const BOSS_LEVEL = 10
@@ -103,7 +103,7 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.arcanaRewardUsed = false
   const oathPool = shuffle(
     s,
-    [...SOLO_OATH_IDS],
+    availableSoloOaths(race),
   )
   const oathChoices = oathPool.slice(0, 3)
   if (oathChoices.length > 0) {
@@ -240,7 +240,7 @@ function completeVictoryOaths(s: GameState, c: Combat, tie: boolean) {
 
 function replaceRefusedAwakeningOath(s: GameState) {
   if (!(s.oaths ?? []).includes(OATH.refusedAwakening) || oathCompleted(s, OATH.refusedAwakening)) return
-  const available = SOLO_OATH_IDS.filter((id) => !s.oaths.includes(id))
+  const available = availableSoloOaths(s.race).filter((id) => !s.oaths.includes(id))
   if (!available.length) return
   const replacement = available[randomInt(s, available.length) - 1]
   s.oaths = s.oaths.map((id) => id === OATH.refusedAwakening ? replacement : id)
@@ -999,6 +999,7 @@ export function canPlayAction(s: GameState, id: string) {
   if (entry.type !== 'Action') return false
   const name = entry.name
   const c = s.combat
+  if (SOLO_EXCLUDED_ACTIONS.has(name)) return false
   if (COMBAT_ONLY_ACTIONS.has(name) && !c) return false
   if (c) {
     if (hasFlag(c, 'noActions')) return false
