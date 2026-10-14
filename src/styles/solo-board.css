@@ -1747,6 +1747,9 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-boss-drawn-cards { display: flex; justify-content: center; gap: 6px; margin: 8px 0; }
+.gb-boss-drawn-cards > span { animation: gb-bonus-arrive 600ms ease both; }
+@media (prefers-reduced-motion: reduce) { .gb-boss-drawn-cards > span { animation: none; } }
 .gb-monster-encounter { display: grid; grid-template-columns: auto minmax(0, 1fr); }
 .gb-combat-bonuses { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 5px; min-width: 0; }
 .gb-combat-bonus { display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px; border: 1px solid var(--gold); border-radius: 6px; color: var(--gold-light); background: rgb(201 164 92 / 12%); font: 700 10px var(--sans); animation: gb-bonus-arrive 450ms ease both; }

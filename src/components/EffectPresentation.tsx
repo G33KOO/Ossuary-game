@@ -4,7 +4,7 @@ import type { Locale } from '../i18n/LocaleProvider'
 import { card } from '../game/data'
 import { localizeCard } from '../i18n/cardTranslations'
 import { actionVisual } from '../game/actionVisual'
-import { GameCard } from './game-ui'
+import { CardBack, GameCard } from './game-ui'
 import { DiceResults } from './DiceResults'
 import { useBoardFocus } from '../hooks/useBoardFocus'
 
@@ -42,6 +42,7 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
       <div className="gb-boss-action-copy" aria-live="polite">
         {roll ? <DiceResults roll={roll} rolling={!ready} sim={sim} /> : null}
         {(!roll || ready) ? stage.lines.map((entry, index) => <p className="gb-boss-action-result" key={index}>{formatLog(entry)}</p>) : <p>{sim.rolling}</p>}
+        {stage.lines[0].code === 'bossDraws' ? <div className="gb-boss-drawn-cards" aria-label={formatLog(stage.lines[0])}>{Array.from({ length: Number(params.count ?? 0) }, (_, index) => <span key={index} style={{ animationDelay: `${index * 120}ms` }}><CardBack kind="loot" size="sm" /></span>)}</div> : null}
         {ready && stage.lines[0].code === 'greedRoll' ? <strong className={`gb-effect-change${Number(params.value) < 4 ? ' is-negative' : ''}`}>{Number(params.value) >= 4 ? locale === 'fr' ? 'Cupidité réussie · Butin ×2' : 'Greed succeeds · Loot ×2' : locale === 'fr' ? 'Aucun bonus de butin' : 'No loot bonus'}</strong> : null}
         {ready && params.powerChange !== undefined ? <strong className="gb-effect-change">{Number(params.powerChange) > 0 ? '+' : ''}{params.powerChange} {sim.powerPart}</strong> : null}
         {params.before !== undefined ? <strong className="gb-effect-change is-negative">{sim.level} : {params.before} → {params.after}</strong> : null}

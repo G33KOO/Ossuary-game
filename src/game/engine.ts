@@ -80,6 +80,7 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.turnFlags = []
   s.nextMonsterPenalty = 0
   s.bossPressure = 0
+  s.counterspellsEnabled = true
   s.bossEnrageArmed = false
   s.tavernDone = false
   s.combat = null
@@ -552,24 +553,9 @@ function startBoss(s: GameState, bossId: string) {
     }
   }
 
-  const equip: string[] = []
-  for (const slot of ARMOR_SLOTS) {
-    const best = hand
-      .filter((id) => card(id).type === 'Armure' && card(id).subtype === slot)
-      .sort((a, b) => printedPower(b) - printedPower(a))[0]
-    if (best) equip.push(best)
-  }
-  let handsUsed = 0
-  const weapons = hand.filter((id) => card(id).type === 'Arme').sort((a, b) => printedPower(b) - printedPower(a))
-  for (const id of weapons) {
-    const size = card(id).subtype === 'Deux mains' ? 2 : 1
-    if (handsUsed + size <= 2) {
-      equip.push(id)
-      handsUsed += size
-    }
-  }
-  c.bossEquip = equip
-  let rest = hand.filter((id) => !equip.includes(id))
+  c.bossHand = [...hand]
+  bossEquipDraws(c)
+  let rest = [...c.bossHand]
   const spare = () =>
     rest.filter((id) => !BOSS_PRIORITY.includes(cardName(id)) && !BOSS_REACTIONS.includes(cardName(id))).sort((a, b) => cardValue(a) - cardValue(b))
 
@@ -600,7 +586,8 @@ function startBoss(s: GameState, bossId: string) {
       break
     }
     case 'Zénith': {
-      const discard = spare().slice(0, 3)
+      const preferred = spare()
+      const discard = [...preferred, ...rest.filter(id => !preferred.includes(id))].slice(0, 3)
       if (discard.length === 3) {
         rest = rest.filter((id) => !discard.includes(id))
         s.lootDiscard.push(...discard)
@@ -624,22 +611,6 @@ function startBoss(s: GameState, bossId: string) {
       break
   }
 
-  for (const id of [...rest]) {
-    const name = cardName(id)
-    if (name === 'Force') {
-      c.bossBonus += 2
-      rest = rest.filter((other) => other !== id)
-      s.lootDiscard.push(id)
-      log(s, 'bossForce', { card: id })
-      c.bossPlayedCards = [...(c.bossPlayedCards ?? []), id]
-    } else if (name === 'Éveil') {
-      c.bossSides = 8
-      rest = rest.filter((other) => other !== id)
-      s.lootDiscard.push(id)
-      log(s, 'bossAwakens', { card: id })
-      c.bossPlayedCards = [...(c.bossPlayedCards ?? []), id]
-    }
-  }
   c.bossHand = rest
   s.combat = c
   s.phase = 'combat'
@@ -666,7 +637,7 @@ function rollBossDie(s: GameState, c: Combat) {
   log(s, 'bossRolled', { card: c.bossId ?? '', ...rollParams(c.bossRoll) })
 }
 
-const BOSS_REACTIONS = ['Destruction', 'Corrosion', 'Dépossession', 'Brise-armure', 'Faiblesse', 'Malchance', 'Chance']
+const BOSS_REACTIONS = ['Force', 'Éveil', 'Trouvaille', 'Providence', 'Vœu', 'Destruction', 'Corrosion', 'Dépossession', 'Brise-armure', 'Faiblesse', 'Peur', 'Chance', 'Malchance', 'Contre-sort']
 
 function playerGear(s: GameState) {
   const items: { id: string; power: number; weapon: boolean }[] = []
@@ -680,61 +651,88 @@ function playerGear(s: GameState) {
 }
 
 // The Boss plays one card that can change the duel's outcome; returns false once it has nothing left to play.
+function bossEquipDraws(c: Combat) {
+  const pool = [...c.bossHand, ...c.bossEquip]
+  const equip: string[] = []
+  for (const slot of ARMOR_SLOTS) {
+    const best = pool.filter(id => card(id).type === 'Armure' && card(id).subtype === slot).sort((a, b) => printedPower(b) - printedPower(a))[0]
+    if (best) equip.push(best)
+  }
+  let hands = 0
+  for (const id of pool.filter(id => card(id).type === 'Arme').sort((a, b) => printedPower(b) - printedPower(a))) {
+    const size = card(id).subtype === 'Deux mains' ? 2 : 1
+    if (hands + size <= 2) { equip.push(id); hands += size }
+  }
+  c.bossEquip = equip
+  c.bossHand = pool.filter(id => !equip.includes(id))
+}
+
+function applyBossCard(s: GameState, c: Combat, id: string, target?: string) {
+  switch (cardName(id)) {
+    case 'Force': c.bossBonus += 2; break
+    case 'Éveil': c.bossSides = 8; break
+    case 'Destruction': case 'Corrosion':
+      if (target) { destroyEquipped(s, target); log(s, 'playerItemDestroyed', { card: target }) }
+      break
+    case 'Dépossession': addFlag(c, 'ignoreWeapons'); break
+    case 'Brise-armure': addFlag(c, 'ignoreArmors'); break
+    case 'Faiblesse': c.playerBonus -= 2; break
+    case 'Chance':
+      if (c.bossDie !== null) { c.bossDie += 2; c.bossDieModifier = (c.bossDieModifier ?? 0) + 2 }
+      break
+    case 'Malchance':
+      if (c.playerDie !== null) { const before = c.playerDie; c.playerDie = Math.max(0, before - 2); c.playerDieModifier = (c.playerDieModifier ?? 0) + c.playerDie - before }
+      break
+    case 'Trouvaille': case 'Providence': {
+      let count = 0
+      for (let i = 0; i < (cardName(id) === 'Providence' ? 3 : 2); i++) { const drawn = drawFromLoot(s); if (drawn) { c.bossHand.push(drawn); count++ } }
+      bossEquipDraws(c)
+      log(s, 'bossDraws', { card: id, count })
+      break
+    }
+    case 'Vœu': {
+      const wanted = s.lootDeck.find(id => card(id).type === 'Action' && BOSS_REACTIONS.includes(cardName(id)) && !(c.bossPlayedCards ?? []).includes(id))
+      if (wanted) { s.lootDeck.splice(s.lootDeck.indexOf(wanted), 1); c.bossHand.push(wanted); log(s, 'bossDraws', { card: id, count: 1 }) }
+      break
+    }
+    case 'Peur':
+      s.lootDiscard.push(...c.bossHand, ...c.bossEquip)
+      c.bossHand = []; c.bossEquip = []
+      s.stats.flees += 1
+      log(s, 'bossFear', { card: id })
+      endCombat(s, c)
+      break
+  }
+}
+
 function bossReact(s: GameState, c: Combat): boolean {
-  if (c.kind !== 'boss' || c.bossDie === null) return false
+  if (c.kind !== 'boss' || s.combat !== c || s.promptQueue.length) return false
   const gear = playerGear(s)
   for (const name of BOSS_REACTIONS) {
-    const id = c.bossHand.find((handId) => cardName(handId) === name)
+    if (name === 'Contre-sort') continue
+    const id = c.bossHand.find(handId => cardName(handId) === name && !(c.bossPlayedCards ?? []).includes(handId))
     if (!id) continue
     let target: string | undefined
     switch (name) {
-      case 'Destruction':
-        target = gear.find((item) => cardName(item.id) !== 'Hache Clairfeuille')?.id
+      case 'Éveil': if (c.bossSides === 8 || c.bossDie !== null) continue; break
+      case 'Destruction': case 'Corrosion':
+        target = gear.find(item => (name !== 'Corrosion' || item.weapon) && cardName(item.id) !== 'Hache Clairfeuille')?.id
         if (!target) continue
         break
-      case 'Corrosion':
-        target = gear.find((item) => item.weapon && cardName(item.id) !== 'Hache Clairfeuille')?.id
-        if (!target) continue
-        break
-      case 'Dépossession':
-        if (hasFlag(c, 'ignoreWeapons') || !gear.some((item) => item.weapon)) continue
-        break
-      case 'Brise-armure':
-        if (hasFlag(c, 'ignoreArmors') || !gear.some((item) => !item.weapon)) continue
-        break
-      case 'Malchance':
-        if (c.playerDie === null || c.playerDie <= 0) continue
-        break
-      default:
-        break
+      case 'Dépossession': if (hasFlag(c, 'ignoreWeapons') || !gear.some(item => item.weapon)) continue; break
+      case 'Brise-armure': if (hasFlag(c, 'ignoreArmors') || !gear.some(item => !item.weapon)) continue; break
+      case 'Chance': if (c.bossDie === null) continue; break
+      case 'Malchance': if (c.bossDie === null || c.playerDie === null || c.playerDie <= 0) continue; break
+      case 'Trouvaille': case 'Providence': if (!s.lootDeck.length) continue; break
+      case 'Vœu': if (!s.lootDeck.some(id => card(id).type === 'Action' && BOSS_REACTIONS.includes(cardName(id)) && !(c.bossPlayedCards ?? []).includes(id))) continue; break
     }
-    c.bossHand = c.bossHand.filter((other) => other !== id)
+    c.bossHand = c.bossHand.filter(other => other !== id)
     s.lootDiscard.push(id)
-    log(s, 'bossPlays', { card: id })
     c.bossPlayedCards = [...(c.bossPlayedCards ?? []), id]
-    switch (name) {
-      case 'Destruction':
-      case 'Corrosion':
-        destroyEquipped(s, target as string)
-        log(s, 'playerItemDestroyed', { card: target as string })
-        break
-      case 'Dépossession':
-        addFlag(c, 'ignoreWeapons')
-        break
-      case 'Brise-armure':
-        addFlag(c, 'ignoreArmors')
-        break
-      case 'Faiblesse':
-        c.playerBonus -= 2
-        break
-      case 'Malchance':
-        c.playerDie = Math.max(0, (c.playerDie ?? 0) - 2)
-        c.playerDieModifier = -2
-        break
-      default:
-        c.bossDie += 2
-        c.bossDieModifier = 2
-    }
+    log(s, 'bossPlays', { card: id })
+    const counters = s.hand.filter(id => cardName(id) === 'Contre-sort')
+    if (counters.length) queue(s, { purpose: 'boss-counter', options: counters.map(id => ({ id, cardId: id })), optional: true, ctx: { card: id, target: target ?? '' } })
+    else applyBossCard(s, c, id, target)
     return true
   }
   return false
@@ -872,9 +870,12 @@ function attemptFlee(s: GameState, automatic: boolean) {
 function resolveCombat(s: GameState) {
   const c = s.combat
   if (!c) return
-  if (c.kind === 'boss' && c.bossDie === null) rollBossDie(s, c)
-  while (bossReact(s, c)) {
-    // the Boss plays everything that matters before the verdict
+  if (c.kind === 'boss') {
+    while (bossReact(s, c)) { if (!s.combat || s.promptQueue.length) return }
+    if (!s.combat || s.promptQueue.length) return
+    if (c.bossDie === null) rollBossDie(s, c)
+    while (bossReact(s, c)) { if (!s.combat || s.promptQueue.length) return }
+    if (!s.combat || s.promptQueue.length) return
   }
   const power = computePower(s)
   if (!power) return
@@ -925,6 +926,7 @@ export function canPlayAction(s: GameState, id: string) {
   const boss = c?.kind === 'boss'
   const monster = c?.kind === 'monster'
   switch (name) {
+    case 'Contre-sort': return false // Offered as a response when the Boss plays an Action.
     case 'Chance':
       return c?.playerDie !== null && c !== null
     case 'Malchance':
@@ -987,10 +989,21 @@ function playAction(s: GameState, id: string) {
     }
     c.actionsPlayed += 1
   }
+  if (!cancelled && c?.kind === 'boss' && name !== 'Renoncement') {
+    const counter = c.bossHand.find(id => cardName(id) === 'Contre-sort')
+    if (counter) {
+      c.bossHand = c.bossHand.filter(id => id !== counter)
+      s.lootDiscard.push(counter)
+      c.bossPlayedCards = [...(c.bossPlayedCards ?? []), counter]
+      log(s, 'bossPlays', { card: counter })
+      cancelled = true
+    }
+  }
   if (cancelled) {
     log(s, 'actionCancelled')
     return
   }
+  if (c?.kind === 'boss') c.bossReady = false
   if (c) c.resolvedActions = (c.resolvedActions ?? 0) + 1
 
   switch (name) {
@@ -1298,6 +1311,12 @@ function answerPrompt(s: GameState, option: string | null) {
       if (option) {
         const index = s.lootDiscard.lastIndexOf(option)
         if (index >= 0) { s.lootDiscard.splice(index, 1); s.hand.push(option); log(s, 'oathActionGained', { card: option }) }
+      }
+      break
+    case 'boss-counter':
+      if (c && typeof prompt.ctx.card === 'string') {
+        if (option) { discardFromHand(s, option); log(s, 'playerCounter', { card: option }) }
+        else applyBossCard(s, c, prompt.ctx.card, String(prompt.ctx.target ?? '') || undefined)
       }
       break
     case 'discard-excess':
@@ -1660,7 +1679,7 @@ function apply(s: GameState, action: GameAction): GameState {
       if (c && c.playerDie === null) {
         c.playerDie = combatRoll(s, c)
         log(s, 'rolled', { ...rollParams(c.playerRoll!) })
-        if (c.kind === 'boss' && c.bossDie === null) rollBossDie(s, c)
+        if (c.kind === 'boss') c.bossReady = false
         if (hasFlag(c, 'fielpeau') && !c.fielpeauDone) {
           c.fielpeauDone = true
           queue(s, { purpose: 'fielpeau', options: [...handOptions(s), { id: 'reroll' }], optional: false, ctx: {} })
@@ -1692,8 +1711,11 @@ function apply(s: GameState, action: GameAction): GameState {
     case 'bossStep': {
       const c = s.combat
       if (c && c.kind === 'boss') {
-        if (c.bossDie === null) rollBossDie(s, c)
-        else if (!bossReact(s, c)) resolveCombat(s)
+        if (c.bossReady) resolveCombat(s)
+        else if (!bossReact(s, c)) {
+          if (c.bossDie === null) rollBossDie(s, c)
+          else c.bossReady = true
+        }
       }
       break
     }

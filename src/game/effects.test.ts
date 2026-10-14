@@ -354,6 +354,16 @@ describe('card effects', () => {
     state.hand = [entry.id, id('Masse Nautile')]
     state.combat!.playerDie = 4
     state.combat!.bossEquip = [id('Masse Nautile'), id('Gants Nervurés')]
+    if (entry.name === 'Contre-sort') {
+      state.combat!.bossHand = [id('Faiblesse')]
+      state = reduce(state, { t: 'bossStep' })
+      expect(state.promptQueue[0].purpose).toBe('boss-counter')
+      state = reduce(state, { t: 'answer', option: entry.id })
+      expect(state.lootDiscard).toContain(entry.id)
+      expect(state.combat!.playerBonus).toBe(0)
+      expect(state.log.some(event => event.code === 'playerCounter')).toBe(true)
+      return
+    }
     expect(canPlayAction(state, entry.id)).toBe(true)
     state = reduce(state, { t: 'playAction', id: entry.id })
     expect(state.lootDiscard).toContain(entry.id)

@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 const cards = JSON.parse(await fs.readFile('src/data/cards.json', 'utf8'))
 const engine = await fs.readFile('src/game/engine.ts', 'utf8')
 const power = await fs.readFile('src/game/power.ts', 'utf8')
+const rewards = await fs.readFile('src/game/combatRewards.ts', 'utf8')
 const data = await fs.readFile('src/game/data.ts', 'utf8')
 const oaths = await fs.readFile('src/game/oaths.ts', 'utf8')
 const excludedSection = data.slice(data.indexOf('export const SOLO_EXCLUDED_ACTIONS'), data.indexOf('export const COMBAT_ONLY_ACTIONS'))
@@ -20,12 +21,13 @@ function inspect(card) {
     return [card.text ? 'Effet spécial + emplacement + puissance' : 'Emplacement + maîtrise ×2 + bonus de race', 'Halo, puissance, sacrifice ou pioche']
   }
   if (card.type === 'Action') {
+    if (card.name === 'Contre-sort') return ['Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur', 'Carte jouée, annulation et choix de réponse']
     if (!card.name.startsWith('Voie du ') && !engine.includes(`case '${card.name}'`)) throw new Error(`Action missing: ${card.name}`)
     return ['Action solo : condition, coût, cible et effet', 'Animation depuis la main vers la cible']
   }
   if (card.type === 'Monstre') {
     if (card.name === 'Usurpateur') return ['Adaptation solo : Butins standards, aucun vol de main adverse', 'Pioche et récompense']
-    if (!fieldMonsters.has(card.name) && !engine.includes(card.name)) throw new Error(`Monster missing: ${card.name}`)
+    if (!fieldMonsters.has(card.name) && !engine.includes(card.name) && !rewards.includes(card.name)) throw new Error(`Monster missing: ${card.name}`)
     return [fieldMonsters.has(card.name) ? 'Récompenses imprimées + révélation des Butins' : 'Début, restriction, choix ou conséquence de combat', 'Révélation, effet à côté de la carte, dé ou choix']
   }
   if (card.type === 'Boss') {
@@ -43,7 +45,7 @@ Le catalogue contient ${cards.length} cartes physiques. Chaque copie est classé
 
 ## Périmètre solo
 
-${cards.length - excluded.length} cartes sont utilisables ou adaptées au solo ; ${excluded.length} copies demandent des interactions entre joueurs et restent exclues des pioches solo. Les 14 Actions multijoueur et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
+${cards.length - excluded.length} cartes sont utilisables ou adaptées au solo ; ${excluded.length} copies demandent des interactions entre joueurs et restent exclues des pioches solo. Les ${excludedActions.size} Actions multijoueur et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
 
 ## Vérification
 

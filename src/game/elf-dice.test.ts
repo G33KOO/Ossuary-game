@@ -139,6 +139,10 @@ describe('Elfe bonus on every player die path', () => {
     boss.promptQueue = []
     boss = reduce(boss, { t: 'roll' })
     expectElf(boss.combat!.playerRoll!)
+    expect(boss.combat!.bossRoll).toBeUndefined()
+    boss.hand = []
+    boss.combat!.bossHand = []
+    boss = reduce(boss, { t: 'bossStep' })
     expect(boss.combat!.bossRoll!.bonus).toBe(0)
   })
 })

@@ -178,7 +178,7 @@ describe('visible combat consequences', () => {
     state = reduce(state, { t: 'resolve' })
     expect(state.phase).toBe('won')
     const final = state.finalCombat!
-    expect(final.combat.bossPlayedCards).toEqual([id('Malchance'), id('Chance')])
+    expect(final.combat.bossPlayedCards).toEqual([id('Chance'), id('Malchance')])
     expect(final.combat.bossRoll!.raw).toHaveLength(1)
     expect(final.combat.playerRoll!.raw).toHaveLength(1)
     expect(final.power.player.total).toBeGreaterThan(final.power.opponent.total)

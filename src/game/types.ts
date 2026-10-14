@@ -42,6 +42,7 @@ export type PromptPurpose =
   | 'hunter-boss-pick'
   | 'ignore-equipment'
   | 'boss-destroy'
+  | 'boss-counter'
   | 'suzeraine'
 
 export type Prompt = {
@@ -66,6 +67,7 @@ export type Combat = {
   playerDieModifier?: number
   bossDieModifier?: number
   bossPlayedCards?: string[]
+  bossReady?: boolean
   resolvedActions?: number
   hasRolled?: boolean
   oathRerollUsed?: boolean
@@ -125,6 +127,7 @@ export type GameState = {
   nextMonsterPenalty: number
   bossPressure: number
   bossEnrageArmed?: boolean
+  counterspellsEnabled?: boolean
   tavernDone: boolean
   combat: Combat | null
   promptQueue: Prompt[]

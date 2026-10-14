@@ -4,6 +4,7 @@ export type ActionTarget = 'hero' | 'foe' | 'player-die' | 'foe-die' | 'hand'
 export function actionVisual(name: string, cancelled = false): { effect: ActionEffect; target: ActionTarget } {
   if (cancelled) return { effect: 'cancelled', target: 'foe' }
   switch (name) {
+    case 'Contre-sort': return { effect: 'cancelled', target: 'foe' }
     case 'Force': case 'Éveil': case 'Renoncement': return { effect: 'boost', target: 'hero' }
     case 'Chance': case 'Baguette Brasier': return { effect: 'dice', target: 'player-die' }
     case 'Malchance': return { effect: 'dice', target: 'foe-die' }

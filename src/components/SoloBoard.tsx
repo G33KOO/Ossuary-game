@@ -238,10 +238,10 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     const resolved = newLogs.some((entry) => entry.code === 'resolved')
     const outcomeCodes = new Set(['victory', 'defeat', 'bossDefeated', 'bossLost', 'secondAssault', 'honorDuel'])
     if (resolved) { setResolutionPreview(previous); setCombatBeat('hero') }
-    const stageCodes = new Set(['bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossDecreeCancel', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'monsterEffect', 'equipmentIgnored', 'souriantRolled', 'sansVisageRolled', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'resolved', 'victory', 'greedRoll', 'executionRoll', 'mageReroll', 'rerolled', 'oathRerolled', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits', 'fournaiseNoOpponent'])
+    const stageCodes = new Set(['bossDraws', 'bossFear', 'playerCounter', 'bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossDecreeCancel', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'monsterEffect', 'equipmentIgnored', 'souriantRolled', 'sansVisageRolled', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'resolved', 'victory', 'greedRoll', 'executionRoll', 'mageReroll', 'rerolled', 'oathRerolled', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits', 'fournaiseNoOpponent'])
     const stages = newLogs.filter((entry) => stageCodes.has(entry.code) && !(resolved && outcomeCodes.has(entry.code))).map((entry) => ({
       id: typeof entry.params?.card === 'string' ? entry.params.card : next.combat?.bossId ?? previous.combat?.monsters[0] ?? undefined,
-      lines: [entry, ...(entry.code === 'resolved' ? newLogs.filter((detail) => outcomeCodes.has(detail.code)) : []), ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed') : [])], seq: ++bossPresentationSeq.current,
+      lines: [entry, ...(entry.code === 'resolved' ? newLogs.filter((detail) => outcomeCodes.has(detail.code)) : []), ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed' || detail.code === 'actionCancelled') : [])], seq: ++bossPresentationSeq.current,
     }))
     const hasOutcome = newLogs.some((entry) => ['resolved', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'victory', 'weaponHarvest', 'weaponSalvage'].includes(entry.code))
     if (hasOutcome && next.draws.length) {
@@ -316,7 +316,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     }
     setBusy('boss')
     send({ t: 'bossStep' })
-    if (!gameRef.current?.combat || gameRef.current.promptQueue.length > 0) setBusy(null)
+    if (!gameRef.current?.combat || gameRef.current.promptQueue.length > 0 || gameRef.current.combat.bossReady) setBusy(null)
   }
 
   const nextBossPresentation = () => {
@@ -475,7 +475,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     if (!game.hand.includes(id)) return undefined
     if (prompt?.purpose === 'discard-excess') return <button className="button button-primary" type="button" onClick={() => send({ t: 'answer', option: id })}>{sim.discardPile}</button>
     if (!gear && card(id).type !== 'Action') return undefined
-    const reason = gear ? equipmentReason(game, id) : undefined
+    const reason = gear ? equipmentReason(game, id) : card(id).name === 'Contre-sort' ? sim.counterReaction : undefined
     return <>{prompt?.purpose === 'tavern-give' ? <button className="button button-primary" type="button" disabled={handLocked} onClick={() => { send({ t: 'answer', option: id }) }}>{sim.tavernTrade}</button> : null}<button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
   }
   const status = activeStatus(game)
@@ -696,7 +696,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                     onClick={() => (combat.kind === 'boss' ? runBossSequence() : delayed('resolving', RESOLVE_DELAY, { t: 'resolve' }))}
                     type="button"
                   >
-                    {combat.playerDie === null ? sim.resolveNoDie : sim.resolve}
+                    {combat.kind === 'boss' && !combat.bossReady ? sim.bossTurn : combat.playerDie === null ? sim.resolveNoDie : sim.resolve}
                   </button>
                   {combat.kind === 'monster' && !combat.flags.includes('noFlee') ? (
                     <span className="gb-flee-control" tabIndex={fleeBlocked(game) ? 0 : undefined} title={fleeBlocked(game) ? sim.fleeCommitted : sim.fleeHint}>

@@ -1,5 +1,7 @@
 import type { GameState } from './types'
 import { retireWeakMonsters } from './engine'
+import { CARDS } from './data'
+import { shuffle } from './rng'
 
 const KEY = 'ossuaire.solo.v1'
 const MAX_LOG = 60
@@ -15,6 +17,12 @@ export function loadGame(): GameState | null {
     if (data?.v !== 1 || !game || !Array.isArray(game.hand) || !Array.isArray(game.lootDeck) || !game.equipment) return null
     if ((game.phase === 'won' || game.phase === 'lost') && !game.finalCombat) return null
     const resumed: GameState = { ...game, endTurnRequested: game.endTurnRequested ?? (game.endTurnPending && game.tavernDone), draws: [] }
+    if (!resumed.counterspellsEnabled && resumed.phase !== 'won' && resumed.phase !== 'lost') {
+      const present = new Set([...resumed.hand, ...resumed.lootDeck, ...resumed.lootDiscard, ...(resumed.combat?.bossHand ?? []), ...resumed.promptQueue.flatMap(prompt => prompt.options.map(option => option.cardId ?? option.id))])
+      const missing = CARDS.filter(card => card.name === 'Contre-sort' && !present.has(card.id)).map(card => card.id)
+      resumed.lootDeck = shuffle(resumed, [...resumed.lootDeck, ...missing])
+      resumed.counterspellsEnabled = true
+    }
     retireWeakMonsters(resumed)
     return resumed
   } catch {

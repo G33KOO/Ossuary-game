@@ -4,7 +4,7 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 
 ## Périmètre solo
 
-210 cartes sont utilisables ou adaptées au solo ; 30 copies demandent des interactions entre joueurs et restent exclues des pioches solo. Les 14 Actions multijoueur et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
+214 cartes sont utilisables ou adaptées au solo ; 26 copies demandent des interactions entre joueurs et restent exclues des pioches solo. Les 13 Actions multijoueur et les 4 Serments multijoueur sont visibles dans le catalogue. Le Voleur et l’Usurpateur utilisent les adaptations solo indiquées ci-dessous. Le Boss suit les priorités définies dans les règles solo ; il ne reproduit pas un joueur humain pour toutes les Actions de sa main.
 
 ## Vérification
 
@@ -143,10 +143,10 @@ Le catalogue contient 240 cartes physiques. Chaque copie est classée ci-dessous
 | OSS-CARD-124 | Vœu | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-125 | Destruction | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-126 | Destruction | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
-| OSS-CARD-127 | Contre-sort | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-128 | Contre-sort | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-129 | Contre-sort | Multijoueur : exclue du solo | Catalogue uniquement |
-| OSS-CARD-130 | Contre-sort | Multijoueur : exclue du solo | Catalogue uniquement |
+| OSS-CARD-127 | Contre-sort | Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur | Carte jouée, annulation et choix de réponse |
+| OSS-CARD-128 | Contre-sort | Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur | Carte jouée, annulation et choix de réponse |
+| OSS-CARD-129 | Contre-sort | Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur | Carte jouée, annulation et choix de réponse |
+| OSS-CARD-130 | Contre-sort | Réponse du joueur à une Action du Boss ; réponse automatique du Boss aux Actions du joueur | Carte jouée, annulation et choix de réponse |
 | OSS-CARD-131 | Mimétisme | Action solo : condition, coût, cible et effet | Animation depuis la main vers la cible |
 | OSS-CARD-132 | Priorité | Multijoueur : exclue du solo | Catalogue uniquement |
 | OSS-CARD-133 | Priorité | Multijoueur : exclue du solo | Catalogue uniquement |

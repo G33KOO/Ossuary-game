@@ -34,7 +34,6 @@ export const SOLO_EXCLUDED_ACTIONS = new Set([
   'Exclusion',
   'Achat forcé',
   'Incapacité',
-  'Contre-sort',
   'Réquisition',
   'Troc aveugle',
   'Larcin',

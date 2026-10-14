@@ -45,7 +45,7 @@ describe('solo engine', () => {
     const all = [...state.lootDeck, ...state.hand]
     expect(all.length).toBeGreaterThan(80)
     expect(all.filter((id) => card(id).type === 'Artefact de classe')).toHaveLength(1)
-    expect(all.some((id) => ['Pillage', 'Contre-sort', 'Larcin'].includes(card(id).name))).toBe(false)
+    expect(all.some((id) => ['Pillage', 'Larcin'].includes(card(id).name))).toBe(false)
     expect(state.hand).toHaveLength(5)
     expect(state.monsterDeck.every((id) => Number.parseInt(card(id).value, 10) < 15)).toBe(true)
     expect(state.strongMonsters).toHaveLength(18)
@@ -95,6 +95,7 @@ describe('solo engine', () => {
     const weapon = CARDS.find((entry) => entry.type === 'Arme' && (entry.requirement ?? '').includes('Maîtrise Guerrier'))!
     state.hand.push(weapon.id)
     state = reduce(state, { t: 'equip', id: weapon.id })
+    state.monsterDeck.unshift(CARDS.find(entry => entry.name === 'Tranchebec')!.id)
     state = reduce(state, { t: 'fightMonster' })
     const power = computePower(state)
     const printed = Number.parseInt(weapon.value, 10)
@@ -266,6 +267,9 @@ describe('solo engine', () => {
     expect(state.combat?.bossHand).toEqual([])
     expect(state.phase).toBe('combat')
     state = reduce(state, { t: 'bossStep' })
+    expect(state.phase).toBe('combat')
+    expect(state.combat?.bossReady).toBe(true)
+    state = reduce(state, { t: 'resolve' })
     expect(['won', 'lost']).toContain(state.phase)
   })
 })
