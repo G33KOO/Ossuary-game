@@ -534,6 +534,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     const equipped = [...Object.values(game.equipment.armors), ...game.equipment.hands, game.equipment.artifact, game.equipment.extraArmor?.id].includes(id)
     if (equipped) return <button className="button" type="button" disabled={!equipmentEditable} onClick={() => { setInventoryOpen(false); send({ t: 'unequip', id }) }}>{sim.unequipBtn}</button>
     if (!game.hand.includes(id)) return undefined
+    if (prompt?.purpose === 'discard-excess') return <button className="button button-primary" type="button" onClick={() => send({ t: 'answer', option: id })}>{sim.discardPile}</button>
     if (!gear && card(id).type !== 'Action') return undefined
     const reason = gear ? equipmentReason(game, id) : undefined
     return <>{prompt?.purpose === 'tavern-give' ? <button className="button button-primary" type="button" disabled={handLocked} onClick={() => { setInventoryOpen(false); send({ t: 'answer', option: id }) }}>{sim.tavernTrade}</button> : null}<button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { setInventoryOpen(false); send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
@@ -561,6 +562,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const limit = handLimit(game)
   const bossUnlocked = game.level >= 10
   const tavern = prompt?.purpose === 'tavern' || prompt?.purpose === 'tavern-give'
+  const discarding = prompt?.purpose === 'discard-excess'
   const choiceVisible = prompt && !tavern && prompt.purpose !== 'oath' && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0
   const effectVisible = bossPresentations[0] && bossPresentations[0].lines[0].code !== 'resolved' && !bossReveal && !reveal && !playedAction
   const dragFrom = (from: Drag['from'], id: string) => ({
@@ -574,12 +576,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       window.setTimeout(() => setDrag({ id, from }), 0)
     },
   })
-  const handDraggable = busy === null && playedAction === null && bossReveal === null && bossPresentations.length === 0 && oathCelebrations.length === 0 && reveal === null && !ended && (!prompt || tavern)
+  const handDraggable = busy === null && playedAction === null && bossReveal === null && bossPresentations.length === 0 && oathCelebrations.length === 0 && reveal === null && !ended && (!prompt || tavern || discarding)
 
   const zone = (key: string, accepts: boolean, actions: GameAction[]) => ({ key, accepts, actions, over: over === key })
   const commitDrop = (actions: GameAction[]) => { setDrag(null); for (const action of actions) send(action) }
 
   const fromHand = drag?.from === 'hand' ? drag.id : null
+  const discardZone = zone('discard-excess', Boolean(discarding && fromHand && prompt.options.some(option => option.id === fromHand)), fromHand ? [{ t: 'answer', option: fromHand }] : [])
   const fromEquip = drag?.from === 'equip' ? drag.id : null
   const equipZone = zone('equip', Boolean(fromHand && !handLocked && canEquip(game, fromHand)), fromHand ? [{ t: 'equip', id: fromHand }] : [])
   const playZone = zone('play', Boolean(fromHand && !handLocked && canPlayAction(game, fromHand)), fromHand ? [{ t: 'playAction', id: fromHand }] : [])
@@ -679,7 +682,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             {power ? <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} /> : null}
             {power ? <Score label={sim.yourPower} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} /> : null}
           </aside> : null}
-          {bossReveal ? bossOnBoard : reveal?.kind === 'monster' && !combat ? <div className="gb-monster-landing" aria-hidden="true" /> : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} inventory={() => setInventoryOpen(true)} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
+          {bossReveal ? bossOnBoard : reveal?.kind === 'monster' && !combat ? <div className="gb-monster-landing" aria-hidden="true" /> : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{copy.promptTitles['discard-excess']}</h3><p role="status">{fill(copy.prompts['discard-excess'], { count: Number(prompt.ctx.count) })}</p><strong>{sim.discardPile}</strong><p>{sim.dropDiscard}</p></DropTarget> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} inventory={() => setInventoryOpen(true)} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -847,7 +850,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </div>
       </div>
 
-      <DropTarget className="gb-dock" target={handZone} onHover={setOver} onCommit={commitDrop}>
+      <DropTarget className={`gb-dock${discarding ? ' is-discarding' : ''}`} target={handZone} onHover={setOver} onCommit={commitDrop}>
         <span className="gb-dock-label">
           {sim.handDock} · {boardState.hand.length}/{limit}
           {drag?.from === 'equip' ? ` — ${sim.dropHand}` : ''}

@@ -1747,6 +1747,14 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-discard-zone { width: min(100%, 620px); margin: auto; padding: 20px; text-align: center; border: 2px dashed var(--gold); border-radius: 12px; background: rgb(201 164 92 / 8%); transition: background 160ms, box-shadow 160ms; }
+.gb-discard-zone h3 { margin: 0 0 10px; font-family: var(--display); color: var(--gold-light); }
+.gb-discard-zone p { font-size: 12px; line-height: 1.5; }
+.gb-discard-zone > strong { display: block; margin: 20px 0 10px; color: var(--gold-light); font-family: var(--display); font-size: 22px; }
+.gb-discard-zone.is-over { background: rgb(201 164 92 / 20%); box-shadow: inset 0 0 26px rgb(201 164 92 / 25%); }
+.gb-dock.is-discarding { outline: 2px solid var(--gold); outline-offset: -3px; background: rgb(201 164 92 / 10%); }
+.gb-dock.is-discarding .gb-dock-label { color: var(--gold-light); }
+.gb-dock.is-discarding .gb-card { box-shadow: 0 0 14px rgb(201 164 92 / 35%); }
 .gb-full .gb-arena-with-context { grid-template-columns: minmax(140px, 1fr) minmax(0, 3fr); align-items: center; gap: 16px; }
 .gb-combat-context { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; width: 100%; }
 .gb-combat-context-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
