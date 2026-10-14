@@ -1217,7 +1217,7 @@ h2 em {
 
 .dialog-subtitle {
   color: var(--card-accent);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1234,7 +1234,7 @@ h2 em {
 
 .dialog-detail {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.7;
   margin: 17px 0 0;
 }
@@ -1242,7 +1242,7 @@ h2 em {
 .dialog-detail strong {
   color: var(--card-accent);
   display: block;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   margin-bottom: 4px;
   text-transform: uppercase;
@@ -1252,7 +1252,7 @@ h2 em {
   border: 1px solid var(--line);
   color: var(--gold-light);
   display: inline-block;
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   margin-top: 22px;
   padding: 8px 10px;

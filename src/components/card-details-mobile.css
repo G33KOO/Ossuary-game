@@ -8,11 +8,11 @@
   .card-dialog .dialog-body { padding: 0; min-width: 0; }
   .card-dialog .dialog-body .eyebrow { font-size: 8px; letter-spacing: .04em; margin: 0 0 6px; }
   .card-dialog .dialog-body h2 { font-size: 20px; line-height: 1.15; margin: 0 0 6px; }
-  .card-dialog .dialog-subtitle { margin: 4px 0; font-size: 8px; letter-spacing: .04em; }
+  .card-dialog .dialog-subtitle { margin: 4px 0; font-size: 11px; letter-spacing: .04em; }
   .card-dialog .dialog-rule { margin-top: 8px; padding-top: 8px; font-size: 12px; line-height: 1.45; }
-  .card-dialog .dialog-detail { margin: 7px 0 0; font-size: 10px; line-height: 1.35; }
-  .card-dialog .dialog-detail strong { display: inline; font-size: 9px; margin-right: 5px; letter-spacing: 0; }
-  .card-dialog .dialog-value { display: inline-block; margin-top: 8px; padding: 4px 6px; font-size: 10px; }
+  .card-dialog .dialog-detail { margin: 7px 0 0; font-size: 12px; line-height: 1.35; }
+  .card-dialog .dialog-detail strong { display: inline; font-size: 10px; margin-right: 5px; letter-spacing: 0; }
+  .card-dialog .dialog-value { display: inline-block; margin-top: 8px; padding: 4px 6px; font-size: 12px; }
   .card-dialog .dialog-actions { margin-top: 12px; padding-top: 8px; position: sticky; bottom: 0; background: var(--card-surface); }
   .card-dialog .dialog-actions .button { min-height: 44px; width: 100%; padding: 8px; font-size: 11px; }
   .card-dialog .variant-switch { flex-wrap: wrap; gap: 4px; padding: 0; margin-top: 6px; }
