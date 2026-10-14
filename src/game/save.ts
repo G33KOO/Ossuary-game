@@ -13,7 +13,7 @@ export function loadGame(): GameState | null {
     const game = data?.game
     if (data?.v !== 1 || !game || !Array.isArray(game.hand) || !Array.isArray(game.lootDeck) || !game.equipment) return null
     if ((game.phase === 'won' || game.phase === 'lost') && !game.finalCombat) return null
-    return { ...game, draws: [] }
+    return { ...game, endTurnRequested: game.endTurnRequested ?? (game.endTurnPending && game.tavernDone), draws: [] }
   } catch {
     return null
   }

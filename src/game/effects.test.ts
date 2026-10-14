@@ -293,6 +293,7 @@ describe('card effects', () => {
     state.combat!.playerBonus = 100
     state = reduce(state, { t: 'resolve' })
     expect(state.retainedMonsters).toContain(id('Vitrail'))
+    state = reduce(state, { t: 'endTurn' })
     expect(state.promptQueue[0].purpose).toBe('tavern')
     for (let index = 0; index < 2; index++) {
       state = reduce(state, { t: 'answer', option: state.promptQueue[0].options[0].id })
@@ -307,6 +308,7 @@ describe('card effects', () => {
     state.race = 'Vesskar'
     state.hand = []
     state = reduce(state, { t: 'flee' })
+    state = reduce(state, { t: 'endTurn' })
     expect(state.combat!.monsters).toContain(id('Sème-Peste'))
     expect(state.combat!.flags).toContain('pest-retry')
     state = reduce(state, { t: 'flee' })

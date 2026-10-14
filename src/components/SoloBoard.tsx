@@ -5,7 +5,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { fill, soloCopy } from '../content/solo'
 import { ARMOR_SLOTS, CARDS, CLASS_NAMES, RACE_NAMES, card } from '../game/data'
 import type { ClassName, RaceName } from '../game/data'
-import { BOSS_IDS, activeStatus, canChangeEquipment, canEquip, canPlayAction, canWeaponReroll, fleeBlocked, newGame, reduce } from '../game/engine'
+import { BOSS_IDS, activeStatus, canManageHand, canChangeEquipment, canEquip, canPlayAction, canWeaponReroll, fleeBlocked, newGame, reduce } from '../game/engine'
 import { loadGame, saveGame } from '../game/save'
 import { bossEquipmentCardPower, computePlayerPower, computePower, equipmentCardPower, handLimit } from '../game/power'
 import type { PowerBreakdown } from '../game/power'
@@ -398,7 +398,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       if (!(entry.requirement ?? '').includes(`Classe : ${state.klass}`)) return sim.artifactClass
     }
     if (!['Armure', 'Arme', 'Artefact de classe'].includes(entry.type)) return undefined
-    if (state.promptQueue.length) return sim.equipmentChoice
+    if (!canManageHand(state)) return sim.equipmentChoice
     if (!canChangeEquipment(state)) return sim.equipmentRolled
     return undefined
   }
@@ -513,9 +513,20 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const pendingMonsterIds = new Set(!resolutionPreview && (reveal || playedAction || drawDeferred) ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
   const power = resolutionPreview ? computePower(resolutionPreview) : final?.power ?? computePower(game)
   const prompt: Prompt | undefined = game.promptQueue[0]
-  const main = game.phase === 'main' && !combat
+  const preparation = game.phase === 'main' && !combat && game.endTurnPending
+  const main = game.phase === 'main' && !combat && !game.endTurnPending
   const locked = busy !== null || playedAction !== null || bossReveal !== null || bossPresentations.length > 0 || oathCelebrations.length > 0 || Boolean(prompt) || reveal !== null || ended
-  const equipmentEditable = !locked && canChangeEquipment(game)
+  const handLocked = busy !== null || playedAction !== null || bossReveal !== null || bossPresentations.length > 0 || oathCelebrations.length > 0 || !canManageHand(game) || reveal !== null || ended
+  const equipmentEditable = !handLocked && canChangeEquipment(game)
+  const handActions = (id: string) => {
+    const gear = ['Armure', 'Arme', 'Artefact de classe'].includes(card(id).type)
+    const equipped = [...Object.values(game.equipment.armors), ...game.equipment.hands, game.equipment.artifact, game.equipment.extraArmor?.id].includes(id)
+    if (equipped) return <button className="button" type="button" disabled={!equipmentEditable} onClick={() => { setInventoryOpen(false); send({ t: 'unequip', id }) }}>{sim.unequipBtn}</button>
+    if (!game.hand.includes(id)) return undefined
+    if (!gear && card(id).type !== 'Action') return undefined
+    const reason = gear ? equipmentReason(game, id) : undefined
+    return <><button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { setInventoryOpen(false); send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
+  }
   const status = activeStatus(game)
   const activeCard = heroCard('Classe', status.klass)
   const activeEffect = status.klass === 'Voleur' ? sim.soloRogueEffect : copy.rules.flatMap((section) => section.items).find((item) => item.startsWith(`${heroName('Classe', status.klass)} —`)) ?? (activeCard ? localizeCard(activeCard, locale).text ?? '' : '')
@@ -617,6 +628,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <button type="button" aria-haspopup="dialog" onClick={() => setInformationOpen(true)}>{sim.information}</button>
         </nav>
         {main && !locked ? <p className="gb-mobile-adventure-hint" role="status">{sim.adventure}</p> : null}
+        {preparation && !locked ? <div className="gb-mobile-preparation"><span>{sim.preparation}</span><button className="button button-primary" type="button" onClick={() => send({ t: 'endTurn' })}>{sim.endTurn}</button></div> : null}
       </div>
 
       <div className="gb-table" ref={tableRef}>
@@ -740,7 +752,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
               <div className="gb-dice" />
               <div className="gb-score foe"><span className="gb-score-label">{sim.opponent}</span><strong>?</strong><span className="gb-score-parts">{sim.pickMonster}</span></div>
             </div>
-            <div className="gb-playzone"><div className="gb-controls"><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span></button></div></div>
+            <div className="gb-playzone"><div className="gb-controls">{preparation ? <><span className="gb-preparation-hint">{sim.preparation}</span><button className="button button-primary" disabled={locked} type="button" onClick={() => send({ t: 'endTurn' })}>{sim.endTurn}</button></> : <><button className="button button-primary" disabled title={sim.pickMonster} type="button">{sim.resolve}</button><button className="button gb-flee-button" disabled title={sim.pickMonster} type="button"><FleeIcon /><span>{sim.flee}</span><span className="gb-flee-threshold">D6 · 4+</span></button></>}</div></div>
           </>}
         </section>
         <section className="gb-board" style={{ '--board-card-count': 9 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) + (boardState.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) } as CSSProperties}>
@@ -828,18 +840,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           {boardState.hand.map((id, index) => {
             const entry = card(id)
             const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
-            const equipable = !locked && canEquip(game, id)
-            const playable = !locked && entry.type === 'Action' && canPlayAction(game, id)
             const reason = isGear ? equipmentReason(boardState, id) : undefined
-            const actions = isGear ? (
-              <><button className="button" disabled={!equipable} onClick={() => send({ t: 'equip', id })} type="button">
-                {sim.equipBtn}
-              </button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
-            ) : entry.type === 'Action' ? (
-              <button className="button" disabled={!playable} onClick={() => send({ t: 'playAction', id })} type="button">
-                {sim.play}
-              </button>
-            ) : undefined
+            const actions = handActions(id)
             return (
               <GameCard
                 className={drag?.id === id ? 'is-dragging' : ''}
@@ -898,7 +900,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       ) : null}
 
       {bossPresentations[0] && bossPresentations[0].lines[0].code !== 'resolved' && !bossReveal && !reveal && !playedAction ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : null}
-      {inventoryOpen ? <HeroInventory game={boardState} locale={locale} sim={sim} inspect={inspect} onClose={() => setInventoryOpen(false)} /> : null}
+      {inventoryOpen ? <HeroInventory game={boardState} locale={locale} sim={sim} inspect={(id, el) => inspect(id, el, handActions(id))} actions={handActions} onClose={() => setInventoryOpen(false)} /> : null}
       {recapOpen && final && !bossPresentations.length && !playedAction && !reveal && !bossReveal && !oathCelebrations.length ? <CombatRecap final={final} locale={locale} sim={sim} inspect={inspect} onClose={() => setRecapOpen(false)} /> : null}
 
       {discardOpen ? <DiscardGallery ids={discardOpen === 'monster' ? game.monsterDiscard : game.lootDiscard} title={discardOpen === 'monster' ? sim.tableMonster : sim.tableLoot} locale={locale} closeLabel={sim.close} onClose={() => setDiscardOpen(null)} onInspect={inspect} /> : null}
@@ -939,7 +941,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             {tavern || prompt.purpose === 'tavern-give' ? <div className="gb-tavern-tools"><button className="button" type="button" onClick={() => setInventoryOpen(true)}>{sim.inspectInventory}</button><span>{fill(sim.tradesRemaining, { count: Number(prompt.ctx.remaining ?? 1) })}</span></div> : null}
             {tavern ? <p className="sim-note">{sim.tavernHint}</p> : null}
             {tavern ? <div className="gb-tavern-hand" aria-label={sim.handDock}>
-              {game.hand.map((id) => <GameCard key={id} id={id} locale={locale} size="sm" onInspect={(element) => inspect(id, element)} {...dragFrom('hand', id)} />)}
+              {game.hand.map((id) => <GameCard key={id} id={id} locale={locale} size="sm" onInspect={(element) => inspect(id, element, handActions(id))} {...dragFrom('hand', id)} />)}
             </div> : null}
             <div className="sim-cards">
               {prompt.options.map((option, index) => {
@@ -952,7 +954,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                   return (
                     <DropTarget className="sim-pick" target={target} key={`${option.id}-${index}`} onHover={setOver} onCommit={commitDrop}>
                       <GameCard id={cardId} locale={locale} onInspect={(el) => inspect(cardId, el)} size="md" />
-                      <button className="button button-primary" onClick={() => send({ t: 'answer', option: option.id })} type="button">
+                      <button className="button button-primary" disabled={tavern && game.hand.length === 0} onClick={() => send({ t: 'answer', option: option.id })} type="button">
                         {prompt.purpose === 'weapon-loot' ? sim.harvest : sim.choose}
                       </button>
                     </DropTarget>

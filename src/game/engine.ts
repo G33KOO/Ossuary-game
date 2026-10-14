@@ -87,6 +87,7 @@ export function newGame(klass: ClassName, race: RaceName, seed = Math.floor(Math
   s.combat = null
   s.promptQueue = []
   s.endTurnPending = false
+  s.endTurnRequested = false
   s.log = []
   s.stats = { monsters: 0, defeats: 0, flees: 0 }
   s.victoryBoss = null
@@ -294,10 +295,14 @@ function equip(s: GameState, id: string) {
   log(s, 'equip', { card: id })
 }
 
+export function canManageHand(s: GameState) {
+  return s.promptQueue.every((prompt) => prompt.purpose === 'tavern' || prompt.purpose === 'tavern-give')
+}
+
 export function canChangeEquipment(s: GameState) {
-  if (s.promptQueue.length > 0) return false
+  if (!canManageHand(s)) return false
   if (s.phase === 'main' && !s.combat) return true
-  return s.phase === 'combat' && s.combat !== null && !s.combat.hasRolled && s.combat.playerDie === null && s.combat.bossDie === null
+  return s.phase === 'combat' && s.combat !== null
 }
 
 export function canEquip(s: GameState, id: string) {
@@ -889,7 +894,7 @@ function resolveCombat(s: GameState) {
 // ---------- Actions (cards) ----------
 
 export function canPlayAction(s: GameState, id: string) {
-  if (s.promptQueue.length > 0 || (s.phase !== 'main' && s.phase !== 'combat')) return false
+  if (!canManageHand(s) || (s.phase !== 'main' && s.phase !== 'combat')) return false
   if (!s.hand.includes(id)) return false
   const entry = card(id)
   if (entry.type !== 'Action') return false
@@ -1211,6 +1216,7 @@ function finishPay(s: GameState, kind: string) {
 function answerPrompt(s: GameState, option: string | null) {
   const prompt = s.promptQueue[0]
   if (!prompt) return
+  if (prompt.purpose === 'tavern' && option !== null && s.hand.length === 0) return
   if (option === null) {
     if (!prompt.optional) return
   } else if (!prompt.options.some((entry) => entry.id === option)) {
@@ -1441,11 +1447,6 @@ function answerPrompt(s: GameState, option: string | null) {
       }
       {
         const give = handOptions(s)
-        if (give.length === 0) {
-          s.lootDiscard.push(...choices.filter((id) => id !== option))
-          s.hand.push(option)
-          break
-        }
         queue(
           s,
           { purpose: 'tavern-give', options: [...give, { id: 'tavern-back' }], optional: false, ctx: { taken: option, choices, remaining: Number(prompt.ctx.remaining ?? 1) } },
@@ -1520,6 +1521,7 @@ function endTurnNow(s: GameState) {
   }
   s.tavernDone = false
   s.endTurnPending = false
+  s.endTurnRequested = false
   s.turn += 1
   s.mimic = null
   s.turnFlags = []
@@ -1547,7 +1549,7 @@ function endTurnNow(s: GameState) {
 
 function settle(s: GameState) {
   if (s.promptQueue.length > 0) return
-  if (s.endTurnPending && !s.combat && s.phase === 'main') endTurnNow(s)
+  if (s.endTurnPending && s.endTurnRequested && !s.combat && s.phase === 'main') endTurnNow(s)
 }
 
 export function reduce(state: GameState, action: GameAction): GameState {
@@ -1555,6 +1557,9 @@ export function reduce(state: GameState, action: GameAction): GameState {
   const s = structuredClone(state)
   s.draws = []
   const result = apply(s, action)
+  for (const prompt of result.promptQueue) {
+    if (prompt.purpose === 'tavern-give') prompt.options = [...handOptions(result), { id: 'tavern-back' }]
+  }
   if (result.draws.length > 0) result.drawSeq += 1
   return result
 }
@@ -1565,10 +1570,22 @@ function apply(s: GameState, action: GameAction): GameState {
     settle(s)
     return s
   }
-  if (s.promptQueue.length > 0) return s
+  if (s.promptQueue.length > 0) {
+    if (!canManageHand(s) || !['equip', 'unequip', 'playAction'].includes(action.t)) return s
+    const tavern = s.promptQueue.splice(0)
+    const requested = s.endTurnRequested
+    s.endTurnRequested = false
+    const result = apply(s, action)
+    result.endTurnRequested = requested
+    result.promptQueue.push(...tavern)
+    return result
+  }
 
-  const main = s.phase === 'main' && !s.combat
+  const main = s.phase === 'main' && !s.combat && !s.endTurnPending
   switch (action.t) {
+    case 'endTurn':
+      if (s.phase === 'main' && !s.combat && s.endTurnPending) s.endTurnRequested = true
+      break
     case 'equip':
       if (canEquip(s, action.id)) equip(s, action.id)
       break

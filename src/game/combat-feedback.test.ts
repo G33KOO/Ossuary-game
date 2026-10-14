@@ -26,11 +26,14 @@ describe('visible combat consequences', () => {
     state.level = 9; state.hand = []; state.lootDeck = []; state.combat!.playerBonus = 100
     state = reduce(state, { t: 'resolve' })
     expect(state.level).toBe(10)
+    expect(state.turn).toBe(1)
+    state = reduce(state, { t: 'endTurn' })
     expect(state.bossPressure).toBe(0)
     expect(state.bossEnrageArmed).toBe(true)
     expect(state.log.some((entry) => entry.code === 'bossGrows')).toBe(false)
     for (const expected of [1, 2]) {
       state = reduce(state, { t: 'drawLoot' })
+      state = reduce(state, { t: 'endTurn' })
       expect(state.bossPressure).toBe(expected)
     }
   })
@@ -38,6 +41,7 @@ describe('visible combat consequences', () => {
     let state = monster('Tranchebec')
     state.level = 9; state.combat!.playerBonus = 100; state.hand = [id('Force')]
     state = reduce(state, { t: 'resolve' })
+    state = reduce(state, { t: 'endTurn' })
     expect(state.promptQueue[0].purpose).toBe('tavern')
     expect(state.bossPressure).toBe(0)
     expect(state.bossEnrageArmed).toBe(false)
@@ -45,6 +49,7 @@ describe('visible combat consequences', () => {
     expect(state.bossEnrageArmed).toBe(true)
     expect(state.bossPressure).toBe(0)
     state = reduce(state, { t: 'drawLoot' })
+      state = reduce(state, { t: 'endTurn' })
     expect(state.bossPressure).toBe(0)
     state = reduce(state, { t: 'answer', option: null })
     expect(state.bossPressure).toBe(1)
@@ -54,7 +59,7 @@ describe('visible combat consequences', () => {
     state.promptQueue = []; state.level = 10; state.hand = []; state.lootDeck = []
     delete state.bossEnrageArmed
     state.bossPressure = 2
-    const next = reduce(state, { t: 'drawLoot' })
+    const next = reduce(reduce(state, { t: 'drawLoot' }), { t: 'endTurn' })
     expect(next.bossPressure).toBe(3)
     expect(next.bossEnrageArmed).toBe(true)
   })

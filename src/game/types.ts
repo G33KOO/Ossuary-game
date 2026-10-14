@@ -127,6 +127,7 @@ export type GameState = {
   combat: Combat | null
   promptQueue: Prompt[]
   endTurnPending: boolean
+  endTurnRequested?: boolean
   log: LogEntry[]
   stats: { monsters: number; defeats: number; flees: number }
   victoryBoss: string | null
@@ -135,6 +136,7 @@ export type GameState = {
 }
 
 export type GameAction =
+  | { t: 'endTurn' }
   | { t: 'equip'; id: string }
   | { t: 'unequip'; id: string }
   | { t: 'fightMonster' }

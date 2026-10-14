@@ -31,9 +31,9 @@ const fr: SoloCopy = {
     {
       title: 'Votre tour',
       items: [
-        'Équipez ou retirez Armures, Armes et Artefact avant votre aventure, ou pendant un combat avant le premier jet de dé et le début de la résolution (une Armure par emplacement, 2 mains, 1 Artefact).',
+        'Équipez ou retirez Armures, Armes et Artefact avant, pendant ou après un combat, y compris après le jet de dé (une Armure par emplacement, 2 mains, 1 Artefact). Vous pouvez aussi utiliser votre main dans la Taverne. Les conditions propres à chaque carte restent applicables.',
         'Choisissez ensuite une aventure : affronter un Monstre, piocher 1 Butin (2 pour un Nain), ou — dès le niveau 10 — tirer un Boss au hasard et le défier.',
-        'Fin de tour — la Taverne : 3 Butins vous sont toujours proposés. Choisissez-en un et échangez-le obligatoirement contre une carte de votre main ; les 2 autres sont défaussés. Avec une main vide, la Taverne reste fermée. Puis défaussez jusqu’à votre limite de main (5 cartes, 6 pour un Humain). Votre équipement ne compte pas dans la main.',
+        'Après votre aventure, prenez le temps de vous équiper et de jouer vos Actions autorisées. Cliquez sur « Fin de tour » pour ouvrir la Taverne : 3 Butins sont proposés. Échangez-en un contre une carte de votre main ou choisissez « Non merci ». Avec une main vide, la Taverne reste fermée. Puis défaussez jusqu’à votre limite de main (5 cartes, 6 pour un Humain) et commencez le tour suivant. Votre équipement ne compte pas dans la main.',
       ],
     },
     {
@@ -164,6 +164,8 @@ const fr: SoloCopy = {
     artifact: 'Artefact',
     empty: 'Vide',
     adventure: 'Piochez un Butin ou affrontez un Monstre',
+    endTurn: 'Fin de tour',
+    preparation: 'Équipez-vous ou jouez vos Actions, puis terminez votre tour.',
     fight: 'Affronter un Monstre',
     drawLoot: 'Piocher un Butin',
     drawLootNain: 'Piocher 2 Butins (Nain)',
@@ -257,7 +259,7 @@ const fr: SoloCopy = {
     harvestWait: 'Cet effet se joue après une victoire contre un Monstre.',
     artifactLevel: 'Cet Artefact nécessite le niveau 10.',
     artifactClass: 'Cet Artefact est réservé à une autre Classe.',
-    equipmentRolled: 'Vous ne pouvez plus vous équiper après le jet de combat.',
+    equipmentRolled: 'Terminez le choix ou l’animation en cours pour vous équiper.',
     equipmentChoice: 'Terminez le choix en cours pour vous équiper.',
     powerIgnored: 'Puissance ignorée pour ce combat',
     levelsReward: 'Niveaux gagnés en cas de victoire',
@@ -440,9 +442,9 @@ const en: SoloCopy = {
     {
       title: 'Your turn',
       items: [
-        'Equip or remove Armor, Weapons and Artifact before your adventure, or during combat before the first die roll and the start of resolution (one Armor per slot, 2 hands, 1 Artifact).',
+        'Equip or remove Armor, Weapons and Artifact before, during or after combat, including after rolling (one Armor per slot, 2 hands, 1 Artifact). You can also use your hand in the Tavern. Each card’s own conditions still apply.',
         'Then pick an adventure: fight a Monster, draw 1 Loot (2 for a Dwarf), or — from level 10 — draw a random Boss and challenge it.',
-        'End of turn — the Tavern: 3 Loot cards are always offered. Pick one and trade it for a card from your hand (mandatory); the other 2 are discarded. With an empty hand the Tavern stays closed. Then discard down to your hand limit (5 cards, 6 for a Human). Equipment does not count toward the hand.',
+        'After your adventure, take time to equip items and play available Actions. Click “End turn” to open the Tavern: 3 Loot cards are offered. Trade one for a card from your hand or choose “No thanks”. With an empty hand the Tavern stays closed. Then discard down to your hand limit (5 cards, 6 for a Human) and begin the next turn. Equipment does not count toward the hand.',
       ],
     },
     {
@@ -573,6 +575,8 @@ const en: SoloCopy = {
     artifact: 'Artifact',
     empty: 'Empty',
     adventure: 'Draw Loot or face a Monster',
+    endTurn: 'End turn',
+    preparation: 'Equip items or play Actions, then end your turn.',
     fight: 'Fight a Monster',
     drawLoot: 'Draw a Loot card',
     drawLootNain: 'Draw 2 Loot cards (Dwarf)',
@@ -666,7 +670,7 @@ const en: SoloCopy = {
     harvestWait: 'Use this effect after defeating a Monster.',
     artifactLevel: 'This Artifact requires level 10.',
     artifactClass: 'This Artifact belongs to a different Class.',
-    equipmentRolled: 'You cannot equip items after the combat roll.',
+    equipmentRolled: 'Finish the current choice or animation before equipping.',
     equipmentChoice: 'Finish the current choice before equipping.',
     powerIgnored: 'Power ignored for this combat',
     levelsReward: 'Levels gained on victory',

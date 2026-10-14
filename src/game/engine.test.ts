@@ -20,6 +20,7 @@ function bot(state: GameState, rng: () => number): GameAction {
     if (state.combat.kind === 'monster' && roll < 0.85) return { t: 'flee' }
     return { t: 'resolve' }
   }
+  if (state.endTurnPending) return { t: 'endTurn' }
   for (const id of state.hand) {
     const type = card(id).type
     if (type === 'Armure' || type === 'Arme') {
@@ -188,7 +189,7 @@ describe('solo engine', () => {
     expect(drawn.size).toBe(BOSS_IDS.length)
   })
 
-  it('allows equipment changes during combat only before dice are rolled', () => {
+  it('allows equipment changes during combat before and after dice are rolled', () => {
     let state = newGame('Mage', 'Humain', 3)
     state.promptQueue = []
     state.level = 10
@@ -204,13 +205,12 @@ describe('solo engine', () => {
     expect(state.hand).toContain(weapon.id)
     state = reduce(state, { t: 'equip', id: weapon.id })
     state = reduce(state, { t: 'roll' })
-    expect(canChangeEquipment(state)).toBe(false)
-    const equipment = structuredClone(state.equipment)
+    expect(canChangeEquipment(state)).toBe(true)
     state = reduce(state, { t: 'unequip', id: weapon.id })
-    expect(state.equipment).toEqual(equipment)
+    expect(state.hand).toContain(weapon.id)
   })
 
-  it('blocks equipping once Boss resolution begins, even without a player roll', () => {
+  it('allows equipping between Boss reactions', () => {
     let state = newGame('Mage', 'Humain', 3)
     state.promptQueue = []
     state.level = 10
@@ -220,9 +220,9 @@ describe('solo engine', () => {
     state.hand.push(armor.id)
     state = reduce(state, { t: 'bossStep' })
     expect(state.combat?.playerDie).toBeNull()
-    expect(canEquip(state, armor.id)).toBe(false)
+    expect(canEquip(state, armor.id)).toBe(true)
     state = reduce(state, { t: 'equip', id: armor.id })
-    expect(state.hand).toContain(armor.id)
+    expect(state.hand).not.toContain(armor.id)
   })
 
   it('returns to the same tavern offers without changing cards, then completes a different trade', () => {
