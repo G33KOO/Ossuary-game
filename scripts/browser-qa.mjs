@@ -157,7 +157,7 @@ try {
   await navigate('/solo')
   await evaluate(`document.querySelector('.gb-controls .button-primary').click()`)
   await wait(1700)
-  await evaluate("(async()=>{for(let i=0;i<40;i++){const b=document.querySelector('.gb-combat-resolution .button-primary');if(b&&!b.disabled){b.click();return}await new Promise(r=>setTimeout(r,100))}throw Error('Combat animation did not finish')})()")
+  await evaluate("(async()=>{for(let i=0;i<40;i++){if(document.querySelector('.gb-reveal-card.from-loot'))returnawait new Promise(r=>setTimeout(r,100))}throw Error('Combat animation did not finish')})()")
   await wait(1800)
   report.push({rewardCardsFit:await evaluate(`(()=>{const cards=[...document.querySelectorAll('.gb-reveal .gb-card')];return cards.length===5&&cards.every(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight})})()`)})
   await screenshot('mobile-five-rewards')

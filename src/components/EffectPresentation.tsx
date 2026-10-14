@@ -20,12 +20,18 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
     total: Number(params.value), mode: params.mode as DiceRoll['mode'],
   } : undefined
   const hasRoll = Boolean(roll)
+  const automatic = ['victory', 'merchantFavor', 'weaponHarvest'].includes(stage.lines[0].code)
   const [ready, setReady] = useState(!roll)
   useEffect(() => {
     if (!hasRoll) return
     const timer = window.setTimeout(() => setReady(true), window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900)
     return () => window.clearTimeout(timer)
   }, [hasRoll])
+  useEffect(() => {
+    if (!automatic || !ready) return
+    const timer = window.setTimeout(onNext, stage.lines[0].code === 'victory' ? 200 : 1200)
+    return () => window.clearTimeout(timer)
+  }, [automatic, ready, onNext, stage.lines])
   const effect = stage.lines[0].code === 'bossItemDestroyed' ? 'destroy' : stage.id ? actionVisual(card(stage.id).name).effect : 'magic'
   return <section aria-labelledby="game-effect-title" className={`gb-boss-action gb-effect-presentation gb-board-effect effect-${effect}`}>
     <h3 id="game-effect-title">{stage.lines[0].code.startsWith('boss') ? sim.bossActionTitle : sim.cardEffectTitle}</h3>
@@ -37,9 +43,9 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
         {ready && params.powerChange !== undefined ? <strong className="gb-effect-change">{Number(params.powerChange) > 0 ? '+' : ''}{params.powerChange} {sim.powerPart}</strong> : null}
         {params.before !== undefined ? <strong className="gb-effect-change is-negative">{sim.level} : {params.before} → {params.after}</strong> : null}
         {params.player !== undefined ? <div className="gb-final-scores"><strong>{sim.you} : {params.player}</strong><strong>{sim.opponent} : {params.opponent}</strong></div> : null}
-        {stage.id ? <p className="gb-effect-rule">{localizeCard(card(stage.id), locale).text}</p> : null}
+        {stage.id ? <details className="gb-effect-rule"><summary>{sim.cardEffectTitle}</summary><p>{localizeCard(card(stage.id), locale).text}</p></details> : null}
         {stage.lines.filter((entry) => entry.code === 'playerItemDestroyed' && typeof entry.params?.card === 'string').map((entry) => <GameCard key={String(entry.params!.card)} id={String(entry.params!.card)} locale={locale} onInspect={(el) => inspect(String(entry.params!.card), el)} size="sm" />)}
-        <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button>
+        {!automatic ? <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button> : null}
       </div>
     </div>
   </section>
