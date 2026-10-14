@@ -213,7 +213,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     let retained = Math.min(previousLogs.length, nextLogs.length)
     while (retained > 0 && !previousLogs.slice(-retained).every((entry, index) => entry === nextLogs[index])) retained -= 1
     const newLogs = next.log.slice(retained)
-    const activeTriggered = (action.t === 'answer' && action.option === 'mage-flee' && previous.promptQueue[0]?.purpose === 'flee-result' && next.promptQueue[0]?.purpose === 'pay') || (action.t === 'useActive' && activeStatus(previous).available) || newLogs.some(entry => ['warriorThrow', 'necroBonus', 'thiefPick', 'armorDoubled'].includes(entry.code));
+    const activeTriggered = (action.t === 'answer' && action.option === 'mage-flee' && previous.promptQueue[0]?.purpose === 'flee-result' && next.promptQueue[0]?.purpose === 'pay') || (action.t === 'useActive' && activeStatus(previous).available) || newLogs.some(entry => ['warriorThrow', 'necroBonus', 'thiefPick', 'thiefSwap', 'armorDoubled'].includes(entry.code));
     const activeEntry = activeTriggered ? heroCard('Classe', activeStatus(previous).klass) : undefined;
     const animatedId = action.t === 'playAction' && newLogs.some(entry => entry.code === 'actionPlayed') ? action.id : activeEntry?.id;
     if (animatedId) {
@@ -241,7 +241,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     const resolved = newLogs.some((entry) => entry.code === 'resolved')
     const outcomeCodes = new Set(['victory', 'defeat', 'bossDefeated', 'bossLost', 'secondAssault', 'honorDuel'])
     if (resolved) { setResolutionPreview(previous); setCombatBeat('hero') }
-    const stageCodes = new Set(['bossAcquiresActive', 'bossActive', 'bossActiveRoll', 'bossDraws', 'bossFear', 'playerCounter', 'bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossDecreeCancel', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'monsterEffect', 'equipmentIgnored', 'souriantRolled', 'sansVisageRolled', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'resolved', 'victory', 'greedRoll', 'executionRoll', 'mageOpponentReroll', 'mageReroll', 'rerolled', 'oathRerolled', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits', 'fournaiseNoOpponent'])
+    const stageCodes = new Set(['thiefSwap', 'bossAcquiresActive', 'bossActive', 'bossActiveRoll', 'bossDraws', 'bossFear', 'playerCounter', 'bossForce', 'bossAwakens', 'bossPlays', 'bossRolled', 'bossStack', 'bossDecree', 'bossDecreeCancel', 'bossSwap', 'bossAscension', 'bossRecovers', 'monsterRoll', 'monsterEffect', 'equipmentIgnored', 'souriantRolled', 'sansVisageRolled', 'fleeRolled', 'fled', 'fleeFailed', 'defeat', 'resolved', 'victory', 'greedRoll', 'executionRoll', 'mageOpponentReroll', 'mageReroll', 'rerolled', 'oathRerolled', 'armorDoubled', 'weaponSalvage', 'weaponHarvest', 'weaponRerolled', 'bossItemDestroyed', 'bossSalvage', 'merchantFavor', 'pestWaits', 'fournaiseNoOpponent'])
     const stages = newLogs.filter((entry) => stageCodes.has(entry.code) && !(resolved && outcomeCodes.has(entry.code))).map((entry) => ({
       id: typeof entry.params?.card === 'string' ? entry.params.card : next.combat?.bossId ?? previous.combat?.monsters[0] ?? undefined,
       lines: [entry, ...(entry.code === 'resolved' ? newLogs.filter((detail) => outcomeCodes.has(detail.code)) : []), ...(entry.code === 'bossPlays' ? newLogs.filter((detail) => detail.code === 'playerItemDestroyed' || detail.code === 'actionCancelled') : [])], seq: ++bossPresentationSeq.current,
@@ -494,7 +494,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   }
   const status = activeStatus(game)
   const activeCard = heroCard('Classe', status.klass)
-  const activeEffect = status.klass === 'Voleur' ? sim.soloRogueEffect : copy.rules.flatMap((section) => section.items).find((item) => item.startsWith(`${heroName('Classe', status.klass)} —`)) ?? (activeCard ? localizeCard(activeCard, locale).text ?? '' : '')
+  const activeEffect = status.klass === 'Voleur' ? (combat?.kind === 'boss' ? sim.rogueBossEffect : sim.soloRogueEffect) : copy.rules.flatMap((section) => section.items).find((item) => item.startsWith(`${heroName('Classe', status.klass)} —`)) ?? (activeCard ? localizeCard(activeCard, locale).text ?? '' : '')
   const activeReasons = status.reasons.map((reason) => fill(sim[`activeBlocked_${reason.code}`], { required: reason.required ?? 0, current: reason.current ?? 0 }))
   if (busy || playedAction || reveal || bossReveal || bossPresentations.length) activeReasons.unshift(sim.activeWait)
   if (oathCelebrations.length) activeReasons.unshift(sim.activeOathWait)

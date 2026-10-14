@@ -25,6 +25,8 @@ export type PromptPurpose =
   | 'pay'
   | 'hunter-pick'
   | 'thief-pick'
+  | 'thief-boss-pick'
+  | 'thief-hero-pick'
   | 'necro-pick'
   | 'warrior-pick'
   | 'mage-keep'

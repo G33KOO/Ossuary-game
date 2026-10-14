@@ -53,6 +53,7 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
         {params.player !== undefined ? <div className="gb-final-scores"><strong>{sim.you} : {params.player}</strong><strong>{sim.opponent} : {params.opponent}</strong></div> : null}
         {stage.id ? <details className="gb-effect-rule"><summary>{sim.cardEffectTitle}</summary><p>{localizeCard(card(stage.id), locale).text}</p></details> : null}
         {stage.lines.filter((entry) => entry.code === 'playerItemDestroyed' && typeof entry.params?.card === 'string').map((entry) => <GameCard key={String(entry.params!.card)} id={String(entry.params!.card)} locale={locale} onInspect={(el) => inspect(String(entry.params!.card), el)} size="sm" />)}
+        {stage.lines[0].code === 'thiefSwap' && typeof params.give === 'string' ? <GameCard id={params.give} locale={locale} size="sm" onInspect={el => inspect(String(params.give), el)} /> : null}
         {!automatic ? <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button> : null}
       </div>
     </div>

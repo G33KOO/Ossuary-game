@@ -1191,7 +1191,7 @@ function playAction(s: GameState, id: string) {
 
 // ---------- Class Actives ----------
 
-export type ActiveBlockReason = { code: 'ended' | 'choice' | 'combat-only' | 'outside-combat' | 'monster-block' | 'used-combat' | 'used-turn' | 'weapon-cost' | 'armor-cost' | 'armor-equipped' | 'roll-first' | 'cards-cost' | 'monster-discard-empty' | 'monster-deck-empty'; required?: number; current?: number }
+export type ActiveBlockReason = { code: 'ended' | 'choice' | 'combat-only' | 'outside-combat' | 'monster-block' | 'used-combat' | 'used-turn' | 'weapon-cost' | 'armor-cost' | 'armor-equipped' | 'roll-first' | 'cards-cost' | 'monster-discard-empty' | 'monster-deck-empty' | 'equipment-match'; required?: number; current?: number }
 export type ActiveStatus = { klass: ClassName; available: boolean; reasons: ActiveBlockReason[] }
 
 export function activeStatus(s: GameState): ActiveStatus {
@@ -1202,7 +1202,8 @@ export function activeStatus(s: GameState): ActiveStatus {
   if (s.promptQueue.length > 0) reasons.push({ code: 'choice' })
   const outside = klass === 'Chasseur' || klass === 'Voleur'
   if (outside) {
-    if (c) reasons.push({ code: 'outside-combat' })
+    if (c && !(klass === 'Voleur' && c.kind === 'boss')) reasons.push({ code: 'outside-combat' })
+    if (klass === 'Voleur' && c?.kind === 'boss' && !thiefBossOptions(s, c).length) reasons.push({ code: 'equipment-match' })
     if (s.turnFlags.includes(klass === 'Chasseur' ? 'hunter' : 'thief')) reasons.push({ code: 'used-turn' })
   } else {
     if (!c) reasons.push({ code: 'combat-only' })
@@ -1263,6 +1264,14 @@ function activateClassActive(s: GameState) {
 function mageRollTargets(c: Combat): PromptOption[] {
   if (c.fleeRoll) return [{ id: 'mage-player' }]
   return [...(c.playerDie !== null ? [{ id: 'mage-player' }] : []), ...(c.bossDie !== null ? [{ id: 'mage-boss' }] : []), ...Object.keys(c.monsterRolls ?? {}).map(id => ({ id: `mage-roll:${id}`, cardId: id }))]
+}
+
+function matchingThiefGear(s: GameState, target: string) {
+  return equippedIds(s).filter(id => ['Arme', 'Armure'].includes(card(id).type) && card(id).type === card(target).type && card(id).subtype === card(target).subtype)
+}
+
+function thiefBossOptions(s: GameState, c: Combat): PromptOption[] {
+  return c.bossEquip.filter(id => matchingThiefGear(s, id).length).map(id => ({ id, cardId: id }))
 }
 
 function rerollMageTarget(s: GameState, c: Combat, target: string) {
@@ -1359,6 +1368,10 @@ function finishPay(s: GameState, kind: string) {
     }
     case 'thief': {
       s.turnFlags.push('thief')
+      if (c?.kind === 'boss') {
+        queue(s, { purpose: 'thief-boss-pick', options: thiefBossOptions(s, c), optional: false, ctx: {} }, true)
+        break
+      }
       const choices: string[] = []
       for (let index = 0; index < 5; index += 1) {
         const id = drawFromLoot(s)
@@ -1554,6 +1567,23 @@ function answerPrompt(s: GameState, option: string | null) {
         s.hand.push(option)
         s.lootDeck = shuffle(s, [...s.lootDeck, ...choices.filter((id) => id !== option)])
         log(s, 'thiefPick', { card: option })
+      }
+      break
+    case 'thief-boss-pick':
+      if (c?.kind === 'boss' && option && c.bossEquip.includes(option)) queue(s, { purpose: 'thief-hero-pick', options: matchingThiefGear(s, option).map(id => ({ id, cardId: id })), optional: false, ctx: { target: option } }, true)
+      break
+    case 'thief-hero-pick':
+      if (c?.kind === 'boss' && option) {
+        const taken = String(prompt.ctx.target)
+        if (!c.bossEquip.includes(taken) || !matchingThiefGear(s, taken).includes(option)) break
+        const before = computePower(s)!
+        c.bossEquip = c.bossEquip.map(id => id === taken ? option : id)
+        for (const slot of ARMOR_SLOTS) if (s.equipment.armors[slot] === option) s.equipment.armors[slot] = taken
+        if (s.equipment.extraArmor?.id === option) s.equipment.extraArmor.id = taken
+        setWeaponSlots(s.equipment, weaponSlots(s.equipment).map(id => id === option ? taken : id) as [string | null, string | null])
+        c.bossReady = false
+        const after = computePower(s)!
+        log(s, 'thiefSwap', { card: taken, give: option, powerChange: after.player.total - before.player.total, bossPowerChange: after.opponent.total - before.opponent.total })
       }
       break
     case 'necro-pick':
