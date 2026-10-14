@@ -40,7 +40,7 @@
     'mechanics.titleOne': 'Quatre étapes.',
     'mechanics.titleTwo': 'Une seule issue.',
     'mechanics.description':
-      'Prépare-toi, prends des risques et avance vers le cœur des ténèbres. Chaque étape te rapproche du Boss — ou de ta dernière erreur.',
+      'Prépare-toi, prends des risques et avance vers le cœur des ténèbres. Chaque étape te rapproche du Boss, ou de ta dernière erreur.',
     'mechanics.stepOneTitle': 'Prépare ton héros',
     'mechanics.stepOneDescription':
       'Choisis ta Classe et ta Race. Équipe-toi avec les Armes, Armures et Artefacts trouvés dans les profondeurs.',
@@ -49,7 +49,7 @@
       'À chaque aventure, révèle un Monstre ou pioche un Butin. Chaque choix peut faire basculer ta progression.',
     'mechanics.stepThreeTitle': 'Résous la rencontre',
     'mechanics.stepThreeDescription':
-      'Applique les effets, compare les Puissances et récupère les récompenses — si tu survis à l’affrontement.',
+      'Applique les effets, compare les Puissances et récupère les récompenses, si tu survis à l’affrontement.',
     'mechanics.stepFourTitle': 'Va jusqu’au Boss',
     'mechanics.stepFourDescription':
       'Atteins le niveau 10, accomplis ton Serment et prépare-toi à affronter l’un des six Boss.',
@@ -134,7 +134,7 @@
     'showcase.bossesDescription':
       'Une seule victoire compte : terrasser l’un d’eux. Chacun a sa puissance, ses pièges et son propre cauchemar.',
     'footer.tagline': 'Descends. Survis. Terrasse un Boss.',
-    'document.title': 'Ossuaire — Descends. Survis. Terrasse un Boss.',
+    'document.title': 'Ossuaire, Descends. Survis. Terrasse un Boss.',
     'document.description':
       'Découvre l’Ossuaire, son univers de dark fantasy, ses mécaniques d’aventure et son catalogue de 240 cartes.',
   },
@@ -179,7 +179,7 @@
     'mechanics.titleOne': 'Four steps.',
     'mechanics.titleTwo': 'One final test.',
     'mechanics.description':
-      'Prepare, take risks, and push toward the heart of darkness. Every step brings you closer to the Boss—or your final mistake.',
+      'Prepare, take risks, and push toward the heart of darkness. Every step brings you closer to the Boss, or your final mistake.',
     'mechanics.stepOneTitle': 'Prepare your hero',
     'mechanics.stepOneDescription':
       'Choose your Class and Race. Equip the Weapons, Armor, and Artifacts found in the depths.',
@@ -188,7 +188,7 @@
       'On each adventure, reveal a Monster or draw Loot. Every choice can change your progress.',
     'mechanics.stepThreeTitle': 'Resolve the encounter',
     'mechanics.stepThreeDescription':
-      'Apply effects, compare Power, and claim rewards—if you survive the fight.',
+      'Apply effects, compare Power, and claim rewards, if you survive the fight.',
     'mechanics.stepFourTitle': 'Face the Boss',
     'mechanics.stepFourDescription':
       'Reach level 10, fulfill your Oath, and prepare to face one of the six Bosses.',
@@ -273,7 +273,7 @@
     'showcase.bossesDescription':
       'Only one victory counts: slay one of them. Each has its own Power, its own traps, and its own nightmare.',
     'footer.tagline': 'Descend. Survive. Slay a Boss.',
-    'document.title': 'Ossuary — Descend. Survive. Slay a Boss.',
+    'document.title': 'Ossuary, Descend. Survive. Slay a Boss.',
     'document.description':
       'Discover Ossuary, its dark fantasy world, adventure mechanics, and catalogue of 240 cards.',
   },

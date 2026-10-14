@@ -45,8 +45,8 @@ export function MechanicsSection() {
               <br />
               <em>{t('mechanics.titleTwo')}</em>
             </h2>
+            <p className="section-description">{t('mechanics.description')}</p>
           </div>
-          <p>{t('mechanics.description')}</p>
         </div>
         <div className="steps-grid">
           {steps.map((step) => (
@@ -63,8 +63,8 @@ export function MechanicsSection() {
           <div>
             <p className="eyebrow">{t('mechanics.goalEyebrow')}</p>
             <h3>{t('mechanics.goalTitle')}</h3>
+            <p className="boss-copy">{t('mechanics.goalDescription')}</p>
           </div>
-          <p className="boss-copy">{t('mechanics.goalDescription')}</p>
         </div>
         <div className="section-cta">
           <Link className="button button-primary" to={paths.mechanics}>
