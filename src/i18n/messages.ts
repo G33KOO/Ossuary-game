@@ -58,7 +58,7 @@
     'mechanics.goalDescription':
       'De 2 à 6 joueurs, 60 à 90 minutes. Le premier héros qui terrasse un Boss remporte la partie.',
     'mechanics.readRules': 'Lire les règles complètes',
-    'rules.eyebrow': 'Règles du jeu · R10',
+    'rules.eyebrow': 'Règles du jeu',
     'rules.titleOne': 'Tout savoir pour',
     'rules.titleTwo': 'descendre dans l’Ossuaire.',
     'rules.description':
@@ -69,8 +69,6 @@
     'catalog.eyebrow': 'Chaque carte a sa place dans l’histoire.',
     'catalog.titleOne': 'Les visages',
     'catalog.titleTwo': 'de l’Ossuaire.',
-    'catalog.description':
-      'Parcours les 240 cartes de la base R10. Recherche un nom ou un effet, puis filtre par type pour retrouver rapidement une carte.',
     'catalog.searchLabel': 'Rechercher dans les cartes',
     'catalog.searchPlaceholder': 'Nom, effet, identifiant...',
     'catalog.card': 'carte',
@@ -137,7 +135,6 @@
     'showcase.bossesDescription':
       'Une seule victoire compte : terrasser l’un d’eux. Chacun a sa puissance, ses pièges et son propre cauchemar.',
     'footer.tagline': 'Descends. Survis. Terrasse un Boss.',
-    'footer.version': 'Base de référence · V1.0-PT-R10',
     'document.title': 'Ossuaire — Descends. Survis. Terrasse un Boss.',
     'document.description':
       'Découvre l’Ossuaire, son univers de dark fantasy, ses mécaniques d’aventure et son catalogue de 240 cartes.',
@@ -201,7 +198,7 @@
     'mechanics.goalDescription':
       '2 to 6 players, 60 to 90 minutes. The first hero to defeat a Boss wins the game.',
     'mechanics.readRules': 'Read the full rules',
-    'rules.eyebrow': 'Game rules · R10',
+    'rules.eyebrow': 'Game rules',
     'rules.titleOne': 'Everything you need to',
     'rules.titleTwo': 'descend into the Ossuary.',
     'rules.description':
@@ -212,8 +209,6 @@
     'catalog.eyebrow': 'Every card has a place in the story.',
     'catalog.titleOne': 'The faces',
     'catalog.titleTwo': 'of the Ossuary.',
-    'catalog.description':
-      'Browse all 240 cards from the R10 set. Search by name or effect, then filter by type to find a card.',
     'catalog.searchLabel': 'Search the cards',
     'catalog.searchPlaceholder': 'Name, effect, ID...',
     'catalog.card': 'card',
@@ -280,7 +275,6 @@
     'showcase.bossesDescription':
       'Only one victory counts: slay one of them. Each has its own Power, its own traps, and its own nightmare.',
     'footer.tagline': 'Descend. Survive. Slay a Boss.',
-    'footer.version': 'Reference set · V1.0-PT-R10',
     'document.title': 'Ossuary — Descend. Survive. Slay a Boss.',
     'document.description':
       'Discover Ossuary, its dark fantasy world, adventure mechanics, and catalogue of 240 cards.',

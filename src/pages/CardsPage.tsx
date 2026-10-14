@@ -141,7 +141,6 @@ export function CardsPage() {
     <section className="catalog-section section-wrap">
       <PageHeading
         eyebrow={t('catalog.eyebrow')}
-        description={t('catalog.description')}
         title={<>
             {t('catalog.titleOne')}
             <br />

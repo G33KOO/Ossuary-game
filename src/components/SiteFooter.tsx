@@ -12,7 +12,6 @@ export function SiteFooter() {
         <span className="brand-name">OSSUAIRE</span>
       </Link>
       <p>{t('footer.tagline')}</p>
-      <span>{t('footer.version')}</span>
     </footer>
   )
 }
