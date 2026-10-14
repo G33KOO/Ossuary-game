@@ -331,6 +331,7 @@ h2 em {
 
 /* ---- Sections de l'accueil ---- */
 .showcase-heading > .eyebrow { font-size: 15px; font-weight: 700; letter-spacing: .08em; }
+.page-heading .eyebrow { font-size: 15px; font-weight: 700; letter-spacing: .08em; line-height: 1.5; }
 .intro-section {
   padding-bottom: 110px;
   padding-top: 110px;

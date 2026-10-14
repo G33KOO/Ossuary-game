@@ -4,7 +4,7 @@ import cardsData from '../data/cards.json'
 import { CardFilterBar } from '../components/CardFilterBar'
 import type { FilterOption } from '../components/CardFilterBar'
 import { CardTile } from '../components/CardTile'
-import { SectionLabel } from '../components/SectionLabel'
+import { PageHeading } from '../components/PageHeading'
 import { useCardDialog } from '../hooks/useCardDialog'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { useLocale } from '../hooks/useLocale'
@@ -139,18 +139,15 @@ export function CardsPage() {
 
   return (
     <section className="catalog-section section-wrap">
-      <SectionLabel number="03">{t('catalog.section')}</SectionLabel>
-      <div className="catalog-heading">
-        <div>
-          <p className="eyebrow">{t('catalog.eyebrow')}</p>
-          <h1>
+      <PageHeading
+        eyebrow={t('catalog.eyebrow')}
+        description={t('catalog.description')}
+        title={<>
             {t('catalog.titleOne')}
             <br />
             <em>{t('catalog.titleTwo')}</em>
-          </h1>
-        </div>
-        <p>{t('catalog.description')}</p>
-      </div>
+        </>}
+      />
 
       <CardFilterBar
         filters={filters}
