@@ -1791,21 +1791,21 @@ body.solo-playing footer {
 .gb-boss-battle .gb-side .gb-pile { display: none; }
 .gb-boss-battle .gb-side { z-index: 1; align-self: start; }
 .gb-full.gb-boss-battle .gb-arena .gb-foe { height: 100%; width: 100%; padding: 4px; }
-.gb-boss-formation { display: grid; grid-template-rows: 46px minmax(0, 1fr) 64px; gap: 6px; width: 100%; height: 100%; container-type: size; }
+.gb-boss-formation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 24px; width: 100%; height: 100%; container-type: size; }
 .gb-boss-zone-label { color: var(--muted); font: 700 11px var(--display); text-align: center; }
-.gb-boss-hand-zone, .gb-boss-equipment-zone { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; }
-.gb-boss-core { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 20px; min-height: 0; }
-.gb-boss-core > .gb-card-wrap { grid-column: 2; }
-.gb-full.gb-boss-battle .gb-boss-core > .gb-card-wrap.size-lg { --w: clamp(100px, calc((100cqh - 122px) / 1.4), 210px); }
-.gb-boss-summary { grid-column: 3; width: min(100%, 320px); color: var(--bone); font-size: 12px; }
+.gb-boss-hand-zone, .gb-boss-equipment-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-width: 0; }
+.gb-boss-core { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 20px; min-height: 0; }
+.gb-boss-core > .gb-card-wrap { grid-column: 1; }
+.gb-full.gb-boss-battle .gb-boss-core > .gb-card-wrap.size-lg { --w: clamp(120px, calc((100cqh - 12px) / 1.4), 200px); }
+.gb-boss-summary { grid-column: 2; width: min(100%, 320px); color: var(--bone); font-size: 12px; }
 .gb-boss-summary h3 { margin: 0 0 10px; color: var(--gold-light); font: 700 22px var(--display); }
 .gb-boss-summary .gb-opponent-status { justify-content: flex-start; }
 .gb-boss-summary details { margin-top: 8px; font-size: 11px; }
 .gb-boss-summary summary { cursor: pointer; color: var(--muted); }
 .gb-boss-summary details p { max-height: 70px; overflow: auto; line-height: 1.4; }
-.gb-full.gb-boss-battle .gb-boss-hand-zone .gb-back.size-sm { width: 32px; height: 45px; }
-.gb-full.gb-boss-battle .gb-boss-hand-zone .gb-back + .gb-back { margin-left: calc(-32px + min(18px, 340px / max(1, var(--boss-hand-count)))); }
-.gb-full.gb-boss-battle .gb-boss-equipment-zone .gb-card-wrap.size-sm { --w: 44px; }
+.gb-full.gb-boss-battle .gb-boss-hand-zone .gb-back.size-sm { width: 60px; height: 84px; }
+.gb-full.gb-boss-battle .gb-boss-hand-zone .gb-back + .gb-back { margin-left: calc(-60px + min(26px, 300px / max(1, var(--boss-hand-count)))); }
+.gb-full.gb-boss-battle .gb-boss-equipment-zone .gb-card-wrap.size-sm { --w: 70px; }
 .gb-boss-equipment-zone .gb-foe-equip { flex-wrap: wrap; gap: 8px; justify-content: center; }
 .gb-full.gb-boss-battle .gb-board-boss-draw { grid-template-columns: minmax(120px, 180px) minmax(0, 420px); }
 .gb-full.gb-boss-battle .gb-board-boss-draw .gb-boss-draw-card, .gb-full.gb-boss-battle .gb-board-boss-draw .gb-boss-draw-back .gb-back { width: 140px; height: 196px; }
@@ -1815,17 +1815,25 @@ body.solo-playing footer {
   .gb-full.gb-boss-battle .gb-board .gb-slot-empty { width: 52px; }
 }
 @media (max-width: 1399px) {
-  .gb-boss-formation { height: auto; min-height: 330px; container-type: normal; grid-template-rows: auto auto auto; }
+  .gb-boss-formation { height: auto; min-height: 330px; container-type: normal; grid-template-rows: auto; gap: 16px; }
   .gb-full.gb-boss-battle .gb-boss-core > .gb-card-wrap.size-lg { --w: clamp(120px, 16dvh, 180px); }
 }
 @media (max-width: 760px) {
+  .gb-boss-formation { grid-template-columns: minmax(42px, .7fr) minmax(0, 1.7fr) minmax(48px, .8fr); gap: 8px; }
   .gb-boss-hand-zone, .gb-boss-equipment-zone { flex-direction: column; gap: 4px; }
   .solo-page .gb-full.gb-boss-battle .gb-side { display: none; }
-  .gb-boss-core { grid-template-columns: auto minmax(0, 1fr); gap: 12px; }
+  .gb-boss-core { grid-template-columns: minmax(0, 1fr); gap: 10px; justify-items: center; }
   .gb-boss-core > .gb-card-wrap { grid-column: 1; }
-  .gb-boss-summary { grid-column: 2; }
-  .gb-boss-summary h3 { font-size: 17px; }
-  .gb-full.gb-boss-battle .gb-boss-core > .gb-card-wrap.size-lg { --w: clamp(120px, 35vw, 160px); }
+  .gb-boss-summary { grid-column: 1; text-align: center; }
+  .gb-boss-summary .gb-opponent-status { justify-content: center; flex-wrap: wrap; }
+  .gb-boss-summary h3 { font-size: 14px; margin-bottom: 6px; }
+  .gb-boss-summary .gb-score-parts { font-size: 9px; }
+  .gb-boss-zone-label { font-size: 9px; }
+  .gb-full.gb-boss-battle .gb-boss-core > .gb-card-wrap.size-lg { --w: clamp(90px, 28vw, 120px); }
+  .gb-boss-hand-zone .gb-foe-hand { flex-direction: column; }
+  .gb-full.gb-boss-battle .gb-boss-hand-zone .gb-back.size-sm { width: 48px; height: 67px; }
+  .gb-full.gb-boss-battle .gb-boss-hand-zone .gb-back + .gb-back { margin-left: 0; margin-top: calc(-67px + min(24px, 220px / max(1, var(--boss-hand-count)))); }
+  .gb-full.gb-boss-battle .gb-boss-equipment-zone .gb-card-wrap.size-sm { --w: 54px; }
   .gb-full.gb-boss-battle .gb-board-boss-draw { grid-template-columns: 120px minmax(0, 1fr); }
   .gb-full.gb-boss-battle .gb-board-boss-draw .gb-boss-draw-card, .gb-full.gb-boss-battle .gb-board-boss-draw .gb-boss-draw-back .gb-back { width: 120px; height: 168px; }
 }
