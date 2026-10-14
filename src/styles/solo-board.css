@@ -929,6 +929,19 @@
   pointer-events: none;
 }
 
+.gb-hand .gb-card-wrap.is-playable .gb-card {
+  outline: 1px solid var(--gold-light);
+  outline-offset: 2px;
+  animation: gb-playable-card-glow 2.2s ease-in-out infinite;
+}
+@keyframes gb-playable-card-glow {
+  0%, 100% { box-shadow: 0 0 5px 1px rgb(235 190 85 / 30%), 0 0 12px rgb(235 190 85 / 16%); }
+  50% { box-shadow: 0 0 10px 2px rgb(235 190 85 / 65%), 0 0 22px rgb(235 190 85 / 32%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gb-hand .gb-card-wrap.is-playable .gb-card { animation: none; box-shadow: 0 0 8px 1px rgb(235 190 85 / 50%); }
+}
+
 .gb-hand .gb-card-wrap {
   margin-left: -30px;
   pointer-events: auto;
