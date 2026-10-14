@@ -1,5 +1,5 @@
 import { CARD_SYMBOLS as TYPE_ICON } from '../utils/cardSymbols'
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { CSSProperties, ReactNode } from 'react'
 import { fill, soloCopy } from '../content/solo'
@@ -749,12 +749,14 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             <h4 id="board-equipment-title">{sim.equipment}</h4>
             <div className="gb-slots">
               {ARMOR_SLOTS.map((slot) => (
-                <div className={`gb-slot${slotClass(slot, slot)}`} key={slot} onDragEnter={() => setSlotOver(slot)} onDragOver={() => setSlotOver(slot)}>
+                <Fragment key={slot}>
+                  <div className={`gb-slot${slotClass(slot, slot)}`} onDragEnter={() => setSlotOver(slot)} onDragOver={() => setSlotOver(slot)}>
                   <span className="gb-slot-label">{slot}</span>
                   {renderEquipped(boardState.equipment.armors[slot], slot)}
                 </div>
+              {boardState.equipment.extraArmor?.slot === slot ? <div className={`gb-slot${slotClass('extra-armor', boardState.equipment.extraArmor.slot)}`} onDragEnter={() => setSlotOver('extra-armor')} onDragOver={() => setSlotOver('extra-armor')}><span className="gb-slot-label">{boardState.equipment.extraArmor.slot} · 2</span>{renderEquipped(boardState.equipment.extraArmor.id, boardState.equipment.extraArmor.slot)}</div> : null}
+                </Fragment>
               ))}
-              {boardState.equipment.extraArmor ? <div className={`gb-slot${slotClass('extra-armor', boardState.equipment.extraArmor.slot)}`} onDragEnter={() => setSlotOver('extra-armor')} onDragOver={() => setSlotOver('extra-armor')}><span className="gb-slot-label">{boardState.equipment.extraArmor.slot} · 2</span>{renderEquipped(boardState.equipment.extraArmor.id, boardState.equipment.extraArmor.slot)}</div> : null}
               {[0, 1].map((index) => {
                 const twoHanded = boardState.equipment.hands.length === 1 && card(boardState.equipment.hands[0]).subtype === 'Deux mains'
                 return (
@@ -846,7 +848,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           <div className="gb-oath-celebration-heading"><span className="eyebrow">✓ {sim.oathValidated}</span><button type="button" aria-label={sim.close} onClick={() => setOathCelebrations((current) => current.slice(1))}>×</button></div>
           <div className="gb-oath-celebration-body">
             <GameCard id={oathCelebrations[0]} locale={locale} onInspect={(el) => inspect(oathCelebrations[0], el)} size="sm" className="gb-oath-reward-card" />
-            <div role="status"><h3>{localizeCard(card(oathCelebrations[0]), locale).name}</h3><p>{(localizeCard(card(oathCelebrations[0]), locale).text ?? '').split(/(?:Accomplissement|Fulfillment)\s*—\s*/)[1]?.split(/(?:Récompense|Reward)\s*—\s*/)[0]}</p><strong>{oathCelebrations[0] === OATH.exhaustedArcana ? sim.oathReward : sim.oathPermanentReward}</strong><p className="gb-oath-reward-text">{(localizeCard(card(oathCelebrations[0]), locale).text ?? '').split(/(?:Récompense|Reward)\s*—\s*/)[1]}</p></div>
+            <div role="status"><h3>{localizeCard(card(oathCelebrations[0]), locale).name}</h3><p className="gb-oath-congratulations">{sim.oathCongratulations}</p><p>{(localizeCard(card(oathCelebrations[0]), locale).text ?? '').split(/(?:Accomplissement|Fulfillment)\s*—\s*/)[1]?.split(/(?:Récompense|Reward)\s*—\s*/)[0]}</p><strong>{oathCelebrations[0] === OATH.exhaustedArcana ? sim.oathReward : sim.oathPermanentReward}</strong><p className="gb-oath-reward-text">{(localizeCard(card(oathCelebrations[0]), locale).text ?? '').split(/(?:Récompense|Reward)\s*—\s*/)[1]}</p></div>
           </div>
           <button className="button gb-oath-continue" type="button" onClick={() => setOathCelebrations((current) => current.slice(1))}>{sim.nextAction} →</button>
         </aside>
