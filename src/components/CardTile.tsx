@@ -33,10 +33,7 @@ export function CardTile({ card, locale, onSelect }: CardTileProps) {
       </span>
       <span className="card-name">{localizedCard.name}</span>
       <span className="card-subtype">{localizedCard.subtype || localizedCard.deck}</span>
-      <span className="card-bottomline">
-        {card.value ? <span>{t('card.printedValue')} {card.value}</span> : <span>{t('catalog.readCard')}</span>}
-        <span aria-hidden="true">↗</span>
-      </span>
+      {card.value ? <span className="card-bottomline"><span>{t('card.printedValue')} {card.value}</span></span> : null}
     </button>
   )
 }
