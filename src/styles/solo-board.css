@@ -1747,6 +1747,26 @@ body.solo-playing footer {
 .gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
 @media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
 .gb-full.gb-boss-battle .gb-center { grid-column: 1 / -1; }
+.gb-full .gb-arena-with-context { grid-template-columns: minmax(140px, 1fr) minmax(0, 3fr); align-items: center; gap: 16px; }
+.gb-combat-context { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; width: 100%; }
+.gb-combat-context-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.gb-full .gb-combat-context .gb-card-wrap.size-lg { --w: clamp(86px, 14dvh, 130px); }
+.gb-combat-context .gb-score { padding: 0; }
+.gb-combat-context .gb-score strong { font-size: 26px; }
+.gb-combat-context .gb-score-parts { font-size: 10px; max-width: 180px; }
+@media (max-width: 760px) {
+  .solo-page .gb-full .gb-arena.gb-arena-with-context { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 6px; align-items: start; }
+  .gb-full .gb-arena .gb-combat-context .gb-card-wrap.size-lg { --w: 78px; }
+  .gb-combat-context .gb-score { width: 100%; overflow-wrap: anywhere; }
+  .gb-combat-context-cards { order: 1; }
+  .gb-combat-context .gb-score-label { font-size: 9px; letter-spacing: 0; }
+  .gb-combat-context .gb-score-parts { display: none; }
+  .gb-combat-context .gb-score strong { font-size: 23px; }
+  .gb-combat-context .gb-score-parts { overflow-wrap: anywhere; }
+  .gb-full .gb-arena-with-context .gb-boss-action-layout { flex-direction: column; align-items: center; }
+  .gb-full .gb-arena-with-context .gb-board-choice { padding: 4px; }
+  .gb-arena-with-context .gb-board-choice-options { gap: 6px; }
+}
 .gb-boss-battle .gb-side .gb-pile { display: none; }
 .gb-boss-battle .gb-side { z-index: 1; align-self: start; }
 .gb-full.gb-boss-battle .gb-arena .gb-foe { height: 100%; width: 100%; padding: 4px; }

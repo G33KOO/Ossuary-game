@@ -671,7 +671,14 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </div>
 
         <div className="gb-center">
-        <DropTarget as="section" className="gb-arena" target={playZone} onHover={setOver} onCommit={commitDrop}>
+        <DropTarget as="section" className={`gb-arena${combat?.kind === 'monster' && (choiceVisible || effectVisible) ? ' gb-arena-with-context' : ''}`} target={playZone} onHover={setOver} onCommit={commitDrop}>
+          {combat?.kind === 'monster' && (choiceVisible || effectVisible) ? <aside className="gb-combat-context" aria-label={sim.opponent}>
+            <div className="gb-combat-context-cards">
+              {combat.monsters.filter(id => !pendingMonsterIds.has(id)).map(id => <GameCard key={id} id={id} locale={locale} size="lg" onInspect={el => inspect(id, el)} />)}
+            </div>
+            {power ? <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} /> : null}
+            {power ? <Score label={sim.yourPower} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} /> : null}
+          </aside> : null}
           {bossReveal ? bossOnBoard : reveal?.kind === 'monster' && !combat ? <div className="gb-monster-landing" aria-hidden="true" /> : effectVisible ? <EffectPresentation key={bossPresentations[0].seq} stage={bossPresentations[0]} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible ? <BoardChoice prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} inventory={() => setInventoryOpen(true)} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
