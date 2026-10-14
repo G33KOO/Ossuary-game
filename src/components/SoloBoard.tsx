@@ -759,8 +759,8 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </DropTarget>
         </div>
 {/* Contextual actions live on the table; hero power is shown only on the hero board. */}
-        {(combat || tavern || preparation) ? <div className="gb-stage-actions" aria-label={sim.mobileCombat}>
-          {bossPresentations[0]?.lines[0].code === 'resolved' && !bossReveal && !reveal && !playedAction ? <CombatResolution key={bossPresentations[0].seq} stage={bossPresentations[0]} sim={sim} formatLog={formatLog} onBeat={setCombatBeat} onContinue={() => { setResolutionPreview(null); nextBossPresentation() }} /> : combat ? <>
+        {(ended || combat || tavern || preparation) ? <div className="gb-stage-actions" aria-label={sim.mobileCombat}>
+          {bossPresentations[0]?.lines[0].code === 'resolved' && !bossReveal && !reveal && !playedAction ? <CombatResolution key={bossPresentations[0].seq} stage={bossPresentations[0]} sim={sim} formatLog={formatLog} onBeat={setCombatBeat} onContinue={() => { setResolutionPreview(null); nextBossPresentation() }} /> : ended ? <div className="gb-playzone"><div className="gb-controls"><button className="button button-primary gb-replay-button" type="button" disabled={Boolean(busy || bossPresentations.length || playedAction || reveal || bossReveal || oathCelebrations.length)} onClick={reset}>{sim.replay}</button></div></div> : combat ? <>
               <DropTarget className="gb-playzone" target={playZone} onHover={setOver} onCommit={commitDrop}>
                 {busy ? <span className="gb-playzone-hint">{busy === 'rolling' ? sim.rolling : sim.resolving}</span> : null}
                 <div className="gb-controls">
