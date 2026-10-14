@@ -276,8 +276,13 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     const newLogs = next.log.slice(retained)
     if (action.t === 'playAction' && newLogs.some((entry) => entry.code === 'actionPlayed')) {
       const visual = actionVisual(card(action.id).name, newLogs.some((entry) => entry.code === 'actionCancelled'))
-      const selectors = { hero: '.gb-player-combat-status', foe: '.gb-foe', 'player-die': '.gb-player-combat-status .gb-die', 'foe-die': '.gb-opponent-status .gb-die', hand: '.gb-hand' }
-      const target = document.querySelector(selectors[visual.target])?.getBoundingClientRect()
+      const arena = document.querySelector('.gb-arena')
+      const table = tableRef.current
+      if (arena && table) {
+        const a = arena.getBoundingClientRect(), t = table.getBoundingClientRect()
+        if (a.top < t.top || a.bottom > t.bottom) table.scrollTo({ top: table.scrollTop + a.top - t.top - 8, behavior: 'instant' })
+      }
+      const target = arena?.getBoundingClientRect()
       const source = document.querySelector(`.gb-hand [data-card-id="${action.id}"]`)?.getBoundingClientRect()
       const x = Math.max(75, Math.min(window.innerWidth - 75, target ? target.left + target.width / 2 : window.innerWidth / 2))
       const y = Math.max(110, Math.min(window.innerHeight - 110, target ? target.top + target.height / 2 : window.innerHeight / 2))
@@ -845,13 +850,14 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
         </span>
         <div className="gb-hand">
           {boardState.hand.map((id, index) => {
+            if (pendingLootIds.has(id)) return <div className="gb-card-wrap size-hand gb-pending-hand-slot" data-card-id={id} aria-hidden="true" key={`${id}-${index}`} style={{ '--i': index, '--n': boardState.hand.length } as CSSProperties} />
             const entry = card(id)
             const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
             const reason = isGear ? equipmentReason(boardState, id) : undefined
             const actions = handActions(id)
             return (
               <GameCard
-                className={`${drag?.id === id ? 'is-dragging' : ''}${pendingLootIds.has(id) ? ' is-awaiting-draw' : ''}`}
+                className={drag?.id === id ? 'is-dragging' : ''}
                 unavailableReason={reason}
                 playerClass={boardState.klass}
                 allWeaponMastery={oathCompleted(boardState, OATH.foreignIron)}

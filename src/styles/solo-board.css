@@ -1744,3 +1744,5 @@ body.solo-playing footer {
 .gb-card-wrap.is-awaiting-draw, .gb-monster-encounter.is-awaiting-draw { opacity: 0 !important; pointer-events: none; }
 .gb-monster-landing { width: clamp(86px, 15dvh, 140px); aspect-ratio: 5 / 7; justify-self: center; }
 @media (max-width: 760px) { .gb-monster-landing { width: clamp(86px, 25vw, 124px); margin: 20px auto; } }
+.gb-pending-hand-slot { height: calc(var(--w) * 1.4); visibility: hidden; pointer-events: none !important; }
+@media (max-width: 760px) { .gb-pending-hand-slot { height: calc(var(--w) * 1.4 + 52px); } }
