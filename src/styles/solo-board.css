@@ -1254,6 +1254,13 @@ body.solo-playing footer {
 .gb-class-active:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 .gb-class-active { cursor: help; }
 .gb-class-active .button:disabled { pointer-events: none; }
+.gb-class-active .button:not(:disabled) {
+  border-color: var(--gold-light);
+  animation: gb-playable-card-glow 2.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gb-class-active .button:not(:disabled) { animation: none; box-shadow: 0 0 8px 1px rgb(235 190 85 / 50%); }
+}
 .gb-active-tooltip { position: fixed; z-index: 81; width: min(420px, 88vw); padding: 18px; overflow-y: auto; border: 1px solid var(--gold); border-radius: 10px; background: var(--surface-strong); color: var(--bone); box-shadow: 0 12px 35px rgb(0 0 0 / 60%); pointer-events: none; }
 .gb-active-tooltip > strong { display: block; color: var(--gold-light); font-family: var(--display); font-size: 15px; }
 .gb-active-tooltip p { margin: 10px 0; font-size: 13px; line-height: 1.65; }
