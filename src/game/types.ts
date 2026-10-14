@@ -28,6 +28,7 @@ export type PromptPurpose =
   | 'necro-pick'
   | 'warrior-pick'
   | 'mage-keep'
+  | 'mage-target'
   | 'flee-result'
   | 'vow'
   | 'mimic'

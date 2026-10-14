@@ -1215,7 +1215,7 @@ export function activeStatus(s: GameState): ActiveStatus {
       if (!s.hand.some((id) => card(id).type === 'Armure')) reasons.push({ code: 'armor-cost' })
       if (!equippedOptions(s, true).some((option) => !c?.doubledArmors.includes(option.id))) reasons.push({ code: 'armor-equipped' })
       break
-    case 'Mage': if (c && c.playerDie === null && !c.fleeRoll) reasons.push({ code: 'roll-first' }); break
+    case 'Mage': if (c && !mageRollTargets(c).length) reasons.push({ code: 'roll-first' }); break
     case 'Nécromancien': if (!s.monsterDiscard.length) reasons.push({ code: 'monster-discard-empty' }); break
     case 'Chasseur': if (!s.monsterDeck.length && s.level < BOSS_LEVEL) reasons.push({ code: 'monster-deck-empty' }); break
   }
@@ -1260,6 +1260,36 @@ function activateClassActive(s: GameState) {
   }
 }
 
+function mageRollTargets(c: Combat): PromptOption[] {
+  if (c.fleeRoll) return [{ id: 'mage-player' }]
+  return [...(c.playerDie !== null ? [{ id: 'mage-player' }] : []), ...(c.bossDie !== null ? [{ id: 'mage-boss' }] : []), ...Object.keys(c.monsterRolls ?? {}).map(id => ({ id: `mage-roll:${id}`, cardId: id }))]
+}
+
+function rerollMageTarget(s: GameState, c: Combat, target: string) {
+  if (target === 'mage-boss' && c.bossDie !== null) {
+    const old = c.bossDie
+    const roll = diceRoll(s, c.bossSides)
+    c.bossRoll = roll
+    c.bossDie = Math.max(0, roll.total + (c.bossDieModifier ?? 0))
+    c.bossReady = false
+    log(s, 'mageOpponentReroll', { card: c.bossId!, ...rollParams(roll), old, fresh: c.bossDie })
+    return
+  }
+  if (target.startsWith('mage-roll:')) {
+    const id = target.slice('mage-roll:'.length)
+    const old = c.monsterRolls?.[id]
+    if (!old) return
+    const roll = diceRoll(s, old.sides, old.mode === 'sum' ? old.bonus / old.raw.length : old.bonus, old.mode)
+    const effect = (value: number) => cardName(id) === 'Lacéreur' ? value : cardName(id) === 'Tranchebec' ? value >= 4 ? 2 : 0 : value <= 2 ? -2 : value >= 5 ? 2 : 0
+    const change = effect(roll.total) - effect(old.total)
+    c.monsterBonus += change
+    c.monsterRolls![id] = roll
+    log(s, 'mageOpponentReroll', { card: id, ...rollParams(roll), old: old.total, fresh: roll.total, powerChange: change })
+    return
+  }
+  finishPay(s, 'mage-player')
+}
+
 function finishPay(s: GameState, kind: string) {
   const c = s.combat
   switch (kind) {
@@ -1271,6 +1301,13 @@ function finishPay(s: GameState, kind: string) {
       break
     }
     case 'mage': {
+      if (!c) break
+      const targets = mageRollTargets(c)
+      if (targets.length > 1) queue(s, { purpose: 'mage-target', options: targets, optional: false, ctx: {} }, true)
+      else if (targets[0]) rerollMageTarget(s, c, targets[0].id)
+      break
+    }
+    case 'mage-player': {
       if (c?.fleeRoll) {
         const old = c.fleeRoll
         const fresh = rollPlayerDice(s, 6, 'single', s.equipment.hands.some(id => cardName(id) === 'Dague Lunefeuille') ? 1 : 0)
@@ -1548,6 +1585,9 @@ function answerPrompt(s: GameState, option: string | null) {
           c.playerDieModifier = Number(prompt.ctx.oldModifier)
         }
       }
+      break
+    case 'mage-target':
+      if (c && option) rerollMageTarget(s, c, option)
       break
     case 'flee-result':
       if (c?.fleeRoll) {

@@ -239,10 +239,12 @@ describe('card effects', () => {
     state.combat!.playerDie = 6
     state = reduce(state, { t: 'useActive' })
     state = reduce(state, { t: 'answer', option: state.hand[0] })
+    if (state.promptQueue[0]?.purpose === 'mage-target') state = reduce(state, { t: 'answer', option: 'mage-player' })
     expect(state.combat!.playerDie).toBeGreaterThan(6)
     expect(state.turnFlags).toContain('mage-artifact')
     state = reduce(state, { t: 'useActive' })
     state = reduce(state, { t: 'answer', option: state.hand[0] })
+    if (state.promptQueue[0]?.purpose === 'mage-target') state = reduce(state, { t: 'answer', option: 'mage-player' })
     expect(state.promptQueue[0].purpose).toBe('mage-keep')
   })
   it('applies the Elfe die bonus and the Nain additional adventure Loot', () => {

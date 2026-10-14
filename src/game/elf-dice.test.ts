@@ -27,7 +27,9 @@ function fromLog(entry: LogEntry): DiceRoll {
 function mageReroll(game: GameState) {
   game.hand = [id('Providence')]
   game = reduce(game, { t: 'useActive' })
-  return reduce(game, { t: 'answer', option: game.hand[0] })
+  game = reduce(game, { t: 'answer', option: game.hand[0] })
+  if (game.promptQueue[0]?.purpose === 'mage-target') game = reduce(game, { t: 'answer', option: 'mage-player' })
+  return game
 }
 
 describe('Elfe bonus on every player die path', () => {
