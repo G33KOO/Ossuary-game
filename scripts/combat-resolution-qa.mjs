@@ -82,7 +82,7 @@ try {
       const following=await evaluate(`document.querySelector('.gb-combat-resolution')?.dataset.beat`)
       if(outcome==='win') {
         await wait(1400)
-        const automatic=await evaluate(`!document.querySelector('.gb-combat-resolution')&&!!document.querySelector('.gb-reveal-card.from-loot')&&document.querySelectorAll('.gb-foe .gb-card').length===0`)
+        const automatic=await evaluate(`!document.querySelector('.gb-combat-resolution')&&!!document.querySelector('.gb-draw-flight.from-loot')&&document.querySelectorAll('.gb-foe .gb-card').length===0`)
         const pass=hero&&following==='vanquished'&&automatic
         report.push({width,outcome,hero,following,automatic,pass})
         if(!pass)errors.push('Automatic victory at '+width)

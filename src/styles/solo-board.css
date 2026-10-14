@@ -1352,97 +1352,6 @@ body.solo-playing footer {
   margin-top: 14px;
 }
 
-/* Animation de pioche */
-.gb-reveal {
-  align-items: center;
-  background: rgb(0 0 0 / 58%);
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  inset: 0;
-  justify-content: center;
-  pointer-events: none;
-  position: fixed;
-  z-index: 65;
-}
-
-.gb-reveal-title {
-  color: var(--gold-light);
-  font-family: var(--display);
-  font-size: 26px;
-  letter-spacing: 0.14em;
-  margin: 0;
-  text-shadow: 0 0 20px rgb(212 87 42 / 70%);
-  text-transform: uppercase;
-}
-
-.gb-reveal-cards {
-  flex-wrap: wrap;
-  max-width: calc(100vw - 32px);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  perspective: 1200px;
-}
-
-.gb-reveal-card {
-  animation: gb-reveal 2s ease both;
-  animation-delay: var(--d);
-  height: 210px;
-  position: relative;
-  transform-style: preserve-3d;
-  width: 150px;
-}
-
-.gb-reveal-card.from-loot {
-  --fx: 45vw;
-  --exit-y: 36vh;
-}
-
-.gb-reveal-card.from-monster {
-  --fx: -45vw;
-  --exit-y: -30vh;
-}
-
-.gb-reveal-card .gb-card-wrap {
-  backface-visibility: hidden;
-  position: absolute;
-}
-
-.gb-reveal-back {
-  backface-visibility: hidden;
-  inset: 0;
-  position: absolute;
-  transform: rotateY(180deg);
-}
-
-@keyframes gb-reveal {
-  0% {
-    opacity: 0;
-    transform: translate(var(--fx), -10vh) scale(0.35) rotateY(180deg);
-  }
-
-  28% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1) rotateY(180deg);
-  }
-
-  48% {
-    transform: translate(0, 0) scale(1.14) rotateY(0deg);
-  }
-
-  74% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1.06) rotateY(0deg);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(0, var(--exit-y, 36vh)) scale(0.4) rotateY(0deg);
-  }
-}
-
 /* Fenêtres de choix */
 /* Keep the complete desktop board visible, including full equipment and boss hands. */
 @media (min-width: 1400px) and (min-height: 760px) {
@@ -1553,7 +1462,6 @@ body.solo-playing footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gb-reveal-card,
   .is-target,
   .gb-die.is-rolling .gb-die-face {
     animation: none;
@@ -1615,14 +1523,7 @@ body.solo-playing footer {
   border-color: rgb(90 60 25 / 45%);
 }
 
-:root[data-theme='light'] .gb-reveal {
-  background: rgb(232 219 189 / 70%);
-}
 
-:root[data-theme='light'] .gb-reveal-title {
-  color: #5a2a10;
-  text-shadow: none;
-}
 
 :root[data-theme='light'] .sim-modal-backdrop {
   background: rgb(60 40 20 / 55%);
@@ -1822,15 +1723,7 @@ body.solo-playing footer {
   .gb-full .gb-board-effect .gb-card-wrap.size-lg { --w: 80px; }
 }
 .gb-full .gb-arena > .gb-board-choice, .gb-full .gb-arena > .gb-board-effect { max-height: 100%; overflow: auto; scrollbar-width: thin; }
-.solo-page .gb-full .gb-board-reveal { position: static; inset: auto; z-index: auto; background: transparent; gap: 10px; width: 100%; padding: 6px; }
-.gb-board-reveal .gb-reveal-title { font-size: 18px; }
-.gb-board-reveal .gb-reveal-cards { max-width: 100%; gap: 10px; }
-.gb-board-reveal .gb-reveal-card { --reveal-width: clamp(60px, 10dvh, 95px); width: var(--reveal-width); height: calc(var(--reveal-width) * 1.4); }
-.gb-full .gb-board-reveal .gb-card-wrap.size-lg { --w: var(--reveal-width); }
-.gb-full .gb-board-reveal .gb-reveal-back .gb-back.size-lg { width: var(--reveal-width); height: calc(var(--reveal-width) * 1.4); }
-@media (max-width: 760px) {
-  .gb-board-reveal .gb-reveal-card { --reveal-width: 70px; }
-}
+
 .gb-full .gb-board-boss-draw { display: grid; grid-template-columns: 100px minmax(0, 420px); justify-content: center; align-items: center; gap: 8px 16px; width: 100%; padding: 8px; }
 .gb-board-boss-draw > h3 { grid-column: 1 / -1; margin: 0; font-family: var(--display); font-size: 18px; color: var(--gold-light); text-align: center; }
 .gb-full .gb-board-boss-draw .gb-boss-draw-card { width: 100px; height: 140px; margin: 0; }
@@ -1843,3 +1736,11 @@ body.solo-playing footer {
   .gb-full .gb-board-boss-draw { grid-template-columns: 80px minmax(0, 1fr); gap: 8px; }
   .gb-full .gb-board-boss-draw .gb-boss-draw-card, .gb-full .gb-board-boss-draw .gb-boss-draw-back .gb-back { width: 80px; height: 112px; }
 }
+.gb-draw-flights { position: fixed; inset: 0; z-index: 65; pointer-events: none; background: none; perspective: 1200px; }
+.gb-draw-flight { position: absolute; width: var(--flight-width, 100px); height: calc(var(--flight-width, 100px) * 1.4); transform-style: preserve-3d; opacity: 0; }
+.gb-draw-flight > .gb-card-wrap.size-lg { --w: var(--flight-width, 100px); position: absolute; inset: 0; backface-visibility: hidden; }
+.gb-draw-flight-back { position: absolute; inset: 0; transform: rotateY(180deg); backface-visibility: hidden; }
+.gb-draw-flight-back .gb-back.size-lg { width: var(--flight-width, 100px); height: calc(var(--flight-width, 100px) * 1.4); }
+.gb-card-wrap.is-awaiting-draw, .gb-monster-encounter.is-awaiting-draw { opacity: 0 !important; pointer-events: none; }
+.gb-monster-landing { width: clamp(86px, 15dvh, 140px); aspect-ratio: 5 / 7; justify-self: center; }
+@media (max-width: 760px) { .gb-monster-landing { width: clamp(86px, 25vw, 124px); margin: 20px auto; } }

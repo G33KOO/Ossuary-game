@@ -110,11 +110,6 @@
   .solo-playing .gb-boss-action-layout { width: 100%; gap: 16px; }
   .solo-playing .gb-boss-action-copy { font-size: 13px; }
   .solo-playing .gb-oath-celebration { bottom: 215px; right: 12px; width: calc(100vw - 24px); max-height: 50dvh; padding: 14px; }
-  .solo-playing .gb-reveal-title { font-size: 18px; text-align: center; padding: 0 16px; }
-  .solo-playing .gb-reveal-cards { gap: 8px; }
-  .solo-playing .gb-reveal-card { width: min(100px, 20vw, 20dvh); height: calc(min(100px, 20vw, 20dvh) * 1.4); }
-  .solo-playing .gb-reveal-card .gb-card-wrap.size-lg { --w: min(100px, 20vw, 20dvh); }
-  .solo-playing .gb-reveal-card .gb-back.size-lg { width: min(100px, 20vw, 20dvh); height: calc(min(100px, 20vw, 20dvh) * 1.4); }
   .solo-playing .gb-toast { top: 72px; width: calc(100vw - 32px); padding: 12px; font-size: 13px; text-align: center; }
   .gb-action-announcement { top: 65px; padding: 10px 12px; }
 
