@@ -123,6 +123,7 @@ export type GameState = {
   nextMonsterPenalty: number
   bossPressure: number
   bossEnrageArmed?: boolean
+  bossEnrageGraceUsed?: boolean
   tavernDone: boolean
   combat: Combat | null
   promptQueue: Prompt[]
