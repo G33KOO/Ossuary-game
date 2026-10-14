@@ -45,8 +45,8 @@ try {
  for(const width of [1920,390,320]) {
   await viewport(width,width===1920?945:844);await navigate('/');
   await evaluate(`(async()=>{const e=await import('/src/game/engine.ts');let g=e.newGame('Mage','Humain',42);g.promptQueue=[];g.level=10;g.bossPressure=3;g=e.reduce(g,{t:'challengeBoss',bossId:e.BOSS_IDS[0]});g.promptQueue=[];g.draws=[];localStorage.setItem('ossuaire.solo.v1',JSON.stringify({v:1,game:g}));})()`);await navigate('/solo');
-  const result=await evaluate(`(()=>{const b=[...document.querySelectorAll('.gb-boss-enrage')].filter(x=>x.getBoundingClientRect().height>0);return {width:innerWidth,text:b.map(x=>x.textContent),overflow:document.documentElement.scrollWidth-innerWidth,visible:b.some(x=>x.getBoundingClientRect().top>=0&&x.getBoundingClientRect().bottom<innerHeight)}})()`);
-  if(!result.visible||result.overflow>1||!result.text.every(t=>t.includes('+3')&&t.includes('8 cartes')))throw Error(JSON.stringify(result));
+  const result=await evaluate(`(()=>{const b=[...document.querySelectorAll(innerWidth>760?'.gb-enrage-meter':'.gb-boss-enrage-mobile')].filter(x=>x.getBoundingClientRect().height>0);return {width:innerWidth,text:b.map(x=>x.textContent),overflow:document.documentElement.scrollWidth-innerWidth,visible:b.some(x=>x.getBoundingClientRect().top>=0&&x.getBoundingClientRect().bottom<innerHeight)}})()`);
+  if(!result.visible||result.overflow>1||!result.text.every(t=>t.includes('+3')&&(width>760||t.includes('8 cartes'))))throw Error(JSON.stringify(result));
   await screenshot('enrage-'+width);console.log(JSON.stringify(result));
  }
 }finally{ws.close()}

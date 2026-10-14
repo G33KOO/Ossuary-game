@@ -637,7 +637,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       ) : null
 
   return (
-    <div className={`gb gb-full${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
+    <div className={`gb gb-full${combat?.kind === 'boss' ? ' gb-boss-battle' : ''}${resolutionPreview && bossPresentations[0]?.lines[0].code === 'resolved' ? ` gb-resolution-${combatBeat}` : ''}${playedAction ? ` gb-effect-${playedAction.effect} gb-effect-target-${playedAction.target}` : ''}`}>
       <div className="gb-hud">
         <LevelTimeline game={boardState} />
         {boardState.level >= 10 || boardState.bossPressure > 0 ? <BossEnrage count={boardState.bossPressure} sim={sim} className="gb-boss-enrage-mobile" /> : null}
@@ -687,34 +687,32 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             <>
               <DropTarget className="gb-foe" target={foeZone} onHover={setOver} onCommit={commitDrop}>
                 {targetsOpponent ? <span className="gb-target-label">{sim.dropOnOpponent}</span> : null}
-                {combat.kind === 'boss' && combat.bossId ? (
-                  <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={combat.bossId} locale={locale} onInspect={(el) => inspect(combat.bossId as string, el)} size="lg" />
-                ) : null}
                 {combat.monsters.filter(() => !(monsterVictory && combatBeat === 'result')).map((id) => (
                   <div className={`gb-monster-encounter${pendingMonsterIds.has(id) ? ' is-awaiting-draw' : ''}`} key={id} inert={pendingMonsterIds.has(id)} aria-hidden={pendingMonsterIds.has(id) || undefined}>
                     <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={id} locale={locale} onInspect={(el) => inspect(id, el)} size="lg" />
                     {card(id).text && <div className="gb-monster-effect" key={`${id}-${boardState.turn}`}><span className="eyebrow">{sim.monsterEffect}</span><strong>{localizeCard(card(id), locale).name}</strong><p>{localizeCard(card(id), locale).text}</p>{combat.monsterRolls?.[id] ? <DiceResults roll={combat.monsterRolls[id]} compact sim={sim} /> : null}</div>}
                   </div>
                 ))}
-                {combat.kind === 'boss' ? (
-                  <div className="gb-foe-gear">
-                    <BossEnrage count={boardState.bossPressure} sim={sim} />
-                    <div className="gb-foe-equip">
-                      {combat.bossEquip.map((id) => (
-                        <GameCard id={id} key={id} equipmentPower={bossEquipmentCardPower(combat, id)} locale={locale} onInspect={(el) => inspect(id, el)} size="sm" />
-                      ))}
+                {combat.kind === 'boss' && combat.bossId ? <div className="gb-boss-formation">
+                  <div className="gb-boss-hand-zone">
+                    <span className="gb-boss-zone-label">{sim.bossHandCount} : {combat.bossHand.length} {sim.cards}</span>
+                    <div className="gb-foe-hand" style={{ '--boss-hand-count': combat.bossHand.length } as CSSProperties}>
+                      {combat.bossHand.map((id, index) => <CardBack key={`${id}-${index}`} kind="boss" size="sm" />)}
                     </div>
-                    <div className="gb-foe-hand" style={{ '--boss-hand-count': combat.bossHand.length } as CSSProperties} title={`${sim.bossHandCount} : ${combat.bossHand.length}`}>
-                      {combat.bossHand.map((id, index) => (
-                        <CardBack key={`${id}-${index}`} kind="boss" size="sm" />
-                      ))}
-                    </div>
-                    <span className="sim-note">
-                      {sim.bossHandCount} : {combat.bossHand.length} {sim.cards}
-                    </span>
                   </div>
-                ) : null}
-                {power && pendingMonsterIds.size === 0 && !(monsterVictory && combatBeat === 'result') ? <div className="gb-opponent-status"><Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />{power.opponent.die !== null ? <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={combat.kind === 'boss' ? combat.bossSides : 6} value={power.opponent.die} compact sim={sim} /> : null}</div> : null}
+                  <div className="gb-boss-core">
+                    <GameCard className={targetsOpponent ? 'gb-opponent-target' : ''} id={combat.bossId} locale={locale} onInspect={(el) => inspect(combat.bossId as string, el)} size="lg" />
+                    <div className="gb-boss-summary">
+                      <h3>{localizeCard(card(combat.bossId), locale).name}</h3>
+                      {power ? <div className="gb-opponent-status"><Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />{power.opponent.die !== null ? <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={combat.bossSides} value={power.opponent.die} compact sim={sim} /> : null}</div> : null}
+                      <details><summary>{sim.cardEffectTitle}</summary><p>{localizeCard(card(combat.bossId), locale).text}</p></details>
+                    </div>
+                  </div>
+                  <div className="gb-boss-equipment-zone"><span className="gb-boss-zone-label">{sim.equipment}</span><div className="gb-foe-equip">
+                    {combat.bossEquip.map(id => <GameCard id={id} key={id} equipmentPower={bossEquipmentCardPower(combat, id)} locale={locale} onInspect={el => inspect(id, el)} size="sm" />)}
+                  </div></div>
+                </div> : null}
+                {combat.kind !== 'boss' && power && pendingMonsterIds.size === 0 && !(monsterVictory && combatBeat === 'result') ? <div className="gb-opponent-status"><Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />{power.opponent.die !== null ? <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={6} value={power.opponent.die} compact sim={sim} /> : null}</div> : null}
               </DropTarget>
 
 
@@ -731,7 +729,6 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 onClick={() => send({ t: 'drawBoss' })}
               />
               {!bossUnlocked ? <p className="sim-note">{sim.bossWaits}</p> : null}
-              {bossUnlocked ? <BossEnrage count={boardState.bossPressure} sim={sim} /> : null}
             </DropTarget>
           )}
         </DropTarget>
