@@ -274,7 +274,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     const newLogs = next.log.slice(retained)
     if (action.t === 'playAction' && newLogs.some((entry) => entry.code === 'actionPlayed')) {
       const visual = actionVisual(card(action.id).name, newLogs.some((entry) => entry.code === 'actionCancelled'))
-      const selectors = { hero: '.gb-player-combat-status', foe: '.gb-foe', 'player-die': '.gb-player-combat-status .gb-die', 'foe-die': '.gb-scoreboard .gb-dice', hand: '.gb-hand' }
+      const selectors = { hero: '.gb-player-combat-status', foe: '.gb-foe', 'player-die': '.gb-player-combat-status .gb-die', 'foe-die': '.gb-opponent-status .gb-die', hand: '.gb-hand' }
       const target = document.querySelector(selectors[visual.target])?.getBoundingClientRect()
       const source = document.querySelector(`.gb-hand [data-card-id="${action.id}"]`)?.getBoundingClientRect()
       const x = Math.max(75, Math.min(window.innerWidth - 75, target ? target.left + target.width / 2 : window.innerWidth / 2))
@@ -692,6 +692,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                     </span>
                   </div>
                 ) : null}
+                {power && !(monsterVictory && combatBeat === 'result') ? <div className="gb-opponent-status"><Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />{power.opponent.die !== null ? <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={combat.kind === 'boss' ? combat.bossSides : 6} value={power.opponent.die} compact sim={sim} /> : null}</div> : null}
               </DropTarget>
 
 
@@ -713,20 +714,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
           )}
         </DropTarget>
         </div>
-        <section className="gb-combat-panel" aria-label={sim.mobileCombat}>
+{/* Contextual actions live on the table; hero power is shown only on the hero board. */}
+        {(combat || tavern || preparation) ? <div className="gb-stage-actions" aria-label={sim.mobileCombat}>
           {bossPresentations[0]?.lines[0].code === 'resolved' && !bossReveal && !reveal && !playedAction ? <CombatResolution key={bossPresentations[0].seq} stage={bossPresentations[0]} sim={sim} formatLog={formatLog} onBeat={setCombatBeat} onContinue={() => { setResolutionPreview(null); nextBossPresentation() }} /> : combat ? <>
-              {power ? (
-                <div className="gb-scoreboard">
-                  <Score label={sim.you} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} />
-                  <div className="gb-dice">
-                    {power.opponent.die !== null ? (
-                      <DiceResults roll={combat.bossRoll} modifier={combat.bossDieModifier} rolling={false} sides={combat.kind === 'boss' ? combat.bossSides : 6} value={power.opponent.die} compact sim={sim} />
-                    ) : null}
-                  </div>
-                  <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} />
-                </div>
-              ) : null}
-
               <DropTarget className="gb-playzone" target={playZone} onHover={setOver} onCommit={commitDrop}>
                 {busy ? <span className="gb-playzone-hint">{busy === 'rolling' ? sim.rolling : sim.resolving}</span> : null}
                 <div className="gb-controls">
@@ -752,13 +742,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 </div>
               </DropTarget>
           </> : <>
-            <div className="gb-scoreboard">
-              <Score label={sim.you} parts={breakdownText(computePlayerPower(game), labels)} side="you" total={computePlayerPower(game).total} />
-              <div className="gb-dice" />
-            </div>
             <div className="gb-playzone"><div className="gb-controls">{tavern ? <>{prompt?.purpose === 'tavern-give' ? <button className="button" type="button" disabled={handLocked} onClick={() => send({ t: 'answer', option: 'tavern-back' })}>{sim.tavernBack}</button> : null}<button className="button button-primary" type="button" disabled={handLocked} onClick={() => { if (prompt?.purpose === 'tavern-give') send({ t: 'answer', option: 'tavern-back' }); send({ t: 'answer', option: null }) }}>{sim.noThanks}</button></> : preparation ? <><span className="gb-preparation-hint">{sim.preparation}</span><button className="button button-primary" disabled={locked} type="button" onClick={() => send({ t: 'endTurn' })}>{sim.endTurn}</button></> : null}</div></div>
           </>}
-        </section>
+        </div> : null}
         <section className="gb-board" style={{ '--board-card-count': 9 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) + (boardState.equipment.extraArmor ? 1 : 0), '--hero-card-count': 2 + (boardState.retainedMonsters?.length ?? 0) + (boardState.oaths?.length ?? 0) } as CSSProperties}>
           <h3>{sim.equipment}</h3>
           <div className="gb-board-body">

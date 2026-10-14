@@ -47,10 +47,10 @@ try {
   await viewport(width,height);await navigate('/');
   await evaluate(`(async()=>{const e=await import('/src/game/engine.ts');const {CARDS}=await import('/src/game/data.ts');let g=e.newGame('Guerrier','Humain',42);g.promptQueue=[];g.oaths=[];g.hand=[CARDS.find(c=>c.name==='Trouvaille').id,CARDS.find(c=>c.type==='Armure').id];g=e.reduce(g,{t:'drawLoot'});g.draws=[];localStorage.setItem('ossuaire.solo.v1',JSON.stringify({v:1,game:g}));})()`);
   await navigate('/solo');
-  const prep=await evaluate(`(()=>{const b=[...document.querySelectorAll('.gb-combat-panel button')].find(b=>b.textContent.includes('Fin de tour'));return {enabled:b&&!b.disabled,overflow:document.documentElement.scrollWidth-innerWidth,panel:document.querySelector('.gb-combat-panel').getBoundingClientRect().bottom,board:document.querySelector('.gb-board').getBoundingClientRect().top,turn:JSON.parse(localStorage.getItem('ossuaire.solo.v1')).game.turn}})()`);
+  const prep=await evaluate(`(()=>{const b=[...document.querySelectorAll('.gb-stage-actions button')].find(b=>b.textContent.includes('Fin de tour'));return {enabled:b&&!b.disabled,overflow:document.documentElement.scrollWidth-innerWidth,panel:document.querySelector('.gb-stage-actions').getBoundingClientRect().bottom,board:document.querySelector('.gb-board').getBoundingClientRect().top,turn:JSON.parse(localStorage.getItem('ossuaire.solo.v1')).game.turn}})()`);
   if(!prep.enabled||prep.turn!==1||prep.overflow>1)throw Error('Preparation layout '+JSON.stringify({width,...prep}));
   await screenshot('turn-preparation-'+width);
-  await evaluate(`[...document.querySelectorAll('.gb-combat-panel button')].find(b=>b.textContent.includes('Fin de tour')).click()`);await wait(600);
+  await evaluate(`[...document.querySelectorAll('.gb-stage-actions button')].find(b=>b.textContent.includes('Fin de tour')).click()`);await wait(600);
   const tavern=await evaluate(`({open:!!document.querySelector('.gb-tavern-board'),turn:JSON.parse(localStorage.getItem('ossuaire.solo.v1')).game.turn})`);
   if(!tavern.open||tavern.turn!==1)throw Error('Tavern missing');
   await evaluate(`document.querySelector('.gb-hand .gc-inspect, .gb-hand button').click()`);await wait(400);
@@ -60,7 +60,7 @@ try {
   const played=await evaluate(`(()=>{const g=JSON.parse(localStorage.getItem('ossuaire.solo.v1')).game;return {turn:g.turn,prompt:g.promptQueue[0]?.purpose,hand:g.hand.length}})()`);
   if(played.turn!==1||played.prompt!=='tavern')throw Error('Tavern Action lost offers');
   await screenshot('turn-tavern-'+width);
-  await evaluate(`[...document.querySelectorAll('.gb-combat-panel button')].find(b=>b.textContent.includes('Non merci') || b.getAttribute('aria-label')==='Non merci').click()`);await wait(600);
+  await evaluate(`[...document.querySelectorAll('.gb-stage-actions button')].find(b=>b.textContent.includes('Non merci') || b.getAttribute('aria-label')==='Non merci').click()`);await wait(600);
   const turn=await evaluate(`JSON.parse(localStorage.getItem('ossuaire.solo.v1')).game.turn`);
   if(turn!==2)throw Error('Manual turn failed '+turn);
   report.push({width,height,prep,tavern,played,turn});

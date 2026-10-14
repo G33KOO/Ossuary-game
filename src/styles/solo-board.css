@@ -1492,13 +1492,7 @@ body.solo-playing footer {
 .gb-full .gb-table { grid-template-rows: minmax(max-content, 1fr) auto max-content; row-gap: 6px; }
 .gb-full .gb-board { grid-row: 3; }
 .gb-full .gb-arena { grid-template-rows: minmax(0, 1fr); }
-.gb-full .gb-combat-panel { grid-column: 1 / -1; grid-row: 2; width: 96%; justify-self: center; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 20px; min-height: 82px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-.gb-full .gb-combat-panel .gb-playzone { min-height: 64px; padding: 6px 12px; }
-.gb-full .gb-combat-panel .gb-scoreboard { min-height: 64px; }
-.gb-full .gb-combat-panel .gb-score strong { font-size: 28px; }
-.gb-full .gb-combat-panel .gb-score-parts { font-size: 12px; }
 @media (min-width: 1400px) and (min-height: 760px) {
-  .gb-full .gb-table { grid-template-rows: minmax(0, 1fr) 82px max-content; }
   .gb-full .gb-side { min-height: 0; gap: 6px; }
   .gb-full .gb-side .gb-pile-stack { width: clamp(44px, 9cqh, 72px); height: calc(clamp(44px, 9cqh, 72px) * 1.4 + 8px); }
   .gb-full .gb-side .gb-pile-stack .gb-back { width: clamp(44px, 9cqh, 72px); height: calc(clamp(44px, 9cqh, 72px) * 1.4); }
@@ -1508,7 +1502,6 @@ body.solo-playing footer {
 }
 @media (max-width: 760px) {
   .solo-page .gb-full .gb-table { grid-template-rows: repeat(4, max-content); }
-  .gb-full .gb-combat-panel { grid-row: 3; width: 100%; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .solo-page .gb-full .gb-board { grid-row: 4; }
 }
 
@@ -1779,4 +1772,26 @@ body.solo-playing footer {
   .gb-tavern-heading { flex-wrap: wrap; gap: 4px 10px; }
   .gb-tavern-mobile-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
   .gb-tavern-mobile-controls .button { min-height: 40px; padding: 8px 10px; font-size: 11px; }
+}
+.gb-full .gb-table { grid-template-rows: minmax(0, 1fr) auto max-content; }
+.gb-stage-actions { display: flex; align-items: center; min-height: 64px; grid-column: 1 / -1; grid-row: 2; width: 96%; justify-self: center; min-width: 0; }
+.gb-stage-actions .gb-playzone { width: 100%; border: 0; background: transparent; padding: 4px; min-height: 0; }
+.gb-stage-actions .gb-controls { align-items: center; }
+.gb-opponent-status { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.gb-opponent-status .gb-score { padding: 0; }
+.gb-opponent-status .gb-score strong { font-size: 30px; }
+.gb-opponent-status .gb-score-parts { max-width: 240px; font-size: 11px; }
+@media (min-width: 761px) {
+  .gb-full .gb-monster-encounter { flex: 0 1 auto; }
+}
+.gb-player-combat-status .gb-player-die-control { min-height: 52px; display: flex; align-items: center; }
+.gb-player-combat-status .gb-player-die-button { min-height: 52px; padding-bottom: 0; }
+.gb-player-combat-status .gb-die-invitation { bottom: -10px; }
+.gb-player-combat-status .gb-player-die-control.is-ready .gb-player-die-button::before { inset: -2px -5px; }
+@media (max-width: 760px) {
+  .solo-page .gb-full .gb-table { grid-template-rows: repeat(4, max-content); }
+  .gb-stage-actions { grid-row: 3; width: 100%; }
+}
+@media (min-width: 761px) and (max-width: 1399px), (min-width: 761px) and (max-height: 759px) {
+  .gb-full .gb-table { grid-template-rows: minmax(max-content, 1fr) auto max-content; }
 }

@@ -75,7 +75,7 @@ try {
     const positions = []
     for (const mode of ['combat','monsters','idle']) {
       await fixture(mode)
-      const geometry = await evaluate(`(()=>{const t=document.querySelector('.gb-table'),p=document.querySelector('.gb-combat-panel').getBoundingClientRect(),b=document.querySelector('.gb-board').getBoundingClientRect();return {panelY:p.y,boardY:b.y,gap:b.top-p.bottom,scroll:t.scrollHeight-t.clientHeight,overlap:[...document.querySelectorAll('.gb-foe .gb-card,.gb-monster-effect,.gb-idle,.gb-side .gb-discard')].some(n=>n.getBoundingClientRect().bottom>p.top),handClipped:[...document.querySelectorAll('.gb-hand .gb-card')].some(n=>n.getBoundingClientRect().bottom>innerHeight)}})()`)
+      const geometry = await evaluate(`(()=>{const t=document.querySelector('.gb-table'),p=document.querySelector('.gb-stage-actions').getBoundingClientRect(),b=document.querySelector('.gb-board').getBoundingClientRect();return {panelY:p.y,boardY:b.y,gap:b.top-p.bottom,scroll:t.scrollHeight-t.clientHeight,overlap:[...document.querySelectorAll('.gb-foe .gb-card,.gb-monster-effect,.gb-idle,.gb-side .gb-discard')].some(n=>n.getBoundingClientRect().bottom>p.top),handClipped:[...document.querySelectorAll('.gb-hand .gb-card')].some(n=>n.getBoundingClientRect().bottom>innerHeight)}})()`)
       positions.push(geometry.panelY)
       report.push({height,mode,...geometry})
       await screenshot(`desktop-${height}-${mode}`)
@@ -104,7 +104,7 @@ try {
     report.push({width,height,tavern:await evaluate(`(()=>{const d=document.querySelector('.gb-tavern-board'),r=d.getBoundingClientRect();return {inline:!document.querySelector('dialog[open]'),width:r.width,overflow:d.scrollWidth-d.clientWidth}})()`)})
     await screenshot(`mobile-${width}-tavern`)
     await evaluate(`document.querySelector('.gb-tavern-offer > .button').click()`)
-    await evaluate(`document.querySelector('.gb-combat-panel button.button').click()`)
+    await evaluate(`document.querySelector('.gb-stage-actions button.button').click()`)
     report.push({width,height,tavernReturned:await evaluate(`document.querySelectorAll('.gb-tavern-offer').length===3`)})
   }
   const cards=JSON.parse(await fs.readFile('src/data/cards.json','utf8'))
