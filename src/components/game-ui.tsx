@@ -1,3 +1,5 @@
+import { CardBack } from './CardBack'
+export { CardBack } from './CardBack'
 import { CARD_SYMBOLS as TYPE_ICON } from '../utils/cardSymbols'
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
@@ -93,14 +95,6 @@ export function GameCard({
       {actions ? <div className="gb-card-actions">{actions}</div> : null}
       {mobileActions ? <div className="gb-mobile-card-actions">{mobileActions}</div> : null}
     </div>
-  )
-}
-
-export function CardBack({ kind, size = 'md' }: { kind: 'loot' | 'monster' | 'boss'; size?: 'sm' | 'md' | 'lg' }) {
-  return (
-    <span aria-hidden="true" className={`gb-back kind-${kind} size-${size}`}>
-      <span>{kind === 'loot' ? '✦' : kind === 'monster' ? '☠' : '♜'}</span>
-    </span>
   )
 }
 

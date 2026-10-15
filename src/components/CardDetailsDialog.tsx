@@ -14,6 +14,8 @@ import { CARDS } from '../game/data'
 import { soloCopy } from '../content/solo'
 import './card-details-mobile.css'
 import { CardClassBadge } from './CardClassBadge'
+import { CardBack } from './CardBack'
+import { cardBackArt, cardBackKind } from '../utils/cardBack'
 
 function zoomFromOrigin(dialog: HTMLDialogElement, origin: DOMRect | null) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -58,6 +60,11 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
   })
   const gender = card && genderChoice.cardId === card.id ? genderChoice.gender : 'male'
   const illustration = card ? getCardIllustration(card, gender) : undefined
+  const [backCardId, setBackCardId] = useState<string | null>(null)
+  const backKind = card ? cardBackKind(card) : undefined
+  const showingBack = Boolean(backKind && backCardId === card?.id)
+  const visualSrc = showingBack && backKind ? cardBackArt[backKind] : illustration?.src
+  const close = () => { setBackCardId(null); onClose() }
   const canSwitchGender = card ? hasFemaleVariant(card) : false
   const localizedCard = card ? localizeCard(card, locale) : null
   const isOpen = card !== null
@@ -95,22 +102,26 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
       aria-labelledby="card-modal-heading"
       className={`card-dialog type-${slugify(card.type)}`}
       onClick={(event) => {
-        if (event.target === event.currentTarget) onClose()
+        if (event.target === event.currentTarget) close()
       }}
-      onClose={onClose}
+      onClose={close}
       ref={dialogRef}
     >
-      <ModalHeader id="card-modal-heading" title={t('card.detailsTitle')} onClose={onClose} closeLabel={t('card.close')} />
+      <ModalHeader id="card-modal-heading" title={t('card.detailsTitle')} onClose={close} closeLabel={t('card.close')} />
       <div className="dialog-layout">
         <div className="dialog-visual">
-          {illustration ? (
-            <TiltableCard key={`${card.id}-${gender}`} src={illustration.src} label={t('card.tilt')}>
-              <CardFaceBadges card={card} powerLabel={t('card.printedValue')} />
+          {visualSrc ? (
+            <TiltableCard key={`${card.id}-${gender}-${showingBack}`} src={visualSrc} label={t('card.tilt')}>
+              {!showingBack && <CardFaceBadges card={card} powerLabel={t('card.printedValue')} />}
             </TiltableCard>
           ) : (
-            <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span><CardFaceBadges card={card} powerLabel={t('card.printedValue')} /></div>
+            showingBack && backKind ? <div className="dialog-back-preview"><CardBack kind={backKind} size="lg" /></div> : <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span><CardFaceBadges card={card} powerLabel={t('card.printedValue')} /></div>
           )}
-          {canSwitchGender && (
+          {backKind ? <div className="variant-switch card-face-switch" role="group" aria-label={t('card.faces')}>
+            <button type="button" aria-pressed={!showingBack} onClick={() => setBackCardId(null)}>{t('card.front')}</button>
+            <button type="button" aria-pressed={showingBack} onClick={() => setBackCardId(card.id)}>{t('card.back')}</button>
+          </div> : null}
+          {canSwitchGender && !showingBack && (
             <div aria-label={t('card.variants')} className="variant-switch" role="group">
               {(['male', 'female'] as const).map((option) => (
                 <button
@@ -148,7 +159,7 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
             <span className="dialog-value">{t('card.printedValue')} · {card.value}</span>
           )}
           {actions ? (
-            <div className="dialog-actions" onClick={onClose}>
+            <div className="dialog-actions" onClick={close}>
               {actions}
             </div>
           ) : null}

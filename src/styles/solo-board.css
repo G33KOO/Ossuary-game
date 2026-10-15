@@ -357,59 +357,6 @@
   text-transform: uppercase;
 }
 
-.gb-back {
-  background:
-    radial-gradient(circle at 50% 50%, rgb(255 255 255 / 12%), transparent 55%),
-    repeating-linear-gradient(45deg, rgb(0 0 0 / 22%) 0 6px, transparent 6px 12px),
-    linear-gradient(160deg, #6b4a22, #2c1b0c);
-  border: 1.5px solid var(--gold);
-  border-radius: 9px;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 55%);
-  display: grid;
-  height: 140px;
-  place-items: center;
-  width: 100px;
-}
-
-.gb-back span {
-  color: var(--gold-light);
-  font-size: 34px;
-  text-shadow: 0 2px 6px rgb(0 0 0 / 80%);
-}
-
-.gb-back.kind-monster {
-  background:
-    radial-gradient(circle at 50% 50%, rgb(255 120 90 / 18%), transparent 55%),
-    repeating-linear-gradient(45deg, rgb(0 0 0 / 25%) 0 6px, transparent 6px 12px),
-    linear-gradient(160deg, #7a1f17, #2a0907);
-}
-
-.gb-back.kind-boss {
-  background:
-    radial-gradient(circle at 50% 50%, rgb(212 87 42 / 30%), transparent 55%),
-    repeating-linear-gradient(45deg, rgb(0 0 0 / 30%) 0 6px, transparent 6px 12px),
-    linear-gradient(160deg, #2b2b33, #0a0a0e);
-}
-
-.gb-back.size-sm {
-  border-width: 1px;
-  height: 62px;
-  width: 44px;
-}
-
-.gb-back.size-sm span {
-  font-size: 16px;
-}
-
-.gb-back.size-lg {
-  height: 210px;
-  width: 150px;
-}
-
-.gb-back.size-lg span {
-  font-size: 52px;
-}
-
 .gb-discard {
   display: grid;
   gap: 6px;
