@@ -34,11 +34,11 @@ export function HeroSection() {
         </h1>
         <p className="hero-description">{t('hero.description')}</p>
         <div className="hero-actions">
-          <Link className="button button-primary" to={paths.cards}>
-            {t('hero.explore')} <span aria-hidden="true">→</span>
+          <Link className="button button-primary" to={paths.mechanics}>
+            {t('hero.discover')} <span aria-hidden="true">→</span>
           </Link>
-          <Link className="text-link" to={paths.mechanics}>
-            {t('hero.discover')} <span aria-hidden="true">↘</span>
+          <Link className="text-link" to={paths.cards}>
+            {t('hero.explore')} <span aria-hidden="true">↘</span>
           </Link>
         </div>
         <div className="hero-note">

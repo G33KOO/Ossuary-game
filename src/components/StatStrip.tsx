@@ -2,10 +2,10 @@ import { useLocale } from '../hooks/useLocale'
 import { assetUrl } from '../utils/assetUrl'
 
 const stats = [
+  { value: '2–6', key: 'stats.players', icon: 'classe-guerrier' },
+  { value: '60–90', key: 'stats.duration', icon: 'indicateur-niveau' },
   { value: '240', key: 'stats.cards', icon: 'indicateur-butin' },
-  { value: '06', key: 'stats.bosses', icon: 'monstre-demon' },
-  { value: '12', key: 'stats.oaths', icon: 'indicateur-puissance' },
-  { value: '10', key: 'stats.levels', icon: 'indicateur-niveau' },
+  { value: '1', key: 'stats.winner', icon: 'monstre-demon' },
 ] as const
 
 export function StatStrip() {
