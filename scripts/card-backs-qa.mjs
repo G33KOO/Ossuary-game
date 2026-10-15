@@ -68,12 +68,12 @@ try {
     if(!await evaluate("document.querySelector('.dialog-art').src.includes('/card-backs/butin.webp')"))throw Error('Catalogue back missing')
     await screenshot('card-back-catalog-'+width)
     await evaluate("document.querySelector('.card-dialog .modal-close').click()")
-    for(const [type,kind] of [['Monstre','monster'],['Boss','boss']]){
+    for(const [type,kind] of [['Monstre','monster'],['Boss','boss'],['Classe','class']]){
       await navigate('/cartes?type='+type)
       await evaluate("document.querySelector('.lore-card').click()")
       await wait(650)
       await evaluate("document.querySelectorAll('.card-face-switch button')[1].click()")
-      if(!await evaluate(`!!document.querySelector('.dialog-back-preview .gb-back.kind-${kind}')`))throw Error('Wrong deck back '+kind)
+      if(!await evaluate(kind==='class'?"document.querySelector('.dialog-art').src.includes('/card-backs/classe.webp')":`!!document.querySelector('.dialog-back-preview .gb-back.kind-${kind}')`))throw Error('Wrong deck back '+kind)
       await evaluate("document.querySelector('.card-dialog .modal-close').click()")
     }
     await navigate('/')
@@ -81,7 +81,14 @@ try {
     await navigate('/solo')
     const boss=await evaluate("document.querySelectorAll('.gb-boss-hand-zone .gb-back.kind-loot.has-illustration img').length===4")
     if(!boss)throw Error('Boss hand must use Loot backs')
-    console.log(JSON.stringify({width,pile,flight,detail,boss}))
+    await evaluate("document.querySelector('.gb-native-group .gb-card.type-classe').click()")
+    await wait(650)
+    await evaluate("document.querySelectorAll('.card-face-switch button')[1].click()")
+    const classBack=await evaluate("document.querySelector('.dialog-art').src.includes('/card-backs/classe.webp')")
+    if(!classBack)throw Error('Solo class back missing')
+    await screenshot('class-card-back-'+width)
+    await evaluate("document.querySelector('.card-dialog .modal-close').click()")
+    console.log(JSON.stringify({width,pile,flight,detail,boss,classBack}))
   }
   if(errors.length)throw Error(errors.join('\n'))
 } finally {ws.close()}
