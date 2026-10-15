@@ -68,7 +68,7 @@ try {
     if(!await evaluate("document.querySelector('.dialog-art').src.includes('/card-backs/butin.webp')"))throw Error('Catalogue back missing')
     await screenshot('card-back-catalog-'+width)
     await evaluate("document.querySelector('.card-dialog .modal-close').click()")
-    for(const [type,kind,art] of [['Monstre','monster','monstre'],['Boss','boss',null],['Classe','class','classe']]){
+    for(const [type,kind,art] of [['Monstre','monster','monstre'],['Boss','boss','boss'],['Classe','class','classe']]){
       await navigate('/cartes?type='+type)
       await evaluate("document.querySelector('.lore-card').click()")
       await wait(650)
@@ -91,6 +91,14 @@ try {
     if(!await evaluate("document.querySelector('.dialog-art').src.includes('/card-backs/monstre.webp')"))throw Error('Solo monster back missing')
     await screenshot('monster-card-back-'+width)
     await evaluate("document.querySelector('.card-dialog .modal-close').click()")
+    await navigate('/')
+    await evaluate(`(async()=>{const e=await import('/src/game/engine.ts');let g=e.newGame('Mage','Humain',42);g.promptQueue=[];g.oaths=[];g.level=10;g.draws=[];localStorage.setItem('ossuaire.solo.v1',JSON.stringify({v:1,game:g}));})()`)
+    await navigate('/solo')
+    if(!await evaluate("document.querySelectorAll('.gb-side-boss .gb-back.has-illustration img').length===3"))throw Error('Boss deck back missing')
+    await evaluate("document.querySelector('.gb-side-boss .gb-pile').click()")
+    await wait(300)
+    if(!await evaluate("document.querySelector('.gb-boss-draw-back .kind-boss img')?.src.includes('/card-backs/boss.webp')"))throw Error('Boss reveal back missing')
+    await screenshot('boss-back-reveal-'+width)
     await navigate('/')
     await evaluate(`(async()=>{const e=await import('/src/game/engine.ts');let g=e.newGame('Mage','Humain',42);g.promptQueue=[];g.oaths=[];g.level=10;g=e.reduce(g,{t:'challengeBoss',bossId:e.BOSS_IDS[0]});g.promptQueue=[];g.draws=[];g.combat.bossHand=g.lootDeck.splice(0,4);localStorage.setItem('ossuaire.solo.v1',JSON.stringify({v:1,game:g}));})()`)
     await navigate('/solo')

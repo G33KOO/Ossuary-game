@@ -7,6 +7,7 @@ export type CardBackKind = 'loot' | 'monster' | 'boss' | 'oath' | 'class'
 export const cardBackArt: Partial<Record<CardBackKind, string>> = {
   loot: assetUrl('images/card-backs/butin.webp'),
   monster: assetUrl('images/card-backs/monstre.webp'),
+  boss: assetUrl('images/card-backs/boss.webp'),
   oath: assetUrl('images/card-backs/serment.webp'),
   class: assetUrl('images/card-backs/classe.webp'),
 }
