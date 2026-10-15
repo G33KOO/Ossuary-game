@@ -1687,6 +1687,11 @@ body.solo-playing footer {
 .gb-board-choice > p { margin: 6px 0 10px; font-size: 12px; line-height: 1.4; }
 .gb-board-choice-options { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
 .gb-choice-card { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.gb-choice-oath-visual { perspective: 900px; }
+.gb-choice-oath-turn { position: relative; transform-style: preserve-3d; }
+.gb-choice-oath-turn > .gb-card-wrap { backface-visibility: hidden; }
+.gb-choice-oath-back { position: absolute; inset: 0; transform: rotateY(180deg); backface-visibility: hidden; pointer-events: none; }
+.gb-choice-oath-back > .gb-back { width: 100%; height: 100%; }
 .gb-full .gb-choice-card .gb-card-wrap.size-md { --w: clamp(55px, 9dvh, 88px); }
 .gb-choice-card .button { min-height: 30px; padding: 6px 8px; font-size: 10px; }
 .gb-board-choice-skip { margin-top: 10px; min-height: 32px; padding: 6px 12px; font-size: 11px; }

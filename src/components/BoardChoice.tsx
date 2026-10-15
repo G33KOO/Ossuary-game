@@ -3,6 +3,7 @@ import { useBoardFocus } from '../hooks/useBoardFocus'
 import type { Locale } from '../i18n/LocaleProvider'
 import type { Prompt } from '../game/types'
 import { GameCard } from './game-ui'
+import { CardBack } from './CardBack'
 import { card } from '../game/data'
 import { localizeCard } from '../i18n/cardTranslations'
 
@@ -25,20 +26,36 @@ export function BoardChoice({ prompt, title, instructions, locale, sim, label, i
     const source = (prompt.purpose === 'oath' ? root.current : document.querySelector(prompt.purpose === 'thief-pick' ? '.gb-side-right .gb-pile-stack' : prompt.purpose === 'hunter-boss-pick' ? '.gb-side-boss .gb-pile-stack' : '.gb-side-left .gb-pile-stack'))?.getBoundingClientRect() ?? root.current?.getBoundingClientRect()
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const animations: Animation[] = []
+    const duration = prompt.purpose === 'oath' ? 1100 : 600
     if (source && !reduced) root.current?.querySelectorAll<HTMLElement>('.gb-choice-card').forEach((element, index) => {
       const target = element.getBoundingClientRect()
       animations.push(element.animate([
-        { opacity: 0, transform: `translate(${source.left + source.width / 2 - target.left - target.width / 2}px, ${source.top - target.top}px) scale(.6) rotate(-8deg)` },
-        { opacity: 1, transform: 'translate(0, 0) scale(1) rotate(0)' },
-      ], { duration: 600, delay: index * 100, fill: 'backwards', easing: 'cubic-bezier(.2,.7,.2,1)' }))
+        { opacity: 0, transform: `translate(${source.left + source.width / 2 - target.left - target.width / 2}px, ${source.top - target.top}px) scale(.6) rotate(-8deg)`, offset: 0 },
+        { opacity: 1, transform: 'translate(0, 0) scale(1) rotate(0)', offset: prompt.purpose === 'oath' ? .45 : 1 },
+        { opacity: 1, transform: 'translate(0, 0) scale(1) rotate(0)', offset: 1 },
+      ], { duration, delay: index * 100, fill: 'backwards', easing: 'cubic-bezier(.2,.7,.2,1)' }))
+      const turn = element.querySelector('.gb-choice-oath-turn')
+      if (turn) animations.push(turn.animate([
+        { transform: 'rotateY(180deg)', offset: 0 },
+        { transform: 'rotateY(180deg)', offset: .4 },
+        { transform: 'rotateY(0deg)', offset: 1 },
+      ], { duration, delay: index * 100, fill: 'backwards', easing: 'ease-in-out' }))
+      const front = turn?.querySelector('.gb-card-wrap')
+      if (front) animations.push(front.animate([
+        { opacity: 0, offset: 0 }, { opacity: 0, offset: .7 },
+        { opacity: 1, offset: .71 }, { opacity: 1, offset: 1 },
+      ], { duration, delay: index * 100, fill: 'backwards', easing: 'ease-in-out' }))
     })
-    const timer = window.setTimeout(() => setDealt(signature), reduced ? 0 : 600 + Math.max(0, prompt.options.length - 1) * 100)
+    const timer = window.setTimeout(() => setDealt(signature), reduced ? 0 : duration + Math.max(0, prompt.options.length - 1) * 100)
     return () => { window.clearTimeout(timer); animations.forEach((animation) => animation.cancel()) }
   }, [animated, signature, prompt.purpose, prompt.options.length, root])
   const choices = <div className="gb-board-choice-options">{prompt.options.map((option, index) => {
       const cardId = option.cardId ?? (option.id.startsWith('OSS-CARD-') ? option.id : undefined)
       return cardId ? <div className="gb-choice-card" key={`${option.id}-${index}`}>
-        <GameCard id={cardId} locale={locale} size="md" onInspect={(element) => inspect(cardId, element)} />
+        {prompt.purpose === 'oath' ? <div className="gb-choice-oath-visual"><div className="gb-choice-oath-turn">
+          <GameCard id={cardId} locale={locale} size="md" onInspect={(element) => inspect(cardId, element)} />
+          <span className="gb-choice-oath-back"><CardBack kind="oath" /></span>
+        </div></div> : <GameCard id={cardId} locale={locale} size="md" onInspect={(element) => inspect(cardId, element)} />}
         <button className="button button-primary" type="button" disabled={!ready} onClick={() => answer(option.id)}>{targetArmor ? sim.discardCard : prompt.purpose === 'weapon-loot' ? sim.harvest : sim.choose}</button>
       </div> : <button className={`button${option.id === 'flee' ? ' gb-flee-button' : ''}`} key={option.id} disabled={!ready} type="button" onClick={() => answer(option.id)}>{targetArmor && option.id === 'decline' ? sim.enversYield : label(option.id)}</button>
     })}</div>
