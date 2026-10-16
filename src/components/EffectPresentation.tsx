@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import type { DiceRoll, GameState } from '../game/types'
 import type { Locale } from '../i18n/LocaleProvider'
 import { card } from '../game/data'
@@ -10,10 +11,10 @@ import { useBoardFocus } from '../hooks/useBoardFocus'
 
 export type EffectStage = { id?: string; lines: GameState['log']; seq: number }
 
-export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onNext, paused = false }: {
+export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onNext, paused = false, actions }: {
   stage: EffectStage; locale: Locale; sim: Record<string, string>
   formatLog: (entry: GameState['log'][number]) => string
-  inspect: (id: string, element: HTMLElement) => void; onNext: () => void; paused?: boolean
+  inspect: (id: string, element: HTMLElement) => void; onNext: () => void; paused?: boolean; actions?: ReactNode
 }) {
   const root = useBoardFocus(stage.seq)
   const params = stage.lines[0].params ?? {}
@@ -54,7 +55,7 @@ export function EffectPresentation({ stage, locale, sim, formatLog, inspect, onN
         {stage.id ? <details className="gb-effect-rule"><summary>{sim.cardEffectTitle}</summary><p>{localizeCard(card(stage.id), locale).text}</p></details> : null}
         {stage.lines.filter((entry) => entry.code === 'playerItemDestroyed' && typeof entry.params?.card === 'string').map((entry) => <GameCard key={String(entry.params!.card)} id={String(entry.params!.card)} locale={locale} onInspect={(el) => inspect(String(entry.params!.card), el)} size="sm" />)}
         {stage.lines[0].code === 'thiefSwap' && typeof params.give === 'string' ? <GameCard id={params.give} locale={locale} size="sm" onInspect={el => inspect(String(params.give), el)} /> : null}
-        {!automatic ? <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button> : null}
+        {actions ?? (!automatic ? <button className="button button-primary" disabled={!ready} autoFocus onClick={onNext} type="button">{sim.nextAction} →</button> : null)}
       </div>
     </div>
   </section>

@@ -22,6 +22,53 @@ function battle() {
 }
 
 describe('interactive Boss actions', () => {
+  it('keeps a Boss action pending until the hero explicitly counters or passes', () => {
+    let game = battle()
+    game.hand = [id('Contre-sort'), id('Force')]
+    game.combat!.bossHand = [id('Force')]
+    game = reduce(game, { t: 'bossStep' })
+    expect(game.combat!.bossBonus).toBe(0)
+    expect(canPlayAction(game, id('Contre-sort'))).toBe(true)
+    expect(canPlayAction(game, id('Force'))).toBe(false)
+    const waiting = reduce(game, { t: 'bossStep' })
+    expect(waiting.promptQueue[0].purpose).toBe('boss-counter')
+    expect(waiting.combat!.bossDie).toBeNull()
+    expect(waiting.combat!.bossBonus).toBe(0)
+    const passed = reduce(waiting, { t: 'answer', option: null })
+    expect(passed.combat!.bossBonus).toBe(2)
+    expect(passed.hand).toContain(id('Contre-sort'))
+    const countered = reduce(waiting, { t: 'playAction', id: id('Contre-sort') })
+    expect(countered.combat!.bossBonus).toBe(0)
+    expect(countered.promptQueue).toEqual([])
+    expect(countered.hand).toEqual([id('Force')])
+    expect(countered.lootDiscard.filter(card => card === id('Contre-sort'))).toHaveLength(1)
+    expect(countered.log.at(-1)?.code).toBe('playerCounter')
+    expect(canPlayAction(countered, id('Contre-sort'))).toBe(false)
+  })
+  it('cannot counter with a card absent from the hand or spend another action as a response', () => {
+    let game = battle()
+    game.hand = [id('Contre-sort'), id('Force')]
+    game.combat!.bossHand = [id('Force')]
+    game = reduce(game, { t: 'bossStep' })
+    expect(reduce(game, { t: 'playAction', id: id('Force') })).toEqual(game)
+    game.hand = [id('Force')]
+    const stale = reduce(game, { t: 'answer', option: id('Contre-sort') })
+    expect(stale.promptQueue[0].purpose).toBe('boss-counter')
+    expect(stale.combat!.bossBonus).toBe(0)
+  })
+  it.each(['Force', 'Trouvaille', 'Chance'])('lets the Boss automatically counter %s before its effect', name => {
+    let game = battle()
+    game.hand = [id(name)]
+    game.combat!.playerDie = 3
+    game.combat!.bossHand = [id('Contre-sort')]
+    game = reduce(game, { t: 'playAction', id: id(name) })
+    expect(game.combat!.playerBonus).toBe(0)
+    expect(game.combat!.playerDie).toBe(3)
+    expect(game.hand).toEqual([])
+    expect(game.combat!.bossHand).toEqual([])
+    expect(game.draws).toEqual([])
+    expect(game.log.at(-1)?.code).toBe('actionCancelled')
+  })
   it('acquires Warrior then pays a weapon and applies its printed power on a separate step', () => {
     let game = battle()
     game.combat!.bossHand = ['Voie du Guerrier', 'Masse Nautile'].map(id)

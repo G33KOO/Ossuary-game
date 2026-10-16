@@ -993,6 +993,10 @@ function resolveCombat(s: GameState) {
 // ---------- Actions (cards) ----------
 
 export function canPlayAction(s: GameState, id: string) {
+  const reaction = s.promptQueue[0]
+  if (reaction?.purpose === 'boss-counter') {
+    return s.phase === 'combat' && s.combat?.kind === 'boss' && s.hand.includes(id) && cardName(id) === 'Contre-sort' && reaction.options.some(option => option.id === id)
+  }
   if (!canManageHand(s) || (s.phase !== 'main' && s.phase !== 'combat')) return false
   if (!s.hand.includes(id)) return false
   const entry = card(id)
@@ -1389,6 +1393,7 @@ function finishPay(s: GameState, kind: string) {
 function answerPrompt(s: GameState, option: string | null) {
   const prompt = s.promptQueue[0]
   if (!prompt) return
+  if (prompt.purpose === 'boss-counter' && option !== null && (!s.hand.includes(option) || cardName(option) !== 'Contre-sort')) return
   if (prompt.purpose === 'tavern' && option !== null && s.hand.length === 0) return
   if (option === null) {
     if (!prompt.optional) return
@@ -1793,6 +1798,11 @@ export function reduce(state: GameState, action: GameAction): GameState {
 }
 
 function apply(s: GameState, action: GameAction): GameState {
+  if (action.t === 'playAction' && s.promptQueue[0]?.purpose === 'boss-counter' && canPlayAction(s, action.id)) {
+    answerPrompt(s, action.id)
+    settle(s)
+    return s
+  }
   if (action.t === 'answer') {
     answerPrompt(s, action.option)
     settle(s)

@@ -29,6 +29,7 @@ import type { CombatBeat } from './CombatResolution'
 import { DiceResults } from './DiceResults'
 import type { EffectStage } from './EffectPresentation'
 import { EffectPresentation } from './EffectPresentation'
+import { BossCounterResponse } from './BossCounterResponse'
 import { HeroPower, ClassActive, PlayerDie } from './HeroCombatControls'
 import { CombatRecap } from './CombatRecap'
 import { LevelTimeline } from './LevelTimeline'
@@ -205,6 +206,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     if (!gameRef.current) return
     const previous = gameRef.current
     const next = reduce(previous, action)
+    if (previous.promptQueue[0]?.purpose === 'boss-counter' && next.promptQueue[0]?.purpose !== 'boss-counter') { setBossPresentations([]); setBusy(null) }
     const newlyCompleted = (next.completedOaths ?? []).filter((id) => !(previous.completedOaths ?? []).includes(id))
     if (newlyCompleted.length) setOathCelebrations((current) => [...current, ...newlyCompleted])
       if (!previous.combat?.bossId && next.combat?.bossId) {
@@ -488,6 +490,9 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const pendingMonsterIds = new Set(!resolutionPreview && (reveal || playedAction || drawDeferred) ? game.draws.filter((draw) => draw.kind === 'monster').map((draw) => draw.id) : [])
   const power = resolutionPreview ? computePower(resolutionPreview) : final?.power ?? computePower(game)
   const prompt: Prompt | undefined = game.promptQueue[0]
+  const counterPending = prompt?.purpose === 'boss-counter' && combat?.kind === 'boss'
+  const counterVisible = Boolean(counterPending && !opening && !busy && !playedAction && !bossReveal && !reveal && !oathCelebrations.length && (!bossPresentations.length || bossPresentations[0].lines[0].code === 'bossPlays'))
+  const counterCard = counterPending && typeof prompt.ctx.card === 'string' ? prompt.ctx.card : undefined
   const preparation = game.phase === 'main' && !combat && game.endTurnPending
   const main = game.phase === 'main' && !combat && !game.endTurnPending
   const locked = opening || busy !== null || playedAction !== null || bossReveal !== null || bossPresentations.length > 0 || oathCelebrations.length > 0 || Boolean(prompt) || reveal !== null || ended
@@ -499,6 +504,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
     if (equipped) return <button className="button" type="button" disabled={!equipmentEditable} onClick={() => { send({ t: 'unequip', id }) }}>{sim.unequipBtn}</button>
     if (!game.hand.includes(id)) return undefined
     if (!gear && card(id).type !== 'Action') return undefined
+    if (counterPending && card(id).name === 'Contre-sort') return <button className="button button-primary" type="button" disabled={!counterVisible || !canPlayAction(game, id)} onClick={() => send({ t: 'playAction', id })}>{sim.counterUse}</button>
     const reason = gear ? equipmentReason(game, id) : card(id).name === 'Contre-sort' ? sim.counterReaction : undefined
     return <>{prompt?.purpose === 'discard-excess' ? <button className="button" type="button" disabled={handLocked} onClick={() => send({ t: 'answer', option: id })}>{sim.discardPile}</button> : null}{prompt?.purpose === 'tavern-give' ? <button className="button button-primary" type="button" disabled={handLocked} onClick={() => { send({ t: 'answer', option: id }) }}>{sim.tavernTrade}</button> : null}<button className="button" type="button" disabled={handLocked || !(gear ? canEquip(game, id) : canPlayAction(game, id))} onClick={() => { send({ t: gear ? 'equip' : 'playAction', id }) }}>{gear ? sim.equipBtn : sim.play}</button>{reason ? <p className="gb-card-use-reason">{reason}</p> : null}</>
   }
@@ -545,7 +551,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
       window.setTimeout(() => setDrag({ id, from }), 0)
     },
   })
-  const handDraggable = !opening && busy === null && playedAction === null && bossReveal === null && bossPresentations.length === 0 && oathCelebrations.length === 0 && reveal === null && !ended && (!prompt || tavern || discarding)
+  const handDraggable = counterVisible || !opening && busy === null && playedAction === null && bossReveal === null && bossPresentations.length === 0 && oathCelebrations.length === 0 && reveal === null && !ended && (!prompt || tavern || discarding)
 
   const zone = (key: string, accepts: boolean, actions: GameAction[]) => ({ key, accepts, actions, over: over === key })
   const commitDrop = (actions: GameAction[]) => { setDrag(null); for (const action of actions) send(action) }
@@ -554,7 +560,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
   const discardZone = zone('discard-excess', Boolean(discarding && fromHand && prompt.options.some(option => option.id === fromHand)), fromHand ? [{ t: 'answer', option: fromHand }] : [])
   const fromEquip = drag?.from === 'equip' ? drag.id : null
   const equipZone = zone('equip', Boolean(fromHand && !handLocked && canEquip(game, fromHand)), fromHand ? [{ t: 'equip', id: fromHand }] : [])
-  const playZone = zone('play', Boolean(fromHand && !handLocked && canPlayAction(game, fromHand)), fromHand ? [{ t: 'playAction', id: fromHand }] : [])
+  const playZone = zone('play', Boolean(fromHand && (!handLocked || counterVisible) && canPlayAction(game, fromHand)), fromHand ? [{ t: 'playAction', id: fromHand }] : [])
   const draggedAction = fromHand && !locked && canPlayAction(game, fromHand) ? card(fromHand).name : null
   const targetsOpponent = Boolean(combat && draggedAction && ['Faiblesse', 'Frénésie', 'Apaiser', 'Malchance', 'Dépossession', 'Brise-armure', 'Destruction', 'Corrosion', 'Exécution', 'Peur'].includes(draggedAction))
   const foeZone = zone('foe', targetsOpponent, fromHand ? [{ t: 'playAction', id: fromHand }] : [])
@@ -676,7 +682,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             {power ? <Score label={sim.opponent} parts={breakdownText(power.opponent, foeLabels)} side="foe" total={power.opponent.total} /> : null}
             {power ? <Score label={sim.yourPower} parts={breakdownText(power.player, labels)} side="you" total={power.player.total} /> : null}
           </aside> : null}
-          {opening ? <section ref={openingRef} className="gb-opening" aria-live="polite"><span className="gb-opening-sigil" aria-hidden="true">O</span><h3>{sim.start}</h3><p>{heroName('Race', race)} &middot; {heroName('Classe', klass)}</p></section> : bossReveal ? bossOnBoard : monsterDrawing && !combat && !arrivalEffect && !arrivalChoice ? <div className="gb-monster-landing" aria-hidden="true" /> : arrivalEffect ? <EffectPresentation paused={monsterDrawing} key={arrivalStage!.seq} stage={arrivalStage!} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <div className="gb-discard-preparation"><DropTarget as="section" className="gb-preparation-play" target={playZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.preparation}</h3><p>{sim.discardPlayHint}</p></DropTarget><DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.discardBin}</h3><p role="status">{fill(sim.discardRemaining, { count: Number(prompt.ctx.count) })}</p><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7" /></svg><p>{sim.discardDropHint}</p></DropTarget></div> : arrivalChoice ? <BoardChoice skipDealAnimation={prompt.purpose === 'fournaise' && game.draws.some(draw => draw.kind === 'monster')} prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
+          {opening ? <section ref={openingRef} className="gb-opening" aria-live="polite"><span className="gb-opening-sigil" aria-hidden="true">O</span><h3>{sim.start}</h3><p>{heroName('Race', race)} &middot; {heroName('Classe', klass)}</p></section> : bossReveal ? bossOnBoard : monsterDrawing && !combat && !arrivalEffect && !arrivalChoice ? <div className="gb-monster-landing" aria-hidden="true" /> : counterVisible && counterCard ? <BossCounterResponse cardId={counterCard} sequence={bossPresentations[0]?.seq ?? 0} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onCounter={() => send({ t: 'answer', option: prompt!.options[0].id })} onPass={() => send({ t: 'answer', option: null })} /> : arrivalEffect ? <EffectPresentation paused={monsterDrawing} key={arrivalStage!.seq} stage={arrivalStage!} locale={locale} sim={sim} formatLog={formatLog} inspect={inspect} onNext={nextBossPresentation} /> : choiceVisible && discarding ? <div className="gb-discard-preparation"><DropTarget as="section" className="gb-preparation-play" target={playZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.preparation}</h3><p>{sim.discardPlayHint}</p></DropTarget><DropTarget as="section" className="gb-discard-zone" target={discardZone} onHover={setOver} onCommit={commitDrop}><h3>{sim.discardBin}</h3><p role="status">{fill(sim.discardRemaining, { count: Number(prompt.ctx.count) })}</p><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7" /></svg><p>{sim.discardDropHint}</p></DropTarget></div> : arrivalChoice ? <BoardChoice skipDealAnimation={prompt.purpose === 'fournaise' && game.draws.some(draw => draw.kind === 'monster')} prompt={prompt} title={copy.promptTitles[prompt.purpose]} instructions={fill(copy.prompts[prompt.purpose] ?? prompt.purpose, { count: Number(prompt.ctx.count ?? 0), n: Number(prompt.ctx.n ?? 0), left: Number(prompt.ctx.n ?? 0) - (Array.isArray(prompt.ctx.paid) ? prompt.ctx.paid.length : Number(prompt.ctx.paid ?? 0)), old: Number(prompt.ctx.old ?? 0), fresh: Number(prompt.ctx.fresh ?? 0) })} locale={locale} sim={sim} inspect={inspect} answer={(option) => send({ t: 'answer', option })} label={(id) => copy.options[id] ?? ((CLASS_NAMES as readonly string[]).includes(id) ? heroName('Classe', id) : id)} /> : tavern && prompt && !playedAction && !reveal && !bossReveal && bossPresentations.length === 0 && oathCelebrations.length === 0 ? <TavernBoard prompt={prompt} locale={locale} sim={sim} instructions={copy.prompts.tavern} canTrade={game.hand.length > 0 && !handLocked} inspect={inspect} answer={(option) => send({ t: 'answer', option })} dragging={Boolean(fromHand)} trade={(offer) => { if (!fromHand) return; const actions: GameAction[] = prompt.purpose === 'tavern-give' ? [{ t: 'answer', option: 'tavern-back' }] : []; commitDrop([...actions, { t: 'answer', option: offer }, { t: 'answer', option: fromHand }]) }} /> : ended && !combat ? (
             <div className={`sim-end ${boardState.phase}`}>
               <h3>{boardState.phase === 'won' ? sim.victoryTitle : sim.defeatTitle}</h3>
               <p>{boardState.phase === 'won' ? sim.victoryText : sim.defeatText}</p>
@@ -855,7 +861,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
             const isGear = entry.type === 'Armure' || entry.type === 'Arme' || entry.type === 'Artefact de classe'
             const reason = isGear ? equipmentReason(boardState, id) : undefined
             const actions = handActions(id)
-            const playable = (!handLocked && ((isGear ? equipmentImprovesHero(game, id) : canPlayAction(game, id)) || (prompt?.purpose === 'tavern-give' && prompt.options.some(option => option.id === id)))) || (choiceVisible && prompt.options.some(option => option.cardId === id))
+            const playable = (counterVisible && canPlayAction(game, id)) || (!handLocked && ((isGear ? equipmentImprovesHero(game, id) : canPlayAction(game, id)) || (prompt?.purpose === 'tavern-give' && prompt.options.some(option => option.id === id)))) || (choiceVisible && prompt.options.some(option => option.cardId === id))
             return (
               <GameCard
                 className={`${playable ? 'is-playable' : ''}${drag?.id === id ? ' is-dragging' : ''}`}
@@ -869,7 +875,7 @@ export function SoloBoard({ onPlayingChange }: { onPlayingChange?: (playing: boo
                 size="hand"
                 mobileActions={actions}
                 style={{ '--i': index, '--n': boardState.hand.length } as CSSProperties}
-                {...(handDraggable ? dragFrom('hand', id) : {})}
+                {...(handDraggable && (!counterPending || canPlayAction(game, id)) ? dragFrom('hand', id) : {})}
               />
             )
           })}

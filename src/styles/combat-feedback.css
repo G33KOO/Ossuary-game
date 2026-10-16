@@ -62,6 +62,9 @@
 .gb-resolution-emblem { color: var(--gold-light); width: 40px; }
 .gb-resolution-emblem svg { display: block; width: 100%; }
 .gb-resolution-copy { min-width: 0; }
+.gb-counter-response { padding-top: 10px; border-top: 1px solid var(--line); }
+.gb-counter-response > p[role='status'] { color: var(--gold-light); }
+.gb-counter-response > div { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .gb-resolution-copy > strong { display: block; font-family: var(--display); color: var(--gold-light); font-size: 18px; animation: gb-battle-caption 450ms both; }
 .gb-resolution-copy p { margin: 4px 0 0; font-size: 12px; line-height: 1.4; }
 .gb-resolution-values { display: flex; gap: 20px; text-align: center; }
