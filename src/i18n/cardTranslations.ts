@@ -13,9 +13,20 @@ const cardTypesEn: Record<string, string> = {
   Race: 'Race',
   Serment: 'Oath',
   Butin: 'Loot',
+  Esprit: 'Spirit',
+  'Aide de jeu': 'Reference card',
 }
 
 const cardSubtypesEn: Record<string, string> = {
+  Guerrier: 'Warrior',
+  Druide: 'Druid',
+  Chasseur: 'Hunter',
+  Mage: 'Mage',
+  Voleur: 'Rogue',
+  Nécromancien: 'Necromancer',
+  'Tour et équipement': 'Turns and Equipment',
+  'Combat et Actions': 'Combat and Actions',
+  'Taverne et Boss': 'Tavern and Bosses',
   Plastron: 'Chest Armor',
   Bottes: 'Boots',
   Gants: 'Gloves',

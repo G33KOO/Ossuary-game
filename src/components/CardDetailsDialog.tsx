@@ -107,7 +107,7 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
           {visualSrc ? (
             <TiltableCard key={card.id} src={illustration?.src ?? visualSrc} backSrc={backSrc} showingBack={showingBack} label={t('card.tilt')}
               backHelp={card.type === 'Race' ? <CardFaceHelp card={card} locale={locale} /> : undefined}>
-              <CardFaceHelp card={card} locale={locale} />
+              {card.type !== 'Esprit' && card.type !== 'Aide de jeu' && <CardFaceHelp card={card} locale={locale} />}
             </TiltableCard>
           ) : (
             showingBack && backKind ? <div className="dialog-back-preview"><CardBack kind={backKind} size="lg" /></div> : <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span></div>

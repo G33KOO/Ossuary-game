@@ -1,5 +1,6 @@
 import illustrationsData from '../data/illustrations.json'
 import facesData from '../data/cardFaces.json'
+import references from '../data/referenceCards.json'
 import type { Illustration } from '../types/card'
 import { slugify } from './slugify'
 
@@ -17,7 +18,10 @@ export function getIllustrationByKey(key: string) {
 export type CardGender = 'male' | 'female'
 
 type IllustratedCard = { id?: string; name: string; copy?: string; type?: string }
-const faces = facesData as Record<string, { front: string; back: string }>
+const faces: Record<string, { front: string; back: string }> = {
+  ...facesData,
+  ...Object.fromEntries(references.map((entry) => [entry.id, { front: entry.front, back: entry.back }])),
+}
 
 export function getCardBackIllustration(card: IllustratedCard) {
   return card.id && faces[card.id] ? assetUrl(faces[card.id].back) : undefined

@@ -4,6 +4,15 @@ export type CardTranslation = {
 }
 
 export const cardContentEn: Record<string, CardTranslation> = {
+  'Spectre Guerrier': { name: 'Warrior Spectre', text: 'Class Spirit card. Flip the card to read its rules.' },
+  'Spectre Druide': { name: 'Druid Spectre', text: 'Class Spirit card. Flip the card to read its rules.' },
+  'Spectre Chasseur': { name: 'Hunter Spectre', text: 'Class Spirit card. Flip the card to read its rules.' },
+  'Spectre Mage': { name: 'Mage Spectre', text: 'Class Spirit card. Flip the card to read its rules.' },
+  'Spectre Voleur': { name: 'Rogue Spectre', text: 'Class Spirit card. Flip the card to read its rules.' },
+  'Spectre Nécromancien': { name: 'Necromancer Spectre', text: 'Class Spirit card. Flip the card to read its rules.' },
+  'Tour et équipement': { name: 'Turns and Equipment', text: 'Reference card. Read both sides for the game rules.' },
+  'Combat et Actions': { name: 'Combat and Actions', text: 'Reference card. Read both sides for the game rules.' },
+  'Taverne et Boss': { name: 'Tavern and Bosses', text: 'Reference card. Read both sides for the game rules.' },
   Guerrier: {
     name: 'Warrior',
     text: 'Weapon Toss — During a combat, you may discard 1 Weapon from your hand to add its printed Power to your total Power for that combat.',
