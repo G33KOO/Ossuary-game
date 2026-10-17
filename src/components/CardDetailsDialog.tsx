@@ -3,8 +3,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { CSSProperties, ReactNode } from 'react'
 import type { Card } from '../types/card'
-import { getCardIllustration, getCardBackIllustration, hasFemaleVariant } from '../utils/cardIllustration'
-import type { CardGender } from '../utils/cardIllustration'
+import { getCardIllustration, getCardBackIllustration } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
 import { useLocale } from '../hooks/useLocale'
 import { localizeCard } from '../i18n/cardTranslations'
@@ -54,19 +53,13 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
   const { locale, t } = useLocale()
   const { pathname } = useLocation()
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const [genderChoice, setGenderChoice] = useState<{ cardId: string; gender: CardGender }>({
-    cardId: '',
-    gender: 'male',
-  })
-  const gender = card && genderChoice.cardId === card.id ? genderChoice.gender : 'male'
-  const illustration = card ? getCardIllustration(card, gender) : undefined
+  const illustration = card ? getCardIllustration(card) : undefined
   const [backCardId, setBackCardId] = useState<string | null>(null)
   const backKind = card ? cardBackKind(card) : undefined
   const backSrc = card ? getCardBackIllustration(card) ?? (backKind ? cardBackArt[backKind] : undefined) : undefined
   const showingBack = Boolean(backSrc && backCardId === card?.id)
   const visualSrc = showingBack ? backSrc : illustration?.src
   const close = () => { setBackCardId(null); onClose() }
-  const canSwitchGender = card ? hasFemaleVariant(card) : false
   const localizedCard = card ? localizeCard(card, locale) : null
   const isOpen = card !== null
   const pathClass = card?.name.startsWith('Voie du ') ? getCardClass(card) : undefined
@@ -112,7 +105,7 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
       <div className="dialog-layout">
         <div className="dialog-visual">
           {visualSrc ? (
-            <TiltableCard key={`${card.id}-${gender}`} src={illustration?.src ?? visualSrc} backSrc={backSrc} showingBack={showingBack} label={t('card.tilt')}
+            <TiltableCard key={card.id} src={illustration?.src ?? visualSrc} backSrc={backSrc} showingBack={showingBack} label={t('card.tilt')}
               backHelp={card.type === 'Race' ? <CardFaceHelp card={card} locale={locale} /> : undefined}>
               <CardFaceHelp card={card} locale={locale} />
             </TiltableCard>
@@ -123,20 +116,6 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
             <button type="button" aria-pressed={!showingBack} onClick={() => setBackCardId(null)}>{t('card.front')}</button>
             <button type="button" aria-pressed={showingBack} onClick={() => setBackCardId(card.id)}>{t('card.back')}</button>
           </div> : null}
-          {canSwitchGender && !showingBack && (
-            <div aria-label={t('card.variants')} className="variant-switch" role="group">
-              {(['male', 'female'] as const).map((option) => (
-                <button
-                  aria-pressed={gender === option}
-                  key={option}
-                  onClick={() => setGenderChoice({ cardId: card.id, gender: option })}
-                  type="button"
-                >
-                  {t(option === 'male' ? 'card.variantMale' : 'card.variantFemale')}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
         <div className="dialog-body">
           <p className="eyebrow">{localizedCard.type} · {card.id}</p>
