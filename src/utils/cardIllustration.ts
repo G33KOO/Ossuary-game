@@ -1,4 +1,5 @@
 import illustrationsData from '../data/illustrations.json'
+import facesData from '../data/cardFaces.json'
 import type { Illustration } from '../types/card'
 import { slugify } from './slugify'
 
@@ -15,10 +16,18 @@ export function getIllustrationByKey(key: string) {
 
 export type CardGender = 'male' | 'female'
 
-type IllustratedCard = { name: string; copy?: string; type?: string }
+type IllustratedCard = { id?: string; name: string; copy?: string; type?: string }
+const faces = facesData as Record<string, { front: string; back: string }>
+
+export function getCardBackIllustration(card: IllustratedCard) {
+  return card.id && faces[card.id] ? assetUrl(faces[card.id].back) : undefined
+}
 
 /** Illustration d'une carte : exemplaire numéroté (copy) pour les doublons, genre pour les Races. */
 export function getCardIllustration(card: IllustratedCard, gender: CardGender = 'male') {
+  if (card.id && faces[card.id]) {
+    return { name: card.name, key: `${slugify(card.name)}${gender === 'female' && card.type === 'Race' ? '-femelle' : ''}`, src: assetUrl(gender === 'female' && card.type === 'Race' ? faces[card.id].back : faces[card.id].front) }
+  }
   const key = slugify(card.name)
   const find = (candidate: string) => illustrations.find((illustration) => illustration.key === candidate)
   const copy = card.copy && Number(card.copy) > 0 ? card.copy : ''

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import cardsData from '../data/cards.json'
+import referenceCards from '../data/referenceCards.json'
+import { assetUrl } from '../utils/assetUrl'
 import { CardFilterBar } from '../components/CardFilterBar'
 import type { FilterOption } from '../components/CardFilterBar'
 import { CardTile } from '../components/CardTile'
@@ -185,6 +187,16 @@ export function CardsPage() {
         results.length > 0 && <p className="scroll-end">{t('catalog.end')}</p>
       )}
 
+      <section className="reference-cards">
+        <h2>{locale === 'fr' ? 'Spectres et aides de jeu' : 'Spectres and reference cards'}</h2>
+        {referenceCards.map((entry) => <details key={entry.id}>
+          <summary>{entry.name}</summary>
+          <div className="reference-card-faces">
+            <img alt={`${entry.name} — ${t('card.front')}`} src={assetUrl(entry.front)} loading="lazy" />
+            <img alt={`${entry.name} — ${t('card.back')}`} src={assetUrl(entry.back)} loading="lazy" />
+          </div>
+        </details>)}
+      </section>
     </section>
   )
 }

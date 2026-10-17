@@ -113,6 +113,18 @@ describe('solo engine', () => {
     expect(next.combat).toBeNull()
   })
 
+  it('allows boss challenges at level 10 with an unfulfilled oath', () => {
+    const state = newGame('Mage', 'Humain', 3)
+    const oathId = state.promptQueue[0].options[0].id
+    const prepared = reduce(state, { t: 'answer', option: oathId })
+    prepared.promptQueue = []
+    prepared.level = 10
+    expect(prepared.oaths).toContain(oathId)
+    expect(prepared.completedOaths ?? []).not.toContain(oathId)
+    expect(reduce(prepared, { t: 'challengeBoss', bossId: BOSS_IDS[0] }).combat?.kind).toBe('boss')
+    expect(reduce(prepared, { t: 'drawBoss' }).combat?.kind).toBe('boss')
+  })
+
   it('reports all reasons preventing class abilities and clears them when requirements are met', () => {
     const warrior = newGame('Guerrier', 'Humain', 3)
     warrior.promptQueue = []

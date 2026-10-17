@@ -19,7 +19,7 @@ export const rulesFr: RulesContent = {
         {
           kind: 'callout',
           title: 'Votre objectif',
-          text: 'Atteignez le niveau maximal (10), accomplissez et révélez votre Serment, rassemblez votre Équipement, puis provoquez un Boss. Le premier héros qui vainc un Boss gagne immédiatement la partie.',
+          text: 'Atteignez le niveau maximal (10), rassemblez votre Équipement, puis provoquez un Boss. Accomplir votre Serment n’est pas nécessaire pour l’affronter. Le premier héros qui vainc un Boss gagne immédiatement la partie.',
         },
         {
           kind: 'steps',
@@ -122,7 +122,7 @@ export const rulesFr: RulesContent = {
             { title: 'Équipez', text: 'Vous pouvez manipuler votre Équipement à tout moment.' },
             {
               title: 'Choisissez une aventure',
-              text: 'Révélez un Monstre, piochez 1 Butin, ou provoquez un Boss si vous êtes niveau 10 et si votre Serment est accompli et révélé.',
+              text: 'Révélez un Monstre, piochez 1 Butin, ou provoquez un Boss si vous êtes niveau 10.',
             },
             { title: 'Résolvez', text: 'Terminez entièrement l’aventure, ses effets et ses récompenses.' },
             { title: 'Ajustez', text: 'Réorganisez librement l’Équipement.' },
@@ -269,7 +269,7 @@ export const rulesFr: RulesContent = {
       blocks: [
         {
           kind: 'paragraph',
-          text: 'Révélez votre Serment dès que son Accomplissement est vérifié et appliquez sa Récompense permanente. Un Serment ne fait jamais gagner directement la partie, mais un héros doit l’avoir accompli et révélé pour provoquer un Boss.',
+          text: 'Révélez votre Serment dès que son Accomplissement est vérifié et appliquez sa Récompense permanente. Un Serment ne fait jamais gagner directement la partie. Son accomplissement n’est pas nécessaire pour provoquer un Boss : seul le niveau 10 est requis.',
         },
         {
           kind: 'callout',
@@ -326,7 +326,7 @@ export const rulesFr: RulesContent = {
       blocks: [
         {
           kind: 'paragraph',
-          text: 'Au niveau 10, un héros dont le Serment est accompli et révélé peut provoquer un Boss à la place de l’aventure de son tour. Il n’y est jamais obligé.',
+          text: 'Au niveau 10, un héros peut provoquer un Boss à la place de l’aventure de son tour. Il n’y est jamais obligé.',
         },
         {
           kind: 'steps',
@@ -429,7 +429,7 @@ export const rulesFr: RulesContent = {
             ['Tour', 'Une aventure, résolution complète, limite de main.'],
             ['Combat', 'Total sans dé, effets, dé actuel facultatif si nécessaire, comparaison.'],
             ['Taverne', 'Retours, Marchand, Échanges, puis Esprits.'],
-            ['Boss', 'Niveau 10 + Serment accompli ; 5 Butins non-Artefact ; duel fermé.'],
+            ['Boss', 'Niveau 10 ; 5 Butins non-Artefact ; duel fermé.'],
           ],
         },
         {

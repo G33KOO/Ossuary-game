@@ -1,4 +1,4 @@
-﻿export const messages = {
+export const messages = {
   fr: {
     'brand.home': 'Ossuaire, accueil',
     'nav.universe': 'L’univers',
@@ -44,7 +44,7 @@
     'rivalry.betrayalTitle': 'Frapper au bon moment',
     'rivalry.betrayalDescription': 'Une carte gardée en main peut ruiner le combat d’un rival. Choisis le bon moment pour lui mettre des bâtons dans les roues.',
     'rivalry.raceTitle': 'Passer devant les autres',
-    'rivalry.raceDescription': 'Niveau 10, Serment accompli, Boss vaincu. Remplis les conditions avant tes rivaux : la victoire ne se partage pas.',
+    'rivalry.raceDescription': 'Niveau 10, Boss vaincu. Remplis les conditions avant tes rivaux : la victoire ne se partage pas.',
     'mechanics.section': 'Le cycle d’aventure',
     'mechanics.titleOne': 'Une même descente.',
     'mechanics.titleTwo': 'Une seule victoire.',
@@ -61,9 +61,9 @@
       'Les combats attirent les coups bas. Joue tes effets, déjoue ceux des autres et décide qui tu veux voir réussir ou échouer.',
     'mechanics.stepFourTitle': 'Bats le Boss en premier',
     'mechanics.stepFourDescription':
-      'Atteins le niveau 10, accomplis ton Serment et terrasse l’un des six Boss avant qu’un autre héros ne te devance.',
+      'Atteins le niveau 10 et terrasse l’un des six Boss avant qu’un autre héros ne te devance.',
     'mechanics.goalEyebrow': 'La course s’arrête au premier Boss vaincu',
-    'mechanics.goalTitle': 'Niveau 10. Serment accompli. Boss vaincu.',
+    'mechanics.goalTitle': 'Niveau 10. Boss vaincu.',
     'mechanics.goalDescription':
       'De 2 à 6 joueurs, 60 à 90 minutes. Le premier héros qui terrasse un Boss remporte la partie.',
     'mechanics.readRules': 'Lire les règles complètes',
@@ -195,7 +195,7 @@
     'rivalry.betrayalTitle': 'Strike at the right moment',
     'rivalry.betrayalDescription': 'A card held in reserve can ruin a rival’s fight. Choose the right moment to throw a wrench in their plans.',
     'rivalry.raceTitle': 'Beat everyone to it',
-    'rivalry.raceDescription': 'Level 10, Oath fulfilled, Boss defeated. Meet the conditions before your rivals: victory is not shared.',
+    'rivalry.raceDescription': 'Level 10, Boss defeated. Meet the conditions before your rivals: victory is not shared.',
     'mechanics.section': 'The adventure cycle',
     'mechanics.titleOne': 'The same descent.',
     'mechanics.titleTwo': 'One victory.',
@@ -212,9 +212,9 @@
       'Fights attract dirty tricks. Play your effects, counter the others, and decide who you want to see succeed or fail.',
     'mechanics.stepFourTitle': 'Defeat the Boss first',
     'mechanics.stepFourDescription':
-      'Reach level 10, fulfill your Oath, and defeat one of the six Bosses before another hero beats you to it.',
+      'Reach level 10 and defeat one of the six Bosses before another hero beats you to it.',
     'mechanics.goalEyebrow': 'The race ends with the first Boss defeated',
-    'mechanics.goalTitle': 'Level 10. Oath fulfilled. Boss defeated.',
+    'mechanics.goalTitle': 'Level 10. Boss defeated.',
     'mechanics.goalDescription':
       '2 to 6 players, 60 to 90 minutes. The first hero to defeat a Boss wins the game.',
     'mechanics.readRules': 'Read the full rules',

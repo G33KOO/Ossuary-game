@@ -3,7 +3,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { CSSProperties, ReactNode } from 'react'
 import type { Card } from '../types/card'
-import { getCardIllustration, hasFemaleVariant } from '../utils/cardIllustration'
+import { getCardIllustration, getCardBackIllustration, hasFemaleVariant } from '../utils/cardIllustration'
 import type { CardGender } from '../utils/cardIllustration'
 import { slugify } from '../utils/slugify'
 import { useLocale } from '../hooks/useLocale'
@@ -13,7 +13,7 @@ import { ModalHeader } from './ModalHeader'
 import { CARDS } from '../game/data'
 import { soloCopy } from '../content/solo'
 import './card-details-mobile.css'
-import { CardClassBadge } from './CardClassBadge'
+import { CardFaceHelp } from './CardFaceHelp'
 import { CardBack } from './CardBack'
 import { cardBackArt, cardBackKind } from '../utils/cardBack'
 
@@ -62,8 +62,9 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
   const illustration = card ? getCardIllustration(card, gender) : undefined
   const [backCardId, setBackCardId] = useState<string | null>(null)
   const backKind = card ? cardBackKind(card) : undefined
-  const showingBack = Boolean(backKind && backCardId === card?.id)
-  const visualSrc = showingBack && backKind ? cardBackArt[backKind] : illustration?.src
+  const backSrc = card ? getCardBackIllustration(card) ?? (backKind ? cardBackArt[backKind] : undefined) : undefined
+  const showingBack = Boolean(backSrc && backCardId === card?.id)
+  const visualSrc = showingBack ? backSrc : illustration?.src
   const close = () => { setBackCardId(null); onClose() }
   const canSwitchGender = card ? hasFemaleVariant(card) : false
   const localizedCard = card ? localizeCard(card, locale) : null
@@ -112,12 +113,12 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
         <div className="dialog-visual">
           {visualSrc ? (
             <TiltableCard key={`${card.id}-${gender}-${showingBack}`} src={visualSrc} label={t('card.tilt')}>
-              {!showingBack && <CardFaceBadges card={card} powerLabel={t('card.printedValue')} />}
+              {(!showingBack || card.type === 'Race') && <CardFaceHelp card={card} locale={locale} />}
             </TiltableCard>
           ) : (
-            showingBack && backKind ? <div className="dialog-back-preview"><CardBack kind={backKind} size="lg" /></div> : <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span><CardFaceBadges card={card} powerLabel={t('card.printedValue')} /></div>
+            showingBack && backKind ? <div className="dialog-back-preview"><CardBack kind={backKind} size="lg" /></div> : <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span></div>
           )}
-          {backKind ? <div className="variant-switch card-face-switch" role="group" aria-label={t('card.faces')}>
+          {backSrc ? <div className="variant-switch card-face-switch" role="group" aria-label={t('card.faces')}>
             <button type="button" aria-pressed={!showingBack} onClick={() => setBackCardId(null)}>{t('card.front')}</button>
             <button type="button" aria-pressed={showingBack} onClick={() => setBackCardId(card.id)}>{t('card.back')}</button>
           </div> : null}
@@ -190,14 +191,7 @@ function ClassAbilityPreview({ name, icon, effect, title, duration }: { name: st
   </span>
 }
 
-function CardFaceBadges({ card, powerLabel }: { card: Card; powerLabel: string }) {
-  return <>
-    <CardClassBadge card={card} className="dialog-class-badge" />
-    {card.value ? <span className="dialog-power-badge" title={`${powerLabel} : ${card.value}`} aria-label={`${powerLabel} : ${card.value}`}>{card.value}</span> : null}
-  </>
-}
-
-function TiltableCard({ src, label, children }: { src: string; label: string; children: ReactNode }) {
+function TiltableCard({ src, label, children }: { src: string; label: string; children?: ReactNode }) {
   const [tilt, setTilt] = useState({ x: 0, y: 0, dragging: false })
   const pointer = useRef<{ id: number; x: number; y: number; width: number; height: number; startX: number; startY: number } | null>(null)
   const clamp = (value: number) => Math.max(-12, Math.min(12, value))
@@ -206,7 +200,7 @@ function TiltableCard({ src, label, children }: { src: string; label: string; ch
     setTilt({ x: 0, y: 0, dragging: false })
   }
   return <div className="dialog-tilt-stage">
-    <div className={`dialog-tilt-card${tilt.dragging ? ' is-dragging' : ''}${tilt.x || tilt.y ? ' is-tilted' : ''}`} role="button" tabIndex={0} aria-label={label}
+    <div className={`dialog-tilt-card${tilt.dragging ? ' is-dragging' : ''}${tilt.x || tilt.y ? ' is-tilted' : ''}`} role="group" tabIndex={0} aria-label={label}
       style={{ '--tilt-x': `${tilt.x}deg`, '--tilt-y': `${tilt.y}deg`, '--shine-x': `${50 + tilt.y * 2.5}%`, '--shine-y': `${50 - tilt.x * 2.5}%` } as CSSProperties}
       onPointerDown={(event) => {
         if (!event.isPrimary || event.button !== 0) return

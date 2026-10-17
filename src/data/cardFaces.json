@@ -1,0 +1,962 @@
+{
+  "OSS-CARD-001": {
+    "front": "/images/finished-cards/001-recto.webp",
+    "back": "/images/finished-cards/001-verso.webp"
+  },
+  "OSS-CARD-002": {
+    "front": "/images/finished-cards/002-recto.webp",
+    "back": "/images/finished-cards/002-verso.webp"
+  },
+  "OSS-CARD-003": {
+    "front": "/images/finished-cards/003-recto.webp",
+    "back": "/images/finished-cards/003-verso.webp"
+  },
+  "OSS-CARD-004": {
+    "front": "/images/finished-cards/004-recto.webp",
+    "back": "/images/finished-cards/004-verso.webp"
+  },
+  "OSS-CARD-005": {
+    "front": "/images/finished-cards/005-recto.webp",
+    "back": "/images/finished-cards/005-verso.webp"
+  },
+  "OSS-CARD-006": {
+    "front": "/images/finished-cards/006-recto.webp",
+    "back": "/images/finished-cards/006-verso.webp"
+  },
+  "OSS-CARD-007": {
+    "front": "/images/finished-cards/007-recto.webp",
+    "back": "/images/finished-cards/007-verso.webp"
+  },
+  "OSS-CARD-008": {
+    "front": "/images/finished-cards/008-recto.webp",
+    "back": "/images/finished-cards/008-verso.webp"
+  },
+  "OSS-CARD-009": {
+    "front": "/images/finished-cards/009-recto.webp",
+    "back": "/images/finished-cards/009-verso.webp"
+  },
+  "OSS-CARD-010": {
+    "front": "/images/finished-cards/010-recto.webp",
+    "back": "/images/finished-cards/010-verso.webp"
+  },
+  "OSS-CARD-011": {
+    "front": "/images/finished-cards/011-recto.webp",
+    "back": "/images/finished-cards/011-verso.webp"
+  },
+  "OSS-CARD-012": {
+    "front": "/images/finished-cards/012-recto.webp",
+    "back": "/images/finished-cards/012-verso.webp"
+  },
+  "OSS-CARD-013": {
+    "front": "/images/finished-cards/013-recto.webp",
+    "back": "/images/finished-cards/013-verso.webp"
+  },
+  "OSS-CARD-014": {
+    "front": "/images/finished-cards/014-recto.webp",
+    "back": "/images/finished-cards/014-verso.webp"
+  },
+  "OSS-CARD-015": {
+    "front": "/images/finished-cards/015-recto.webp",
+    "back": "/images/finished-cards/015-verso.webp"
+  },
+  "OSS-CARD-016": {
+    "front": "/images/finished-cards/016-recto.webp",
+    "back": "/images/finished-cards/016-verso.webp"
+  },
+  "OSS-CARD-017": {
+    "front": "/images/finished-cards/017-recto.webp",
+    "back": "/images/finished-cards/017-verso.webp"
+  },
+  "OSS-CARD-018": {
+    "front": "/images/finished-cards/018-recto.webp",
+    "back": "/images/finished-cards/018-verso.webp"
+  },
+  "OSS-CARD-019": {
+    "front": "/images/finished-cards/019-recto.webp",
+    "back": "/images/finished-cards/019-verso.webp"
+  },
+  "OSS-CARD-020": {
+    "front": "/images/finished-cards/020-recto.webp",
+    "back": "/images/finished-cards/020-verso.webp"
+  },
+  "OSS-CARD-021": {
+    "front": "/images/finished-cards/021-recto.webp",
+    "back": "/images/finished-cards/021-verso.webp"
+  },
+  "OSS-CARD-022": {
+    "front": "/images/finished-cards/022-recto.webp",
+    "back": "/images/finished-cards/022-verso.webp"
+  },
+  "OSS-CARD-023": {
+    "front": "/images/finished-cards/023-recto.webp",
+    "back": "/images/finished-cards/023-verso.webp"
+  },
+  "OSS-CARD-024": {
+    "front": "/images/finished-cards/024-recto.webp",
+    "back": "/images/finished-cards/024-verso.webp"
+  },
+  "OSS-CARD-025": {
+    "front": "/images/finished-cards/025-recto.webp",
+    "back": "/images/finished-cards/025-verso.webp"
+  },
+  "OSS-CARD-026": {
+    "front": "/images/finished-cards/026-recto.webp",
+    "back": "/images/finished-cards/026-verso.webp"
+  },
+  "OSS-CARD-027": {
+    "front": "/images/finished-cards/027-recto.webp",
+    "back": "/images/finished-cards/027-verso.webp"
+  },
+  "OSS-CARD-028": {
+    "front": "/images/finished-cards/028-recto.webp",
+    "back": "/images/finished-cards/028-verso.webp"
+  },
+  "OSS-CARD-029": {
+    "front": "/images/finished-cards/029-recto.webp",
+    "back": "/images/finished-cards/029-verso.webp"
+  },
+  "OSS-CARD-030": {
+    "front": "/images/finished-cards/030-recto.webp",
+    "back": "/images/finished-cards/030-verso.webp"
+  },
+  "OSS-CARD-031": {
+    "front": "/images/finished-cards/031-recto.webp",
+    "back": "/images/finished-cards/031-verso.webp"
+  },
+  "OSS-CARD-032": {
+    "front": "/images/finished-cards/032-recto.webp",
+    "back": "/images/finished-cards/032-verso.webp"
+  },
+  "OSS-CARD-033": {
+    "front": "/images/finished-cards/033-recto.webp",
+    "back": "/images/finished-cards/033-verso.webp"
+  },
+  "OSS-CARD-034": {
+    "front": "/images/finished-cards/034-recto.webp",
+    "back": "/images/finished-cards/034-verso.webp"
+  },
+  "OSS-CARD-035": {
+    "front": "/images/finished-cards/035-recto.webp",
+    "back": "/images/finished-cards/035-verso.webp"
+  },
+  "OSS-CARD-036": {
+    "front": "/images/finished-cards/036-recto.webp",
+    "back": "/images/finished-cards/036-verso.webp"
+  },
+  "OSS-CARD-037": {
+    "front": "/images/finished-cards/037-recto.webp",
+    "back": "/images/finished-cards/037-verso.webp"
+  },
+  "OSS-CARD-038": {
+    "front": "/images/finished-cards/038-recto.webp",
+    "back": "/images/finished-cards/038-verso.webp"
+  },
+  "OSS-CARD-039": {
+    "front": "/images/finished-cards/039-recto.webp",
+    "back": "/images/finished-cards/039-verso.webp"
+  },
+  "OSS-CARD-040": {
+    "front": "/images/finished-cards/040-recto.webp",
+    "back": "/images/finished-cards/040-verso.webp"
+  },
+  "OSS-CARD-041": {
+    "front": "/images/finished-cards/041-recto.webp",
+    "back": "/images/finished-cards/041-verso.webp"
+  },
+  "OSS-CARD-042": {
+    "front": "/images/finished-cards/042-recto.webp",
+    "back": "/images/finished-cards/042-verso.webp"
+  },
+  "OSS-CARD-043": {
+    "front": "/images/finished-cards/043-recto.webp",
+    "back": "/images/finished-cards/043-verso.webp"
+  },
+  "OSS-CARD-044": {
+    "front": "/images/finished-cards/044-recto.webp",
+    "back": "/images/finished-cards/044-verso.webp"
+  },
+  "OSS-CARD-045": {
+    "front": "/images/finished-cards/045-recto.webp",
+    "back": "/images/finished-cards/045-verso.webp"
+  },
+  "OSS-CARD-046": {
+    "front": "/images/finished-cards/046-recto.webp",
+    "back": "/images/finished-cards/046-verso.webp"
+  },
+  "OSS-CARD-047": {
+    "front": "/images/finished-cards/047-recto.webp",
+    "back": "/images/finished-cards/047-verso.webp"
+  },
+  "OSS-CARD-048": {
+    "front": "/images/finished-cards/048-recto.webp",
+    "back": "/images/finished-cards/048-verso.webp"
+  },
+  "OSS-CARD-049": {
+    "front": "/images/finished-cards/049-recto.webp",
+    "back": "/images/finished-cards/049-verso.webp"
+  },
+  "OSS-CARD-050": {
+    "front": "/images/finished-cards/050-recto.webp",
+    "back": "/images/finished-cards/050-verso.webp"
+  },
+  "OSS-CARD-051": {
+    "front": "/images/finished-cards/051-recto.webp",
+    "back": "/images/finished-cards/051-verso.webp"
+  },
+  "OSS-CARD-052": {
+    "front": "/images/finished-cards/052-recto.webp",
+    "back": "/images/finished-cards/052-verso.webp"
+  },
+  "OSS-CARD-053": {
+    "front": "/images/finished-cards/053-recto.webp",
+    "back": "/images/finished-cards/053-verso.webp"
+  },
+  "OSS-CARD-054": {
+    "front": "/images/finished-cards/054-recto.webp",
+    "back": "/images/finished-cards/054-verso.webp"
+  },
+  "OSS-CARD-055": {
+    "front": "/images/finished-cards/055-recto.webp",
+    "back": "/images/finished-cards/055-verso.webp"
+  },
+  "OSS-CARD-056": {
+    "front": "/images/finished-cards/056-recto.webp",
+    "back": "/images/finished-cards/056-verso.webp"
+  },
+  "OSS-CARD-057": {
+    "front": "/images/finished-cards/057-recto.webp",
+    "back": "/images/finished-cards/057-verso.webp"
+  },
+  "OSS-CARD-058": {
+    "front": "/images/finished-cards/058-recto.webp",
+    "back": "/images/finished-cards/058-verso.webp"
+  },
+  "OSS-CARD-059": {
+    "front": "/images/finished-cards/059-recto.webp",
+    "back": "/images/finished-cards/059-verso.webp"
+  },
+  "OSS-CARD-060": {
+    "front": "/images/finished-cards/060-recto.webp",
+    "back": "/images/finished-cards/060-verso.webp"
+  },
+  "OSS-CARD-061": {
+    "front": "/images/finished-cards/061-recto.webp",
+    "back": "/images/finished-cards/061-verso.webp"
+  },
+  "OSS-CARD-062": {
+    "front": "/images/finished-cards/062-recto.webp",
+    "back": "/images/finished-cards/062-verso.webp"
+  },
+  "OSS-CARD-063": {
+    "front": "/images/finished-cards/063-recto.webp",
+    "back": "/images/finished-cards/063-verso.webp"
+  },
+  "OSS-CARD-064": {
+    "front": "/images/finished-cards/064-recto.webp",
+    "back": "/images/finished-cards/064-verso.webp"
+  },
+  "OSS-CARD-065": {
+    "front": "/images/finished-cards/065-recto.webp",
+    "back": "/images/finished-cards/065-verso.webp"
+  },
+  "OSS-CARD-066": {
+    "front": "/images/finished-cards/066-recto.webp",
+    "back": "/images/finished-cards/066-verso.webp"
+  },
+  "OSS-CARD-067": {
+    "front": "/images/finished-cards/067-recto.webp",
+    "back": "/images/finished-cards/067-verso.webp"
+  },
+  "OSS-CARD-068": {
+    "front": "/images/finished-cards/068-recto.webp",
+    "back": "/images/finished-cards/068-verso.webp"
+  },
+  "OSS-CARD-069": {
+    "front": "/images/finished-cards/069-recto.webp",
+    "back": "/images/finished-cards/069-verso.webp"
+  },
+  "OSS-CARD-070": {
+    "front": "/images/finished-cards/070-recto.webp",
+    "back": "/images/finished-cards/070-verso.webp"
+  },
+  "OSS-CARD-071": {
+    "front": "/images/finished-cards/071-recto.webp",
+    "back": "/images/finished-cards/071-verso.webp"
+  },
+  "OSS-CARD-072": {
+    "front": "/images/finished-cards/072-recto.webp",
+    "back": "/images/finished-cards/072-verso.webp"
+  },
+  "OSS-CARD-073": {
+    "front": "/images/finished-cards/073-recto.webp",
+    "back": "/images/finished-cards/073-verso.webp"
+  },
+  "OSS-CARD-074": {
+    "front": "/images/finished-cards/074-recto.webp",
+    "back": "/images/finished-cards/074-verso.webp"
+  },
+  "OSS-CARD-075": {
+    "front": "/images/finished-cards/075-recto.webp",
+    "back": "/images/finished-cards/075-verso.webp"
+  },
+  "OSS-CARD-076": {
+    "front": "/images/finished-cards/076-recto.webp",
+    "back": "/images/finished-cards/076-verso.webp"
+  },
+  "OSS-CARD-077": {
+    "front": "/images/finished-cards/077-recto.webp",
+    "back": "/images/finished-cards/077-verso.webp"
+  },
+  "OSS-CARD-078": {
+    "front": "/images/finished-cards/078-recto.webp",
+    "back": "/images/finished-cards/078-verso.webp"
+  },
+  "OSS-CARD-079": {
+    "front": "/images/finished-cards/079-recto.webp",
+    "back": "/images/finished-cards/079-verso.webp"
+  },
+  "OSS-CARD-080": {
+    "front": "/images/finished-cards/080-recto.webp",
+    "back": "/images/finished-cards/080-verso.webp"
+  },
+  "OSS-CARD-081": {
+    "front": "/images/finished-cards/081-recto.webp",
+    "back": "/images/finished-cards/081-verso.webp"
+  },
+  "OSS-CARD-082": {
+    "front": "/images/finished-cards/082-recto.webp",
+    "back": "/images/finished-cards/082-verso.webp"
+  },
+  "OSS-CARD-083": {
+    "front": "/images/finished-cards/083-recto.webp",
+    "back": "/images/finished-cards/083-verso.webp"
+  },
+  "OSS-CARD-084": {
+    "front": "/images/finished-cards/084-recto.webp",
+    "back": "/images/finished-cards/084-verso.webp"
+  },
+  "OSS-CARD-085": {
+    "front": "/images/finished-cards/085-recto.webp",
+    "back": "/images/finished-cards/085-verso.webp"
+  },
+  "OSS-CARD-086": {
+    "front": "/images/finished-cards/086-recto.webp",
+    "back": "/images/finished-cards/086-verso.webp"
+  },
+  "OSS-CARD-087": {
+    "front": "/images/finished-cards/087-recto.webp",
+    "back": "/images/finished-cards/087-verso.webp"
+  },
+  "OSS-CARD-088": {
+    "front": "/images/finished-cards/088-recto.webp",
+    "back": "/images/finished-cards/088-verso.webp"
+  },
+  "OSS-CARD-089": {
+    "front": "/images/finished-cards/089-recto.webp",
+    "back": "/images/finished-cards/089-verso.webp"
+  },
+  "OSS-CARD-090": {
+    "front": "/images/finished-cards/090-recto.webp",
+    "back": "/images/finished-cards/090-verso.webp"
+  },
+  "OSS-CARD-091": {
+    "front": "/images/finished-cards/091-recto.webp",
+    "back": "/images/finished-cards/091-verso.webp"
+  },
+  "OSS-CARD-092": {
+    "front": "/images/finished-cards/092-recto.webp",
+    "back": "/images/finished-cards/092-verso.webp"
+  },
+  "OSS-CARD-093": {
+    "front": "/images/finished-cards/093-recto.webp",
+    "back": "/images/finished-cards/093-verso.webp"
+  },
+  "OSS-CARD-094": {
+    "front": "/images/finished-cards/094-recto.webp",
+    "back": "/images/finished-cards/094-verso.webp"
+  },
+  "OSS-CARD-095": {
+    "front": "/images/finished-cards/095-recto.webp",
+    "back": "/images/finished-cards/095-verso.webp"
+  },
+  "OSS-CARD-096": {
+    "front": "/images/finished-cards/096-recto.webp",
+    "back": "/images/finished-cards/096-verso.webp"
+  },
+  "OSS-CARD-097": {
+    "front": "/images/finished-cards/097-recto.webp",
+    "back": "/images/finished-cards/097-verso.webp"
+  },
+  "OSS-CARD-098": {
+    "front": "/images/finished-cards/098-recto.webp",
+    "back": "/images/finished-cards/098-verso.webp"
+  },
+  "OSS-CARD-099": {
+    "front": "/images/finished-cards/099-recto.webp",
+    "back": "/images/finished-cards/099-verso.webp"
+  },
+  "OSS-CARD-100": {
+    "front": "/images/finished-cards/100-recto.webp",
+    "back": "/images/finished-cards/100-verso.webp"
+  },
+  "OSS-CARD-101": {
+    "front": "/images/finished-cards/101-recto.webp",
+    "back": "/images/finished-cards/101-verso.webp"
+  },
+  "OSS-CARD-102": {
+    "front": "/images/finished-cards/102-recto.webp",
+    "back": "/images/finished-cards/102-verso.webp"
+  },
+  "OSS-CARD-103": {
+    "front": "/images/finished-cards/103-recto.webp",
+    "back": "/images/finished-cards/103-verso.webp"
+  },
+  "OSS-CARD-104": {
+    "front": "/images/finished-cards/104-recto.webp",
+    "back": "/images/finished-cards/104-verso.webp"
+  },
+  "OSS-CARD-105": {
+    "front": "/images/finished-cards/105-recto.webp",
+    "back": "/images/finished-cards/105-verso.webp"
+  },
+  "OSS-CARD-106": {
+    "front": "/images/finished-cards/106-recto.webp",
+    "back": "/images/finished-cards/106-verso.webp"
+  },
+  "OSS-CARD-107": {
+    "front": "/images/finished-cards/107-recto.webp",
+    "back": "/images/finished-cards/107-verso.webp"
+  },
+  "OSS-CARD-108": {
+    "front": "/images/finished-cards/108-recto.webp",
+    "back": "/images/finished-cards/108-verso.webp"
+  },
+  "OSS-CARD-109": {
+    "front": "/images/finished-cards/109-recto.webp",
+    "back": "/images/finished-cards/109-verso.webp"
+  },
+  "OSS-CARD-110": {
+    "front": "/images/finished-cards/110-recto.webp",
+    "back": "/images/finished-cards/110-verso.webp"
+  },
+  "OSS-CARD-111": {
+    "front": "/images/finished-cards/111-recto.webp",
+    "back": "/images/finished-cards/111-verso.webp"
+  },
+  "OSS-CARD-112": {
+    "front": "/images/finished-cards/112-recto.webp",
+    "back": "/images/finished-cards/112-verso.webp"
+  },
+  "OSS-CARD-113": {
+    "front": "/images/finished-cards/113-recto.webp",
+    "back": "/images/finished-cards/113-verso.webp"
+  },
+  "OSS-CARD-114": {
+    "front": "/images/finished-cards/114-recto.webp",
+    "back": "/images/finished-cards/114-verso.webp"
+  },
+  "OSS-CARD-115": {
+    "front": "/images/finished-cards/115-recto.webp",
+    "back": "/images/finished-cards/115-verso.webp"
+  },
+  "OSS-CARD-116": {
+    "front": "/images/finished-cards/116-recto.webp",
+    "back": "/images/finished-cards/116-verso.webp"
+  },
+  "OSS-CARD-117": {
+    "front": "/images/finished-cards/117-recto.webp",
+    "back": "/images/finished-cards/117-verso.webp"
+  },
+  "OSS-CARD-118": {
+    "front": "/images/finished-cards/118-recto.webp",
+    "back": "/images/finished-cards/118-verso.webp"
+  },
+  "OSS-CARD-119": {
+    "front": "/images/finished-cards/119-recto.webp",
+    "back": "/images/finished-cards/119-verso.webp"
+  },
+  "OSS-CARD-120": {
+    "front": "/images/finished-cards/120-recto.webp",
+    "back": "/images/finished-cards/120-verso.webp"
+  },
+  "OSS-CARD-121": {
+    "front": "/images/finished-cards/121-recto.webp",
+    "back": "/images/finished-cards/121-verso.webp"
+  },
+  "OSS-CARD-122": {
+    "front": "/images/finished-cards/122-recto.webp",
+    "back": "/images/finished-cards/122-verso.webp"
+  },
+  "OSS-CARD-123": {
+    "front": "/images/finished-cards/123-recto.webp",
+    "back": "/images/finished-cards/123-verso.webp"
+  },
+  "OSS-CARD-124": {
+    "front": "/images/finished-cards/124-recto.webp",
+    "back": "/images/finished-cards/124-verso.webp"
+  },
+  "OSS-CARD-125": {
+    "front": "/images/finished-cards/125-recto.webp",
+    "back": "/images/finished-cards/125-verso.webp"
+  },
+  "OSS-CARD-126": {
+    "front": "/images/finished-cards/126-recto.webp",
+    "back": "/images/finished-cards/126-verso.webp"
+  },
+  "OSS-CARD-127": {
+    "front": "/images/finished-cards/127-recto.webp",
+    "back": "/images/finished-cards/127-verso.webp"
+  },
+  "OSS-CARD-128": {
+    "front": "/images/finished-cards/128-recto.webp",
+    "back": "/images/finished-cards/128-verso.webp"
+  },
+  "OSS-CARD-129": {
+    "front": "/images/finished-cards/129-recto.webp",
+    "back": "/images/finished-cards/129-verso.webp"
+  },
+  "OSS-CARD-130": {
+    "front": "/images/finished-cards/130-recto.webp",
+    "back": "/images/finished-cards/130-verso.webp"
+  },
+  "OSS-CARD-131": {
+    "front": "/images/finished-cards/131-recto.webp",
+    "back": "/images/finished-cards/131-verso.webp"
+  },
+  "OSS-CARD-132": {
+    "front": "/images/finished-cards/132-recto.webp",
+    "back": "/images/finished-cards/132-verso.webp"
+  },
+  "OSS-CARD-133": {
+    "front": "/images/finished-cards/133-recto.webp",
+    "back": "/images/finished-cards/133-verso.webp"
+  },
+  "OSS-CARD-134": {
+    "front": "/images/finished-cards/134-recto.webp",
+    "back": "/images/finished-cards/134-verso.webp"
+  },
+  "OSS-CARD-135": {
+    "front": "/images/finished-cards/135-recto.webp",
+    "back": "/images/finished-cards/135-verso.webp"
+  },
+  "OSS-CARD-136": {
+    "front": "/images/finished-cards/136-recto.webp",
+    "back": "/images/finished-cards/136-verso.webp"
+  },
+  "OSS-CARD-137": {
+    "front": "/images/finished-cards/137-recto.webp",
+    "back": "/images/finished-cards/137-verso.webp"
+  },
+  "OSS-CARD-138": {
+    "front": "/images/finished-cards/138-recto.webp",
+    "back": "/images/finished-cards/138-verso.webp"
+  },
+  "OSS-CARD-139": {
+    "front": "/images/finished-cards/139-recto.webp",
+    "back": "/images/finished-cards/139-verso.webp"
+  },
+  "OSS-CARD-140": {
+    "front": "/images/finished-cards/140-recto.webp",
+    "back": "/images/finished-cards/140-verso.webp"
+  },
+  "OSS-CARD-141": {
+    "front": "/images/finished-cards/141-recto.webp",
+    "back": "/images/finished-cards/141-verso.webp"
+  },
+  "OSS-CARD-142": {
+    "front": "/images/finished-cards/142-recto.webp",
+    "back": "/images/finished-cards/142-verso.webp"
+  },
+  "OSS-CARD-143": {
+    "front": "/images/finished-cards/143-recto.webp",
+    "back": "/images/finished-cards/143-verso.webp"
+  },
+  "OSS-CARD-144": {
+    "front": "/images/finished-cards/144-recto.webp",
+    "back": "/images/finished-cards/144-verso.webp"
+  },
+  "OSS-CARD-145": {
+    "front": "/images/finished-cards/145-recto.webp",
+    "back": "/images/finished-cards/145-verso.webp"
+  },
+  "OSS-CARD-146": {
+    "front": "/images/finished-cards/146-recto.webp",
+    "back": "/images/finished-cards/146-verso.webp"
+  },
+  "OSS-CARD-147": {
+    "front": "/images/finished-cards/147-recto.webp",
+    "back": "/images/finished-cards/147-verso.webp"
+  },
+  "OSS-CARD-148": {
+    "front": "/images/finished-cards/148-recto.webp",
+    "back": "/images/finished-cards/148-verso.webp"
+  },
+  "OSS-CARD-149": {
+    "front": "/images/finished-cards/149-recto.webp",
+    "back": "/images/finished-cards/149-verso.webp"
+  },
+  "OSS-CARD-150": {
+    "front": "/images/finished-cards/150-recto.webp",
+    "back": "/images/finished-cards/150-verso.webp"
+  },
+  "OSS-CARD-151": {
+    "front": "/images/finished-cards/151-recto.webp",
+    "back": "/images/finished-cards/151-verso.webp"
+  },
+  "OSS-CARD-152": {
+    "front": "/images/finished-cards/152-recto.webp",
+    "back": "/images/finished-cards/152-verso.webp"
+  },
+  "OSS-CARD-153": {
+    "front": "/images/finished-cards/153-recto.webp",
+    "back": "/images/finished-cards/153-verso.webp"
+  },
+  "OSS-CARD-154": {
+    "front": "/images/finished-cards/154-recto.webp",
+    "back": "/images/finished-cards/154-verso.webp"
+  },
+  "OSS-CARD-155": {
+    "front": "/images/finished-cards/155-recto.webp",
+    "back": "/images/finished-cards/155-verso.webp"
+  },
+  "OSS-CARD-156": {
+    "front": "/images/finished-cards/156-recto.webp",
+    "back": "/images/finished-cards/156-verso.webp"
+  },
+  "OSS-CARD-157": {
+    "front": "/images/finished-cards/157-recto.webp",
+    "back": "/images/finished-cards/157-verso.webp"
+  },
+  "OSS-CARD-158": {
+    "front": "/images/finished-cards/158-recto.webp",
+    "back": "/images/finished-cards/158-verso.webp"
+  },
+  "OSS-CARD-159": {
+    "front": "/images/finished-cards/159-recto.webp",
+    "back": "/images/finished-cards/159-verso.webp"
+  },
+  "OSS-CARD-160": {
+    "front": "/images/finished-cards/160-recto.webp",
+    "back": "/images/finished-cards/160-verso.webp"
+  },
+  "OSS-CARD-161": {
+    "front": "/images/finished-cards/161-recto.webp",
+    "back": "/images/finished-cards/161-verso.webp"
+  },
+  "OSS-CARD-162": {
+    "front": "/images/finished-cards/162-recto.webp",
+    "back": "/images/finished-cards/162-verso.webp"
+  },
+  "OSS-CARD-163": {
+    "front": "/images/finished-cards/163-recto.webp",
+    "back": "/images/finished-cards/163-verso.webp"
+  },
+  "OSS-CARD-164": {
+    "front": "/images/finished-cards/164-recto.webp",
+    "back": "/images/finished-cards/164-verso.webp"
+  },
+  "OSS-CARD-165": {
+    "front": "/images/finished-cards/165-recto.webp",
+    "back": "/images/finished-cards/165-verso.webp"
+  },
+  "OSS-CARD-166": {
+    "front": "/images/finished-cards/166-recto.webp",
+    "back": "/images/finished-cards/166-verso.webp"
+  },
+  "OSS-CARD-167": {
+    "front": "/images/finished-cards/167-recto.webp",
+    "back": "/images/finished-cards/167-verso.webp"
+  },
+  "OSS-CARD-168": {
+    "front": "/images/finished-cards/168-recto.webp",
+    "back": "/images/finished-cards/168-verso.webp"
+  },
+  "OSS-CARD-169": {
+    "front": "/images/finished-cards/169-recto.webp",
+    "back": "/images/finished-cards/169-verso.webp"
+  },
+  "OSS-CARD-170": {
+    "front": "/images/finished-cards/170-recto.webp",
+    "back": "/images/finished-cards/170-verso.webp"
+  },
+  "OSS-CARD-171": {
+    "front": "/images/finished-cards/171-recto.webp",
+    "back": "/images/finished-cards/171-verso.webp"
+  },
+  "OSS-CARD-172": {
+    "front": "/images/finished-cards/172-recto.webp",
+    "back": "/images/finished-cards/172-verso.webp"
+  },
+  "OSS-CARD-173": {
+    "front": "/images/finished-cards/173-recto.webp",
+    "back": "/images/finished-cards/173-verso.webp"
+  },
+  "OSS-CARD-174": {
+    "front": "/images/finished-cards/174-recto.webp",
+    "back": "/images/finished-cards/174-verso.webp"
+  },
+  "OSS-CARD-175": {
+    "front": "/images/finished-cards/175-recto.webp",
+    "back": "/images/finished-cards/175-verso.webp"
+  },
+  "OSS-CARD-176": {
+    "front": "/images/finished-cards/176-recto.webp",
+    "back": "/images/finished-cards/176-verso.webp"
+  },
+  "OSS-CARD-177": {
+    "front": "/images/finished-cards/177-recto.webp",
+    "back": "/images/finished-cards/177-verso.webp"
+  },
+  "OSS-CARD-178": {
+    "front": "/images/finished-cards/178-recto.webp",
+    "back": "/images/finished-cards/178-verso.webp"
+  },
+  "OSS-CARD-179": {
+    "front": "/images/finished-cards/179-recto.webp",
+    "back": "/images/finished-cards/179-verso.webp"
+  },
+  "OSS-CARD-180": {
+    "front": "/images/finished-cards/180-recto.webp",
+    "back": "/images/finished-cards/180-verso.webp"
+  },
+  "OSS-CARD-181": {
+    "front": "/images/finished-cards/181-recto.webp",
+    "back": "/images/finished-cards/181-verso.webp"
+  },
+  "OSS-CARD-182": {
+    "front": "/images/finished-cards/182-recto.webp",
+    "back": "/images/finished-cards/182-verso.webp"
+  },
+  "OSS-CARD-183": {
+    "front": "/images/finished-cards/183-recto.webp",
+    "back": "/images/finished-cards/183-verso.webp"
+  },
+  "OSS-CARD-184": {
+    "front": "/images/finished-cards/184-recto.webp",
+    "back": "/images/finished-cards/184-verso.webp"
+  },
+  "OSS-CARD-185": {
+    "front": "/images/finished-cards/185-recto.webp",
+    "back": "/images/finished-cards/185-verso.webp"
+  },
+  "OSS-CARD-186": {
+    "front": "/images/finished-cards/186-recto.webp",
+    "back": "/images/finished-cards/186-verso.webp"
+  },
+  "OSS-CARD-187": {
+    "front": "/images/finished-cards/187-recto.webp",
+    "back": "/images/finished-cards/187-verso.webp"
+  },
+  "OSS-CARD-188": {
+    "front": "/images/finished-cards/188-recto.webp",
+    "back": "/images/finished-cards/188-verso.webp"
+  },
+  "OSS-CARD-189": {
+    "front": "/images/finished-cards/189-recto.webp",
+    "back": "/images/finished-cards/189-verso.webp"
+  },
+  "OSS-CARD-190": {
+    "front": "/images/finished-cards/190-recto.webp",
+    "back": "/images/finished-cards/190-verso.webp"
+  },
+  "OSS-CARD-191": {
+    "front": "/images/finished-cards/191-recto.webp",
+    "back": "/images/finished-cards/191-verso.webp"
+  },
+  "OSS-CARD-192": {
+    "front": "/images/finished-cards/192-recto.webp",
+    "back": "/images/finished-cards/192-verso.webp"
+  },
+  "OSS-CARD-193": {
+    "front": "/images/finished-cards/193-recto.webp",
+    "back": "/images/finished-cards/193-verso.webp"
+  },
+  "OSS-CARD-194": {
+    "front": "/images/finished-cards/194-recto.webp",
+    "back": "/images/finished-cards/194-verso.webp"
+  },
+  "OSS-CARD-195": {
+    "front": "/images/finished-cards/195-recto.webp",
+    "back": "/images/finished-cards/195-verso.webp"
+  },
+  "OSS-CARD-196": {
+    "front": "/images/finished-cards/196-recto.webp",
+    "back": "/images/finished-cards/196-verso.webp"
+  },
+  "OSS-CARD-197": {
+    "front": "/images/finished-cards/197-recto.webp",
+    "back": "/images/finished-cards/197-verso.webp"
+  },
+  "OSS-CARD-198": {
+    "front": "/images/finished-cards/198-recto.webp",
+    "back": "/images/finished-cards/198-verso.webp"
+  },
+  "OSS-CARD-199": {
+    "front": "/images/finished-cards/199-recto.webp",
+    "back": "/images/finished-cards/199-verso.webp"
+  },
+  "OSS-CARD-200": {
+    "front": "/images/finished-cards/200-recto.webp",
+    "back": "/images/finished-cards/200-verso.webp"
+  },
+  "OSS-CARD-201": {
+    "front": "/images/finished-cards/201-recto.webp",
+    "back": "/images/finished-cards/201-verso.webp"
+  },
+  "OSS-CARD-202": {
+    "front": "/images/finished-cards/202-recto.webp",
+    "back": "/images/finished-cards/202-verso.webp"
+  },
+  "OSS-CARD-203": {
+    "front": "/images/finished-cards/203-recto.webp",
+    "back": "/images/finished-cards/203-verso.webp"
+  },
+  "OSS-CARD-204": {
+    "front": "/images/finished-cards/204-recto.webp",
+    "back": "/images/finished-cards/204-verso.webp"
+  },
+  "OSS-CARD-205": {
+    "front": "/images/finished-cards/205-recto.webp",
+    "back": "/images/finished-cards/205-verso.webp"
+  },
+  "OSS-CARD-206": {
+    "front": "/images/finished-cards/206-recto.webp",
+    "back": "/images/finished-cards/206-verso.webp"
+  },
+  "OSS-CARD-207": {
+    "front": "/images/finished-cards/207-recto.webp",
+    "back": "/images/finished-cards/207-verso.webp"
+  },
+  "OSS-CARD-208": {
+    "front": "/images/finished-cards/208-recto.webp",
+    "back": "/images/finished-cards/208-verso.webp"
+  },
+  "OSS-CARD-209": {
+    "front": "/images/finished-cards/209-recto.webp",
+    "back": "/images/finished-cards/209-verso.webp"
+  },
+  "OSS-CARD-210": {
+    "front": "/images/finished-cards/210-recto.webp",
+    "back": "/images/finished-cards/210-verso.webp"
+  },
+  "OSS-CARD-211": {
+    "front": "/images/finished-cards/211-recto.webp",
+    "back": "/images/finished-cards/211-verso.webp"
+  },
+  "OSS-CARD-212": {
+    "front": "/images/finished-cards/212-recto.webp",
+    "back": "/images/finished-cards/212-verso.webp"
+  },
+  "OSS-CARD-213": {
+    "front": "/images/finished-cards/213-recto.webp",
+    "back": "/images/finished-cards/213-verso.webp"
+  },
+  "OSS-CARD-214": {
+    "front": "/images/finished-cards/214-recto.webp",
+    "back": "/images/finished-cards/214-verso.webp"
+  },
+  "OSS-CARD-215": {
+    "front": "/images/finished-cards/215-recto.webp",
+    "back": "/images/finished-cards/215-verso.webp"
+  },
+  "OSS-CARD-216": {
+    "front": "/images/finished-cards/216-recto.webp",
+    "back": "/images/finished-cards/216-verso.webp"
+  },
+  "OSS-CARD-217": {
+    "front": "/images/finished-cards/217-recto.webp",
+    "back": "/images/finished-cards/217-verso.webp"
+  },
+  "OSS-CARD-218": {
+    "front": "/images/finished-cards/218-recto.webp",
+    "back": "/images/finished-cards/218-verso.webp"
+  },
+  "OSS-CARD-219": {
+    "front": "/images/finished-cards/219-recto.webp",
+    "back": "/images/finished-cards/219-verso.webp"
+  },
+  "OSS-CARD-220": {
+    "front": "/images/finished-cards/220-recto.webp",
+    "back": "/images/finished-cards/220-verso.webp"
+  },
+  "OSS-CARD-221": {
+    "front": "/images/finished-cards/221-recto.webp",
+    "back": "/images/finished-cards/221-verso.webp"
+  },
+  "OSS-CARD-222": {
+    "front": "/images/finished-cards/222-recto.webp",
+    "back": "/images/finished-cards/222-verso.webp"
+  },
+  "OSS-CARD-223": {
+    "front": "/images/finished-cards/223-recto.webp",
+    "back": "/images/finished-cards/223-verso.webp"
+  },
+  "OSS-CARD-224": {
+    "front": "/images/finished-cards/224-recto.webp",
+    "back": "/images/finished-cards/224-verso.webp"
+  },
+  "OSS-CARD-225": {
+    "front": "/images/finished-cards/225-recto.webp",
+    "back": "/images/finished-cards/225-verso.webp"
+  },
+  "OSS-CARD-226": {
+    "front": "/images/finished-cards/226-recto.webp",
+    "back": "/images/finished-cards/226-verso.webp"
+  },
+  "OSS-CARD-227": {
+    "front": "/images/finished-cards/227-recto.webp",
+    "back": "/images/finished-cards/227-verso.webp"
+  },
+  "OSS-CARD-228": {
+    "front": "/images/finished-cards/228-recto.webp",
+    "back": "/images/finished-cards/228-verso.webp"
+  },
+  "OSS-CARD-229": {
+    "front": "/images/finished-cards/229-recto.webp",
+    "back": "/images/finished-cards/229-verso.webp"
+  },
+  "OSS-CARD-230": {
+    "front": "/images/finished-cards/230-recto.webp",
+    "back": "/images/finished-cards/230-verso.webp"
+  },
+  "OSS-CARD-231": {
+    "front": "/images/finished-cards/231-recto.webp",
+    "back": "/images/finished-cards/231-verso.webp"
+  },
+  "OSS-CARD-232": {
+    "front": "/images/finished-cards/232-recto.webp",
+    "back": "/images/finished-cards/232-verso.webp"
+  },
+  "OSS-CARD-233": {
+    "front": "/images/finished-cards/233-recto.webp",
+    "back": "/images/finished-cards/233-verso.webp"
+  },
+  "OSS-CARD-234": {
+    "front": "/images/finished-cards/234-recto.webp",
+    "back": "/images/finished-cards/234-verso.webp"
+  },
+  "OSS-CARD-235": {
+    "front": "/images/finished-cards/235-recto.webp",
+    "back": "/images/finished-cards/235-verso.webp"
+  },
+  "OSS-CARD-236": {
+    "front": "/images/finished-cards/236-recto.webp",
+    "back": "/images/finished-cards/236-verso.webp"
+  },
+  "OSS-CARD-237": {
+    "front": "/images/finished-cards/237-recto.webp",
+    "back": "/images/finished-cards/237-verso.webp"
+  },
+  "OSS-CARD-238": {
+    "front": "/images/finished-cards/238-recto.webp",
+    "back": "/images/finished-cards/238-verso.webp"
+  },
+  "OSS-CARD-239": {
+    "front": "/images/finished-cards/239-recto.webp",
+    "back": "/images/finished-cards/239-verso.webp"
+  },
+  "OSS-CARD-240": {
+    "front": "/images/finished-cards/240-recto.webp",
+    "back": "/images/finished-cards/240-verso.webp"
+  }
+}

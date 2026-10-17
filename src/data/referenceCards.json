@@ -1,0 +1,56 @@
+[
+  {
+    "id": "A01",
+    "name": "Spectre Guerrier",
+    "front": "/images/finished-cards/A01-recto.webp",
+    "back": "/images/finished-cards/A01-verso.webp"
+  },
+  {
+    "id": "A02",
+    "name": "Spectre Druide",
+    "front": "/images/finished-cards/A02-recto.webp",
+    "back": "/images/finished-cards/A02-verso.webp"
+  },
+  {
+    "id": "A03",
+    "name": "Spectre Chasseur",
+    "front": "/images/finished-cards/A03-recto.webp",
+    "back": "/images/finished-cards/A03-verso.webp"
+  },
+  {
+    "id": "A04",
+    "name": "Spectre Mage",
+    "front": "/images/finished-cards/A04-recto.webp",
+    "back": "/images/finished-cards/A04-verso.webp"
+  },
+  {
+    "id": "A05",
+    "name": "Spectre Voleur",
+    "front": "/images/finished-cards/A05-recto.webp",
+    "back": "/images/finished-cards/A05-verso.webp"
+  },
+  {
+    "id": "A06",
+    "name": "Spectre Nécromancien",
+    "front": "/images/finished-cards/A06-recto.webp",
+    "back": "/images/finished-cards/A06-verso.webp"
+  },
+  {
+    "id": "A07",
+    "name": "Tour et équipement",
+    "front": "/images/finished-cards/A07-recto.webp",
+    "back": "/images/finished-cards/A07-verso.webp"
+  },
+  {
+    "id": "A08",
+    "name": "Combat et Actions",
+    "front": "/images/finished-cards/A08-recto.webp",
+    "back": "/images/finished-cards/A08-verso.webp"
+  },
+  {
+    "id": "A09",
+    "name": "Taverne et Boss",
+    "front": "/images/finished-cards/A09-recto.webp",
+    "back": "/images/finished-cards/A09-verso.webp"
+  }
+]

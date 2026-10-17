@@ -1,1232 +1,2197 @@
 [
   {
-    "name": "Achat forcé1",
-    "key": "achat-force1",
-    "src": "/images/cards/achat-force1.webp"
-  },
-  {
-    "name": "Achat forcé2",
-    "key": "achat-force2",
-    "src": "/images/cards/achat-force2.webp"
-  },
-  {
-    "name": "Aiguemorte",
-    "key": "aiguemorte",
-    "src": "/images/cards/aiguemorte.webp"
-  },
-  {
-    "name": "Apaiser1",
-    "key": "apaiser1",
-    "src": "/images/cards/apaiser1.webp"
-  },
-  {
-    "name": "Apaiser2",
-    "key": "apaiser2",
-    "src": "/images/cards/apaiser2.webp"
-  },
-  {
-    "name": "Apaiser3",
-    "key": "apaiser3",
-    "src": "/images/cards/apaiser3.webp"
-  },
-  {
-    "name": "Arachnarque",
-    "key": "arachnarque",
-    "src": "/images/cards/arachnarque.webp"
-  },
-  {
-    "name": "Arbalète Guillotine",
-    "key": "arbalete-guillotine",
-    "src": "/images/cards/arbalete-guillotine.webp"
-  },
-  {
-    "name": "Arbalète Mordante",
-    "key": "arbalete-mordante",
-    "src": "/images/cards/arbalete-mordante.webp"
-  },
-  {
-    "name": "Arbalète Triplette",
-    "key": "arbalete-triplette",
-    "src": "/images/cards/arbalete-triplette.webp"
-  },
-  {
-    "name": "Arc Épineux",
-    "key": "arc-epineux",
-    "src": "/images/cards/arc-epineux.webp"
-  },
-  {
-    "name": "Arc Ramure",
-    "key": "arc-ramure",
-    "src": "/images/cards/arc-ramure.webp"
-  },
-  {
-    "name": "Arc Thoracique",
-    "key": "arc-thoracique",
-    "src": "/images/cards/arc-thoracique.webp"
-  },
-  {
-    "name": "Astrolabe des Arcanes",
-    "key": "astrolabe-des-arcanes",
-    "src": "/images/cards/astrolabe-des-arcanes.webp"
-  },
-  {
-    "name": "Baguette Brasier",
-    "key": "baguette-brasier",
-    "src": "/images/cards/baguette-brasier.webp"
-  },
-  {
-    "name": "Baguette Entrelacs",
-    "key": "baguette-entrelacs",
-    "src": "/images/cards/baguette-entrelacs.webp"
-  },
-  {
-    "name": "Baguette Ossuaire",
-    "key": "baguette-ossuaire",
-    "src": "/images/cards/baguette-ossuaire.webp"
-  },
-  {
-    "name": "Baguette Runique",
-    "key": "baguette-runique",
-    "src": "/images/cards/baguette-runique.webp"
-  },
-  {
-    "name": "Balancier1",
-    "key": "balancier1",
-    "src": "/images/cards/balancier1.webp"
-  },
-  {
-    "name": "Balancier2",
-    "key": "balancier2",
-    "src": "/images/cards/balancier2.webp"
-  },
-  {
-    "name": "Bâton des Heures à deux mains",
-    "key": "baton-des-heures-a-deux-mains",
-    "src": "/images/cards/baton-des-heures-a-deux-mains.webp"
-  },
-  {
-    "name": "Bâton du Nexus à deux mains",
-    "key": "baton-du-nexus-a-deux-mains",
-    "src": "/images/cards/baton-du-nexus-a-deux-mains.webp"
-  },
-  {
-    "name": "Bâton du Permafrost à deux mains",
-    "key": "baton-du-permafrost-a-deux-mains",
-    "src": "/images/cards/baton-du-permafrost-a-deux-mains.webp"
-  },
-  {
-    "name": "Bottes Ailées",
-    "key": "bottes-ailees",
-    "src": "/images/cards/bottes-ailees.webp"
-  },
-  {
-    "name": "Bottes Fer-Semelle",
-    "key": "bottes-fer-semelle",
-    "src": "/images/cards/bottes-fer-semelle.webp"
-  },
-  {
-    "name": "Bottes Longue-Piste",
-    "key": "bottes-longue-piste",
-    "src": "/images/cards/bottes-longue-piste.webp"
-  },
-  {
-    "name": "Bottes Mille-Lames",
-    "key": "bottes-mille-lames",
-    "src": "/images/cards/bottes-mille-lames.webp"
-  },
-  {
-    "name": "Bottes Nomades",
-    "key": "bottes-nomades",
-    "src": "/images/cards/bottes-nomades.webp"
-  },
-  {
-    "name": "Bottes Solaires",
-    "key": "bottes-solaires",
-    "src": "/images/cards/bottes-solaires.webp"
-  },
-  {
-    "name": "Brise-armure",
-    "key": "brise-armure",
-    "src": "/images/cards/brise-armure.webp"
-  },
-  {
-    "name": "Brise-Fer à deux mains",
-    "key": "brise-fer-a-deux-mains",
-    "src": "/images/cards/brise-fer-a-deux-mains.webp"
-  },
-  {
-    "name": "Broyeur",
-    "key": "broyeur",
-    "src": "/images/cards/broyeur.webp"
-  },
-  {
-    "name": "Casque Bois-Cornu",
-    "key": "casque-bois-cornu",
-    "src": "/images/cards/casque-bois-cornu.webp"
-  },
-  {
-    "name": "Cataclysme",
-    "key": "cataclysme",
-    "src": "/images/cards/cataclysme.webp"
-  },
-  {
-    "name": "Céramid1",
-    "key": "ceramid1",
-    "src": "/images/cards/ceramid1.webp"
-  },
-  {
-    "name": "Céramid2",
-    "key": "ceramid2",
-    "src": "/images/cards/ceramid2.webp"
-  },
-  {
-    "name": "Chance1",
-    "key": "chance1",
-    "src": "/images/cards/chance1.webp"
-  },
-  {
-    "name": "Chance2",
-    "key": "chance2",
-    "src": "/images/cards/chance2.webp"
-  },
-  {
-    "name": "Chasseur",
-    "key": "chasseur",
-    "src": "/images/cards/chasseur.webp"
-  },
-  {
-    "name": "Cisailleur",
-    "key": "cisailleur",
-    "src": "/images/cards/cisailleur.webp"
-  },
-  {
-    "name": "Codex des Astres Funèbres",
-    "key": "codex-des-astres-funebres",
-    "src": "/images/cards/codex-des-astres-funebres.webp"
-  },
-  {
-    "name": "Coiffe Loup-Sorcier",
-    "key": "coiffe-loup-sorcier",
-    "src": "/images/cards/coiffe-loup-sorcier.webp"
-  },
-  {
-    "name": "Collier des Grandes Chasses",
-    "key": "collier-des-grandes-chasses",
-    "src": "/images/cards/collier-des-grandes-chasses.webp"
-  },
-  {
-    "name": "Contre-sort1",
-    "key": "contre-sort1",
-    "src": "/images/cards/contre-sort1.webp"
-  },
-  {
-    "name": "Contre-sort2",
-    "key": "contre-sort2",
-    "src": "/images/cards/contre-sort2.webp"
-  },
-  {
-    "name": "Contre-sort3",
-    "key": "contre-sort3",
-    "src": "/images/cards/contre-sort3.webp"
-  },
-  {
-    "name": "Contre-sort4",
-    "key": "contre-sort4",
-    "src": "/images/cards/contre-sort4.webp"
-  },
-  {
-    "name": "Corrosion1",
-    "key": "corrosion1",
-    "src": "/images/cards/corrosion1.webp"
-  },
-  {
-    "name": "Corrosion2",
-    "key": "corrosion2",
-    "src": "/images/cards/corrosion2.webp"
-  },
-  {
-    "name": "Cuirassé",
-    "key": "cuirasse",
-    "src": "/images/cards/cuirasse.webp"
-  },
-  {
-    "name": "Cupidité1",
-    "key": "cupidite1",
-    "src": "/images/cards/cupidite1.webp"
-  },
-  {
-    "name": "Cupidité2",
-    "key": "cupidite2",
-    "src": "/images/cards/cupidite2.webp"
-  },
-  {
-    "name": "Cupidité3",
-    "key": "cupidite3",
-    "src": "/images/cards/cupidite3.webp"
-  },
-  {
-    "name": "Dague de l’Ombre",
-    "key": "dague-de-lombre",
-    "src": "/images/cards/dague-de-lombre.webp"
-  },
-  {
-    "name": "Dague Éclat Sauvage",
-    "key": "dague-eclat-sauvage",
-    "src": "/images/cards/dague-eclat-sauvage.webp"
-  },
-  {
-    "name": "Dague Lunefeuille",
-    "key": "dague-lunefeuille",
-    "src": "/images/cards/dague-lunefeuille.webp"
-  },
-  {
-    "name": "Dague Veuve",
-    "key": "dague-veuve",
-    "src": "/images/cards/dague-veuve.webp"
-  },
-  {
-    "name": "Dépossession",
-    "key": "depossession",
-    "src": "/images/cards/depossession.webp"
-  },
-  {
-    "name": "Destruction1",
-    "key": "destruction1",
-    "src": "/images/cards/destruction1.webp"
-  },
-  {
-    "name": "Destruction2",
-    "key": "destruction2",
-    "src": "/images/cards/destruction2.webp"
-  },
-  {
-    "name": "Dévoreur",
-    "key": "devoreur",
-    "src": "/images/cards/devoreur.webp"
-  },
-  {
-    "name": "Druide",
-    "key": "druide",
-    "src": "/images/cards/druide.webp"
-  },
-  {
-    "name": "Échine-Noire à deux mains",
-    "key": "echine-noire-a-deux-mains",
-    "src": "/images/cards/echine-noire-a-deux-mains.webp"
-  },
-  {
-    "name": "Elfe-Femelle",
-    "key": "elfe-femelle",
-    "src": "/images/cards/elfe-femelle.webp"
-  },
-  {
-    "name": "Elfe-Male",
-    "key": "elfe-male",
-    "src": "/images/cards/elfe-male.webp"
-  },
-  {
-    "name": "Encloué1",
-    "key": "encloue1",
-    "src": "/images/cards/encloue1.webp"
-  },
-  {
-    "name": "Encloué2",
-    "key": "encloue2",
-    "src": "/images/cards/encloue2.webp"
-  },
-  {
-    "name": "Épée Déchiqueteuse",
-    "key": "epee-dechiqueteuse",
-    "src": "/images/cards/epee-dechiqueteuse.webp"
-  },
-  {
-    "name": "Épée Demi-Lune",
-    "key": "epee-demi-lune",
-    "src": "/images/cards/epee-demi-lune.webp"
-  },
-  {
-    "name": "Épée Fer du Conquérant",
-    "key": "epee-fer-du-conquerant",
-    "src": "/images/cards/epee-fer-du-conquerant.webp"
-  },
-  {
-    "name": "Épée Fractale",
-    "key": "epee-fractale",
-    "src": "/images/cards/epee-fractale.webp"
-  },
-  {
-    "name": "Étendard des Mille Batailles",
-    "key": "etendard-des-mille-batailles",
-    "src": "/images/cards/etendard-des-mille-batailles.webp"
-  },
-  {
-    "name": "Éveil1",
-    "key": "eveil1",
-    "src": "/images/cards/eveil1.webp"
-  },
-  {
-    "name": "Éveil2",
-    "key": "eveil2",
-    "src": "/images/cards/eveil2.webp"
-  },
-  {
-    "name": "Éveil3",
-    "key": "eveil3",
-    "src": "/images/cards/eveil3.webp"
-  },
-  {
-    "name": "Exarque",
-    "key": "exarque",
-    "src": "/images/cards/exarque.webp"
-  },
-  {
-    "name": "Exclusion1",
-    "key": "exclusion1",
-    "src": "/images/cards/exclusion1.webp"
-  },
-  {
-    "name": "Exclusion2",
-    "key": "exclusion2",
-    "src": "/images/cards/exclusion2.webp"
-  },
-  {
-    "name": "Exclusion3",
-    "key": "exclusion3",
-    "src": "/images/cards/exclusion3.webp"
-  },
-  {
-    "name": "Exécution1",
-    "key": "execution1",
-    "src": "/images/cards/execution1.webp"
-  },
-  {
-    "name": "Exécution2",
-    "key": "execution2",
-    "src": "/images/cards/execution2.webp"
-  },
-  {
-    "name": "Faiblesse1",
-    "key": "faiblesse1",
-    "src": "/images/cards/faiblesse1.webp"
-  },
-  {
-    "name": "Faiblesse2",
-    "key": "faiblesse2",
-    "src": "/images/cards/faiblesse2.webp"
-  },
-  {
-    "name": "Faucille Fossoyeuse",
-    "key": "faucille-fossoyeuse",
-    "src": "/images/cards/faucille-fossoyeuse.webp"
-  },
-  {
-    "name": "Faux du Requiem à deux mains",
-    "key": "faux-du-requiem-a-deux-mains",
-    "src": "/images/cards/faux-du-requiem-a-deux-mains.webp"
-  },
-  {
-    "name": "Faux du Trépas à deux mains",
-    "key": "faux-du-trepas-a-deux-mains",
-    "src": "/images/cards/faux-du-trepas-a-deux-mains.webp"
-  },
-  {
-    "name": "Faux du Voile à deux mains",
-    "key": "faux-du-voile-a-deux-mains",
-    "src": "/images/cards/faux-du-voile-a-deux-mains.webp"
-  },
-  {
-    "name": "Féticheur1",
-    "key": "feticheur1",
-    "src": "/images/cards/feticheur1.webp"
-  },
-  {
-    "name": "Féticheur2",
-    "key": "feticheur2",
-    "src": "/images/cards/feticheur2.webp"
-  },
-  {
-    "name": "Fielpeau",
-    "key": "fielpeau",
-    "src": "/images/cards/fielpeau.webp"
-  },
-  {
-    "name": "Force1",
-    "key": "force1",
-    "src": "/images/cards/force1.webp"
-  },
-  {
-    "name": "Force2",
-    "key": "force2",
-    "src": "/images/cards/force2.webp"
-  },
-  {
-    "name": "Fouisseur1",
-    "key": "fouisseur1",
-    "src": "/images/cards/fouisseur1.webp"
-  },
-  {
-    "name": "Fouisseur2",
-    "key": "fouisseur2",
-    "src": "/images/cards/fouisseur2.webp"
-  },
-  {
-    "name": "Fournaise",
-    "key": "fournaise",
-    "src": "/images/cards/fournaise.webp"
-  },
-  {
-    "name": "Frénésie1",
-    "key": "frenesie1",
-    "src": "/images/cards/frenesie1.webp"
-  },
-  {
-    "name": "Frénésie2",
-    "key": "frenesie2",
-    "src": "/images/cards/frenesie2.webp"
-  },
-  {
-    "name": "Frénésie3",
-    "key": "frenesie3",
-    "src": "/images/cards/frenesie3.webp"
-  },
-  {
-    "name": "Fumefange1",
-    "key": "fumefange1",
-    "src": "/images/cards/fumefange1.webp"
-  },
-  {
-    "name": "Fumefange2",
-    "key": "fumefange2",
-    "src": "/images/cards/fumefange2.webp"
-  },
-  {
-    "name": "Gantelets Carapace",
-    "key": "gantelets-carapace",
-    "src": "/images/cards/gantelets-carapace.webp"
-  },
-  {
-    "name": "Gantelets Clairargent",
-    "key": "gantelets-clairargent",
-    "src": "/images/cards/gantelets-clairargent.webp"
-  },
-  {
-    "name": "Gantelets Forge-Royale",
-    "key": "gantelets-forge-royale",
-    "src": "/images/cards/gantelets-forge-royale.webp"
-  },
-  {
-    "name": "Gants Brise-Phalanges",
-    "key": "gants-brise-phalanges",
-    "src": "/images/cards/gants-brise-phalanges.webp"
-  },
-  {
-    "name": "Gants Nervurés",
-    "key": "gants-nervures",
-    "src": "/images/cards/gants-nervures.webp"
-  },
-  {
-    "name": "Gobeur",
-    "key": "gobeur",
-    "src": "/images/cards/gobeur.webp"
-  },
-  {
-    "name": "Golem",
-    "key": "golem",
-    "src": "/images/cards/golem.webp"
-  },
-  {
-    "name": "Graine de l’Arbre-Vie",
-    "key": "graine-de-larbre-vie",
-    "src": "/images/cards/graine-de-larbre-vie.webp"
+    "name": "Guerrier",
+    "key": "guerrier1",
+    "src": "/images/finished-cards/001-recto.webp"
   },
   {
     "name": "Guerrier",
     "key": "guerrier",
-    "src": "/images/cards/guerrier.webp"
+    "src": "/images/finished-cards/001-recto.webp"
   },
   {
-    "name": "Hache Bois-de-Sang",
-    "key": "hache-bois-de-sang",
-    "src": "/images/cards/hache-bois-de-sang.webp"
+    "name": "Druide",
+    "key": "druide1",
+    "src": "/images/finished-cards/002-recto.webp"
   },
   {
-    "name": "Hache Brise-Enclume à deux mains",
-    "key": "hache-brise-enclume-a-deux-mains",
-    "src": "/images/cards/hache-brise-enclume-a-deux-mains.webp"
+    "name": "Druide",
+    "key": "druide",
+    "src": "/images/finished-cards/002-recto.webp"
   },
   {
-    "name": "Hache Brise-Mâchoire",
-    "key": "hache-brise-machoire",
-    "src": "/images/cards/hache-brise-machoire.webp"
+    "name": "Chasseur",
+    "key": "chasseur1",
+    "src": "/images/finished-cards/003-recto.webp"
   },
   {
-    "name": "Hache Clairfeuille",
-    "key": "hache-clairfeuille",
-    "src": "/images/cards/hache-clairfeuille.webp"
+    "name": "Chasseur",
+    "key": "chasseur",
+    "src": "/images/finished-cards/003-recto.webp"
   },
   {
-    "name": "Hache Éclate-Roc",
-    "key": "hache-eclate-roc",
-    "src": "/images/cards/hache-eclate-roc.webp"
-  },
-  {
-    "name": "Hache Fétiche à deux mains",
-    "key": "hache-fetiche-a-deux-mains",
-    "src": "/images/cards/hache-fetiche-a-deux-mains.webp"
-  },
-  {
-    "name": "Hache Léviathan à deux mains",
-    "key": "hache-leviathan-a-deux-mains",
-    "src": "/images/cards/hache-leviathan-a-deux-mains.webp"
-  },
-  {
-    "name": "Heaume Bec-de-Fer",
-    "key": "heaume-bec-de-fer",
-    "src": "/images/cards/heaume-bec-de-fer.webp"
-  },
-  {
-    "name": "Heaume Chimérique",
-    "key": "heaume-chimerique",
-    "src": "/images/cards/heaume-chimerique.webp"
-  },
-  {
-    "name": "Heaume Couronnefer",
-    "key": "heaume-couronnefer",
-    "src": "/images/cards/heaume-couronnefer.webp"
-  },
-  {
-    "name": "Humain-Femelle",
-    "key": "humain-femelle",
-    "src": "/images/cards/humain-femelle.webp"
-  },
-  {
-    "name": "Humain-Male",
-    "key": "humain-male",
-    "src": "/images/cards/humain-male.webp"
-  },
-  {
-    "name": "Hurlemort",
-    "key": "hurlemort",
-    "src": "/images/cards/hurlemort.webp"
-  },
-  {
-    "name": "Immaculée",
-    "key": "immaculee",
-    "src": "/images/cards/immaculee.webp"
-  },
-  {
-    "name": "Inachevé1",
-    "key": "inacheve1",
-    "src": "/images/cards/inacheve1.webp"
-  },
-  {
-    "name": "Inachevé2",
-    "key": "inacheve2",
-    "src": "/images/cards/inacheve2.webp"
-  },
-  {
-    "name": "Incapacité1",
-    "key": "incapacite1",
-    "src": "/images/cards/incapacite1.webp"
-  },
-  {
-    "name": "Incapacité2",
-    "key": "incapacite2",
-    "src": "/images/cards/incapacite2.webp"
-  },
-  {
-    "name": "Interversion1",
-    "key": "interversion1",
-    "src": "/images/cards/interversion1.webp"
-  },
-  {
-    "name": "Interversion2",
-    "key": "interversion2",
-    "src": "/images/cards/interversion2.webp"
-  },
-  {
-    "name": "Invocation1",
-    "key": "invocation1",
-    "src": "/images/cards/invocation1.webp"
-  },
-  {
-    "name": "Invocation2",
-    "key": "invocation2",
-    "src": "/images/cards/invocation2.webp"
-  },
-  {
-    "name": "L’Envers",
-    "key": "lenvers",
-    "src": "/images/cards/lenvers.webp"
-  },
-  {
-    "name": "L’Invaincu ",
-    "key": "linvaincu",
-    "src": "/images/cards/linvaincu.webp"
-  },
-  {
-    "name": "L’Ombre Dérobée",
-    "key": "lombre-derobee",
-    "src": "/images/cards/lombre-derobee.webp"
-  },
-  {
-    "name": "La Suzeraine",
-    "key": "la-suzeraine",
-    "src": "/images/cards/la-suzeraine.webp"
-  },
-  {
-    "name": "Lacéreur1",
-    "key": "lacereur1",
-    "src": "/images/cards/lacereur1.webp"
-  },
-  {
-    "name": "Lacéreur2",
-    "key": "lacereur2",
-    "src": "/images/cards/lacereur2.webp"
-  },
-  {
-    "name": "Lame-Rempart à deux mains",
-    "key": "lame-rempart-a-deux-mains",
-    "src": "/images/cards/lame-rempart-a-deux-mains.webp"
-  },
-  {
-    "name": "Larcin",
-    "key": "larcin",
-    "src": "/images/cards/larcin.webp"
-  },
-  {
-    "name": "Le Créateur ",
-    "key": "le-createur",
-    "src": "/images/cards/le-createur.webp"
-  },
-  {
-    "name": "Le Martyr",
-    "key": "le-martyr",
-    "src": "/images/cards/le-martyr.webp"
-  },
-  {
-    "name": "Le Parfait ",
-    "key": "le-parfait",
-    "src": "/images/cards/le-parfait.webp"
+    "name": "Mage",
+    "key": "mage1",
+    "src": "/images/finished-cards/004-recto.webp"
   },
   {
     "name": "Mage",
     "key": "mage",
-    "src": "/images/cards/mage.webp"
+    "src": "/images/finished-cards/004-recto.webp"
   },
   {
-    "name": "Malchance1",
-    "key": "malchance1",
-    "src": "/images/cards/malchance1.webp"
-  },
-  {
-    "name": "Malchance2",
-    "key": "malchance2",
-    "src": "/images/cards/malchance2.webp"
-  },
-  {
-    "name": "Masque Voilé",
-    "key": "masque-voile",
-    "src": "/images/cards/masque-voile.webp"
-  },
-  {
-    "name": "Masse du Bastion",
-    "key": "masse-du-bastion",
-    "src": "/images/cards/masse-du-bastion.webp"
-  },
-  {
-    "name": "Masse Écailleuse",
-    "key": "masse-ecailleuse",
-    "src": "/images/cards/masse-ecailleuse.webp"
-  },
-  {
-    "name": "Masse Fongique à deux mains",
-    "key": "masse-fongique-a-deux-mains",
-    "src": "/images/cards/masse-fongique-a-deux-mains.webp"
-  },
-  {
-    "name": "Masse Mille-Clous",
-    "key": "masse-mille-clous",
-    "src": "/images/cards/masse-mille-clous.webp"
-  },
-  {
-    "name": "Masse Nautile",
-    "key": "masse-nautile",
-    "src": "/images/cards/masse-nautile.webp"
-  },
-  {
-    "name": "Masse Racinaire à deux mains",
-    "key": "masse-racinaire-a-deux-mains",
-    "src": "/images/cards/masse-racinaire-a-deux-mains.webp"
-  },
-  {
-    "name": "Masse Totémique à deux mains",
-    "key": "masse-totemique-a-deux-mains",
-    "src": "/images/cards/masse-totemique-a-deux-mains.webp"
-  },
-  {
-    "name": "Mimétisme",
-    "key": "mimetisme",
-    "src": "/images/cards/mimetisme.webp"
-  },
-  {
-    "name": "Mitaines Tressecuir",
-    "key": "mitaines-tressecuir",
-    "src": "/images/cards/mitaines-tressecuir.webp"
-  },
-  {
-    "name": "Molosse1",
-    "key": "molosse1",
-    "src": "/images/cards/molosse1.webp"
-  },
-  {
-    "name": "Molosse2",
-    "key": "molosse2",
-    "src": "/images/cards/molosse2.webp"
-  },
-  {
-    "name": "Mordefiel",
-    "key": "mordefiel",
-    "src": "/images/cards/mordefiel.webp"
-  },
-  {
-    "name": "Nain-Femelle",
-    "key": "nain-femelle",
-    "src": "/images/cards/nain-femelle.webp"
-  },
-  {
-    "name": "Nain-Male",
-    "key": "nain-male",
-    "src": "/images/cards/nain-male.webp"
-  },
-  {
-    "name": "Necromancien",
-    "key": "necromancien",
-    "src": "/images/cards/necromancien.webp"
-  },
-  {
-    "name": "Nécropode1",
-    "key": "necropode1",
-    "src": "/images/cards/necropode1.webp"
-  },
-  {
-    "name": "Nécropode2",
-    "key": "necropode2",
-    "src": "/images/cards/necropode2.webp"
-  },
-  {
-    "name": "Nécroptère",
-    "key": "necroptere",
-    "src": "/images/cards/necroptere.webp"
-  },
-  {
-    "name": "Orant",
-    "key": "orant",
-    "src": "/images/cards/orant.webp"
-  },
-  {
-    "name": "Orbe Astral",
-    "key": "orbe-astral",
-    "src": "/images/cards/orbe-astral.webp"
-  },
-  {
-    "name": "Orbe d’Ambre",
-    "key": "orbe-dambre",
-    "src": "/images/cards/orbe-dambre.webp"
-  },
-  {
-    "name": "Orbe des Âmes",
-    "key": "orbe-des-ames",
-    "src": "/images/cards/orbe-des-ames.webp"
-  },
-  {
-    "name": "Orc-Femelle",
-    "key": "orc-femelle",
-    "src": "/images/cards/orc-femelle.webp"
-  },
-  {
-    "name": "Orc-Male",
-    "key": "orc-male",
-    "src": "/images/cards/orc-male.webp"
-  },
-  {
-    "name": "Paralysie",
-    "key": "paralysie",
-    "src": "/images/cards/paralysie.webp"
-  },
-  {
-    "name": "Permutation1",
-    "key": "permutation1",
-    "src": "/images/cards/permutation1.webp"
-  },
-  {
-    "name": "Permutation2",
-    "key": "permutation2",
-    "src": "/images/cards/permutation2.webp"
-  },
-  {
-    "name": "Peur",
-    "key": "peur",
-    "src": "/images/cards/peur.webp"
-  },
-  {
-    "name": "Pillage1",
-    "key": "pillage1",
-    "src": "/images/cards/pillage1.webp"
-  },
-  {
-    "name": "Pillage2",
-    "key": "pillage2",
-    "src": "/images/cards/pillage2.webp"
-  },
-  {
-    "name": "Plastron Coeur-de-dragon",
-    "key": "plastron-coeur-de-dragon",
-    "src": "/images/cards/plastron-coeur-de-dragon.webp"
-  },
-  {
-    "name": "Plastron côtelé",
-    "key": "plastron-cotele",
-    "src": "/images/cards/plastron-cotele.webp"
-  },
-  {
-    "name": "Plastron du Lion",
-    "key": "plastron-du-lion",
-    "src": "/images/cards/plastron-du-lion.webp"
-  },
-  {
-    "name": "Plastron écaillefer",
-    "key": "plastron-ecaillefer",
-    "src": "/images/cards/plastron-ecaillefer.webp"
-  },
-  {
-    "name": "Plastron Fauve",
-    "key": "plastron-fauve",
-    "src": "/images/cards/plastron-fauve.webp"
-  },
-  {
-    "name": "Plastron Scarabée ",
-    "key": "plastron-scarabee",
-    "src": "/images/cards/plastron-scarabee.webp"
-  },
-  {
-    "name": "Priorité1",
-    "key": "priorite1",
-    "src": "/images/cards/priorite1.webp"
-  },
-  {
-    "name": "Priorité2",
-    "key": "priorite2",
-    "src": "/images/cards/priorite2.webp"
-  },
-  {
-    "name": "Priorité3",
-    "key": "priorite3",
-    "src": "/images/cards/priorite3.webp"
-  },
-  {
-    "name": "Prise de gage",
-    "key": "prise-de-gage",
-    "src": "/images/cards/prise-de-gage.webp"
-  },
-  {
-    "name": "Providence",
-    "key": "providence",
-    "src": "/images/cards/providence.webp"
-  },
-  {
-    "name": "Rafistolé",
-    "key": "rafistole",
-    "src": "/images/cards/rafistole.webp"
-  },
-  {
-    "name": "Rapiécé1",
-    "key": "rapiece1",
-    "src": "/images/cards/rapiece1.webp"
-  },
-  {
-    "name": "Rapiécé2",
-    "key": "rapiece2",
-    "src": "/images/cards/rapiece2.webp"
-  },
-  {
-    "name": "Raseciel",
-    "key": "raseciel",
-    "src": "/images/cards/raseciel.webp"
-  },
-  {
-    "name": "Réanimateur",
-    "key": "reanimateur",
-    "src": "/images/cards/reanimateur.webp"
-  },
-  {
-    "name": "Reliquaire1",
-    "key": "reliquaire1",
-    "src": "/images/cards/reliquaire1.webp"
-  },
-  {
-    "name": "Reliquaire2",
-    "key": "reliquaire2",
-    "src": "/images/cards/reliquaire2.webp"
-  },
-  {
-    "name": "Renoncement",
-    "key": "renoncement",
-    "src": "/images/cards/renoncement.webp"
-  },
-  {
-    "name": "Réquisition",
-    "key": "requisition",
-    "src": "/images/cards/requisition.webp"
-  },
-  {
-    "name": "Revenant-Femelle",
-    "key": "revenant-femelle",
-    "src": "/images/cards/revenant-femelle.webp"
-  },
-  {
-    "name": "Revenant-Male",
-    "key": "revenant-male",
-    "src": "/images/cards/revenant-male.webp"
-  },
-  {
-    "name": "Rouage1",
-    "key": "rouage1",
-    "src": "/images/cards/rouage1.webp"
-  },
-  {
-    "name": "Rouage2",
-    "key": "rouage2",
-    "src": "/images/cards/rouage2.webp"
-  },
-  {
-    "name": "Sans-Maître ",
-    "key": "sans-maitre",
-    "src": "/images/cards/sans-maitre.webp"
-  },
-  {
-    "name": "Sans-Visage1",
-    "key": "sans-visage1",
-    "src": "/images/cards/sans-visage1.webp"
-  },
-  {
-    "name": "Sans-Visage2",
-    "key": "sans-visage2",
-    "src": "/images/cards/sans-visage2.webp"
-  },
-  {
-    "name": "Sauvageonne",
-    "key": "sauvageonne",
-    "src": "/images/cards/sauvageonne.webp"
-  },
-  {
-    "name": "Sème-Peste1",
-    "key": "seme-peste1",
-    "src": "/images/cards/seme-peste1.webp"
-  },
-  {
-    "name": "Sème-Peste2",
-    "key": "seme-peste2",
-    "src": "/images/cards/seme-peste2.webp"
-  },
-  {
-    "name": "Serment de l’Éveil refusé",
-    "key": "serment-de-leveil-refuse",
-    "src": "/images/cards/serment-de-leveil-refuse.webp"
-  },
-  {
-    "name": "Serment de l’Infortune",
-    "key": "serment-de-linfortune",
-    "src": "/images/cards/serment-de-linfortune.webp"
-  },
-  {
-    "name": "Serment de la Dette de sang",
-    "key": "serment-de-la-dette-de-sang",
-    "src": "/images/cards/serment-de-la-dette-de-sang.webp"
-  },
-  {
-    "name": "Serment de la Main invisible",
-    "key": "serment-de-la-main-invisible",
-    "src": "/images/cards/serment-de-la-main-invisible.webp"
-  },
-  {
-    "name": "Serment de la Seconde Peau",
-    "key": "serment-de-la-seconde-peau",
-    "src": "/images/cards/serment-de-la-seconde-peau.webp"
-  },
-  {
-    "name": "Serment des Arcanes épuisées",
-    "key": "serment-des-arcanes-epuisees",
-    "src": "/images/cards/serment-des-arcanes-epuisees.webp"
-  },
-  {
-    "name": "Serment du Conquérant",
-    "key": "serment-du-conquerant",
-    "src": "/images/cards/serment-du-conquerant.webp"
-  },
-  {
-    "name": "Serment du Dépouillement",
-    "key": "serment-du-depouillement",
-    "src": "/images/cards/serment-du-depouillement.webp"
-  },
-  {
-    "name": "Serment du Fardeau",
-    "key": "serment-du-fardeau",
-    "src": "/images/cards/serment-du-fardeau.webp"
-  },
-  {
-    "name": "Serment du Fer Étranger",
-    "key": "serment-du-fer-etranger",
-    "src": "/images/cards/serment-du-fer-etranger.webp"
-  },
-  {
-    "name": "Serment du Pacte des Cendres",
-    "key": "serment-du-pacte-des-cendres",
-    "src": "/images/cards/serment-du-pacte-des-cendres.webp"
-  },
-  {
-    "name": "Serment du Silence",
-    "key": "serment-du-silence",
-    "src": "/images/cards/serment-du-silence.webp"
-  },
-  {
-    "name": "Souriant1",
-    "key": "souriant1",
-    "src": "/images/cards/souriant1.webp"
-  },
-  {
-    "name": "Souriant2",
-    "key": "souriant2",
-    "src": "/images/cards/souriant2.webp"
-  },
-  {
-    "name": "Souverain",
-    "key": "souverain",
-    "src": "/images/cards/souverain.webp"
-  },
-  {
-    "name": "Sporule1",
-    "key": "sporule1",
-    "src": "/images/cards/sporule1.webp"
-  },
-  {
-    "name": "Sporule2",
-    "key": "sporule2",
-    "src": "/images/cards/sporule2.webp"
-  },
-  {
-    "name": "Tranchebec1",
-    "key": "tranchebec1",
-    "src": "/images/cards/tranchebec1.webp"
-  },
-  {
-    "name": "Tranchebec2",
-    "key": "tranchebec2",
-    "src": "/images/cards/tranchebec2.webp"
-  },
-  {
-    "name": "Tressefer",
-    "key": "tressefer",
-    "src": "/images/cards/tressefer.webp"
-  },
-  {
-    "name": "Troc aveugle",
-    "key": "troc-aveugle",
-    "src": "/images/cards/troc-aveugle.webp"
-  },
-  {
-    "name": "Trouvaille1",
-    "key": "trouvaille1",
-    "src": "/images/cards/trouvaille1.webp"
-  },
-  {
-    "name": "Trouvaille2",
-    "key": "trouvaille2",
-    "src": "/images/cards/trouvaille2.webp"
-  },
-  {
-    "name": "Usurpateur",
-    "key": "usurpateur",
-    "src": "/images/cards/usurpateur.webp"
-  },
-  {
-    "name": "Usurpation",
-    "key": "usurpation",
-    "src": "/images/cards/usurpation.webp"
-  },
-  {
-    "name": "Venimeur",
-    "key": "venimeur",
-    "src": "/images/cards/venimeur.webp"
-  },
-  {
-    "name": "Vesskar-Femelle",
-    "key": "vesskar-femelle",
-    "src": "/images/cards/vesskar-femelle.webp"
-  },
-  {
-    "name": "Vesskar-Male",
-    "key": "vesskar-male",
-    "src": "/images/cards/vesskar-male.webp"
-  },
-  {
-    "name": "Vigile",
-    "key": "vigile",
-    "src": "/images/cards/vigile.webp"
-  },
-  {
-    "name": "Vitrail",
-    "key": "vitrail",
-    "src": "/images/cards/vitrail.webp"
-  },
-  {
-    "name": "Vœu",
-    "key": "voeu",
-    "src": "/images/cards/v-u.webp"
-  },
-  {
-    "name": "Voie du Chasseur",
-    "key": "voie-du-chasseur",
-    "src": "/images/cards/voie-du-chasseur.webp"
-  },
-  {
-    "name": "Voie du Druide",
-    "key": "voie-du-druide",
-    "src": "/images/cards/voie-du-druide.webp"
-  },
-  {
-    "name": "Voie du Guerrier",
-    "key": "voie-du-guerrier",
-    "src": "/images/cards/voie-du-guerrier.webp"
-  },
-  {
-    "name": "Voie du Mage",
-    "key": "voie-du-mage",
-    "src": "/images/cards/voie-du-mage.webp"
-  },
-  {
-    "name": "Voie du Nécromancien",
-    "key": "voie-du-necromancien",
-    "src": "/images/cards/voie-du-necromancien.webp"
-  },
-  {
-    "name": "Voie du Voleur",
-    "key": "voie-du-voleur",
-    "src": "/images/cards/voie-du-voleur.webp"
+    "name": "Voleur",
+    "key": "voleur1",
+    "src": "/images/finished-cards/005-recto.webp"
   },
   {
     "name": "Voleur",
     "key": "voleur",
-    "src": "/images/cards/voleur.webp"
+    "src": "/images/finished-cards/005-recto.webp"
+  },
+  {
+    "name": "Nécromancien",
+    "key": "necromancien1",
+    "src": "/images/finished-cards/006-recto.webp"
+  },
+  {
+    "name": "Nécromancien",
+    "key": "necromancien",
+    "src": "/images/finished-cards/006-recto.webp"
+  },
+  {
+    "name": "Nain",
+    "key": "nain1",
+    "src": "/images/finished-cards/007-recto.webp"
+  },
+  {
+    "name": "Nain",
+    "key": "nain",
+    "src": "/images/finished-cards/007-recto.webp"
+  },
+  {
+    "name": "Nain femelle",
+    "key": "nain-femelle",
+    "src": "/images/finished-cards/007-verso.webp"
+  },
+  {
+    "name": "Humain",
+    "key": "humain1",
+    "src": "/images/finished-cards/008-recto.webp"
+  },
+  {
+    "name": "Humain",
+    "key": "humain",
+    "src": "/images/finished-cards/008-recto.webp"
+  },
+  {
+    "name": "Humain femelle",
+    "key": "humain-femelle",
+    "src": "/images/finished-cards/008-verso.webp"
+  },
+  {
+    "name": "Elfe",
+    "key": "elfe1",
+    "src": "/images/finished-cards/009-recto.webp"
+  },
+  {
+    "name": "Elfe",
+    "key": "elfe",
+    "src": "/images/finished-cards/009-recto.webp"
+  },
+  {
+    "name": "Elfe femelle",
+    "key": "elfe-femelle",
+    "src": "/images/finished-cards/009-verso.webp"
+  },
+  {
+    "name": "Orc",
+    "key": "orc1",
+    "src": "/images/finished-cards/010-recto.webp"
+  },
+  {
+    "name": "Orc",
+    "key": "orc",
+    "src": "/images/finished-cards/010-recto.webp"
+  },
+  {
+    "name": "Orc femelle",
+    "key": "orc-femelle",
+    "src": "/images/finished-cards/010-verso.webp"
+  },
+  {
+    "name": "Revenant",
+    "key": "revenant1",
+    "src": "/images/finished-cards/011-recto.webp"
+  },
+  {
+    "name": "Revenant",
+    "key": "revenant",
+    "src": "/images/finished-cards/011-recto.webp"
+  },
+  {
+    "name": "Revenant femelle",
+    "key": "revenant-femelle",
+    "src": "/images/finished-cards/011-verso.webp"
+  },
+  {
+    "name": "Vesskar",
+    "key": "vesskar1",
+    "src": "/images/finished-cards/012-recto.webp"
+  },
+  {
+    "name": "Vesskar",
+    "key": "vesskar",
+    "src": "/images/finished-cards/012-recto.webp"
+  },
+  {
+    "name": "Vesskar femelle",
+    "key": "vesskar-femelle",
+    "src": "/images/finished-cards/012-verso.webp"
+  },
+  {
+    "name": "Plastron Écaillefer",
+    "key": "plastron-ecaillefer1",
+    "src": "/images/finished-cards/013-recto.webp"
+  },
+  {
+    "name": "Plastron Écaillefer",
+    "key": "plastron-ecaillefer",
+    "src": "/images/finished-cards/013-recto.webp"
+  },
+  {
+    "name": "Plastron Côtelé",
+    "key": "plastron-cotele1",
+    "src": "/images/finished-cards/014-recto.webp"
+  },
+  {
+    "name": "Plastron Côtelé",
+    "key": "plastron-cotele",
+    "src": "/images/finished-cards/014-recto.webp"
+  },
+  {
+    "name": "Plastron Fauve",
+    "key": "plastron-fauve1",
+    "src": "/images/finished-cards/015-recto.webp"
+  },
+  {
+    "name": "Plastron Fauve",
+    "key": "plastron-fauve",
+    "src": "/images/finished-cards/015-recto.webp"
+  },
+  {
+    "name": "Plastron Scarabée",
+    "key": "plastron-scarabee1",
+    "src": "/images/finished-cards/016-recto.webp"
+  },
+  {
+    "name": "Plastron Scarabée",
+    "key": "plastron-scarabee",
+    "src": "/images/finished-cards/016-recto.webp"
+  },
+  {
+    "name": "Plastron du Lion",
+    "key": "plastron-du-lion1",
+    "src": "/images/finished-cards/017-recto.webp"
+  },
+  {
+    "name": "Plastron du Lion",
+    "key": "plastron-du-lion",
+    "src": "/images/finished-cards/017-recto.webp"
+  },
+  {
+    "name": "Plastron Cœur-de-Dragon",
+    "key": "plastron-coeur-de-dragon1",
+    "src": "/images/finished-cards/018-recto.webp"
+  },
+  {
+    "name": "Plastron Cœur-de-Dragon",
+    "key": "plastron-coeur-de-dragon",
+    "src": "/images/finished-cards/018-recto.webp"
+  },
+  {
+    "name": "Bottes Longue-Piste",
+    "key": "bottes-longue-piste1",
+    "src": "/images/finished-cards/019-recto.webp"
+  },
+  {
+    "name": "Bottes Longue-Piste",
+    "key": "bottes-longue-piste",
+    "src": "/images/finished-cards/019-recto.webp"
+  },
+  {
+    "name": "Bottes Fer-Semelle",
+    "key": "bottes-fer-semelle1",
+    "src": "/images/finished-cards/020-recto.webp"
+  },
+  {
+    "name": "Bottes Fer-Semelle",
+    "key": "bottes-fer-semelle",
+    "src": "/images/finished-cards/020-recto.webp"
+  },
+  {
+    "name": "Bottes Nomades",
+    "key": "bottes-nomades1",
+    "src": "/images/finished-cards/021-recto.webp"
+  },
+  {
+    "name": "Bottes Nomades",
+    "key": "bottes-nomades",
+    "src": "/images/finished-cards/021-recto.webp"
+  },
+  {
+    "name": "Bottes Mille-Lames",
+    "key": "bottes-mille-lames1",
+    "src": "/images/finished-cards/022-recto.webp"
+  },
+  {
+    "name": "Bottes Mille-Lames",
+    "key": "bottes-mille-lames",
+    "src": "/images/finished-cards/022-recto.webp"
+  },
+  {
+    "name": "Bottes Solaires",
+    "key": "bottes-solaires1",
+    "src": "/images/finished-cards/023-recto.webp"
+  },
+  {
+    "name": "Bottes Solaires",
+    "key": "bottes-solaires",
+    "src": "/images/finished-cards/023-recto.webp"
+  },
+  {
+    "name": "Bottes Ailées",
+    "key": "bottes-ailees1",
+    "src": "/images/finished-cards/024-recto.webp"
+  },
+  {
+    "name": "Bottes Ailées",
+    "key": "bottes-ailees",
+    "src": "/images/finished-cards/024-recto.webp"
+  },
+  {
+    "name": "Gants Nervurés",
+    "key": "gants-nervures1",
+    "src": "/images/finished-cards/025-recto.webp"
+  },
+  {
+    "name": "Gants Nervurés",
+    "key": "gants-nervures",
+    "src": "/images/finished-cards/025-recto.webp"
+  },
+  {
+    "name": "Gants Brise-Phalanges",
+    "key": "gants-brise-phalanges1",
+    "src": "/images/finished-cards/026-recto.webp"
+  },
+  {
+    "name": "Gants Brise-Phalanges",
+    "key": "gants-brise-phalanges",
+    "src": "/images/finished-cards/026-recto.webp"
+  },
+  {
+    "name": "Mitaines Tressecuir",
+    "key": "mitaines-tressecuir1",
+    "src": "/images/finished-cards/027-recto.webp"
+  },
+  {
+    "name": "Mitaines Tressecuir",
+    "key": "mitaines-tressecuir",
+    "src": "/images/finished-cards/027-recto.webp"
+  },
+  {
+    "name": "Gantelets Carapace",
+    "key": "gantelets-carapace1",
+    "src": "/images/finished-cards/028-recto.webp"
+  },
+  {
+    "name": "Gantelets Carapace",
+    "key": "gantelets-carapace",
+    "src": "/images/finished-cards/028-recto.webp"
+  },
+  {
+    "name": "Gantelets Clairargent",
+    "key": "gantelets-clairargent1",
+    "src": "/images/finished-cards/029-recto.webp"
+  },
+  {
+    "name": "Gantelets Clairargent",
+    "key": "gantelets-clairargent",
+    "src": "/images/finished-cards/029-recto.webp"
+  },
+  {
+    "name": "Gantelets Forge-Royale",
+    "key": "gantelets-forge-royale1",
+    "src": "/images/finished-cards/030-recto.webp"
+  },
+  {
+    "name": "Gantelets Forge-Royale",
+    "key": "gantelets-forge-royale",
+    "src": "/images/finished-cards/030-recto.webp"
+  },
+  {
+    "name": "Casque Bois-Cornu",
+    "key": "casque-bois-cornu1",
+    "src": "/images/finished-cards/031-recto.webp"
+  },
+  {
+    "name": "Casque Bois-Cornu",
+    "key": "casque-bois-cornu",
+    "src": "/images/finished-cards/031-recto.webp"
+  },
+  {
+    "name": "Heaume Bec-de-Fer",
+    "key": "heaume-bec-de-fer1",
+    "src": "/images/finished-cards/032-recto.webp"
+  },
+  {
+    "name": "Heaume Bec-de-Fer",
+    "key": "heaume-bec-de-fer",
+    "src": "/images/finished-cards/032-recto.webp"
+  },
+  {
+    "name": "Masque Voilé",
+    "key": "masque-voile1",
+    "src": "/images/finished-cards/033-recto.webp"
+  },
+  {
+    "name": "Masque Voilé",
+    "key": "masque-voile",
+    "src": "/images/finished-cards/033-recto.webp"
+  },
+  {
+    "name": "Coiffe Loup-Sorcier",
+    "key": "coiffe-loup-sorcier1",
+    "src": "/images/finished-cards/034-recto.webp"
+  },
+  {
+    "name": "Coiffe Loup-Sorcier",
+    "key": "coiffe-loup-sorcier",
+    "src": "/images/finished-cards/034-recto.webp"
+  },
+  {
+    "name": "Heaume Couronnefer",
+    "key": "heaume-couronnefer1",
+    "src": "/images/finished-cards/035-recto.webp"
+  },
+  {
+    "name": "Heaume Couronnefer",
+    "key": "heaume-couronnefer",
+    "src": "/images/finished-cards/035-recto.webp"
+  },
+  {
+    "name": "Heaume Chimérique",
+    "key": "heaume-chimerique1",
+    "src": "/images/finished-cards/036-recto.webp"
+  },
+  {
+    "name": "Heaume Chimérique",
+    "key": "heaume-chimerique",
+    "src": "/images/finished-cards/036-recto.webp"
+  },
+  {
+    "name": "Lame-Rempart à deux mains",
+    "key": "lame-rempart-a-deux-mains1",
+    "src": "/images/finished-cards/037-recto.webp"
+  },
+  {
+    "name": "Lame-Rempart à deux mains",
+    "key": "lame-rempart-a-deux-mains",
+    "src": "/images/finished-cards/037-recto.webp"
+  },
+  {
+    "name": "Brise-Fer à deux mains",
+    "key": "brise-fer-a-deux-mains1",
+    "src": "/images/finished-cards/038-recto.webp"
+  },
+  {
+    "name": "Brise-Fer à deux mains",
+    "key": "brise-fer-a-deux-mains",
+    "src": "/images/finished-cards/038-recto.webp"
+  },
+  {
+    "name": "Échine-Noire à deux mains",
+    "key": "echine-noire-a-deux-mains1",
+    "src": "/images/finished-cards/039-recto.webp"
+  },
+  {
+    "name": "Échine-Noire à deux mains",
+    "key": "echine-noire-a-deux-mains",
+    "src": "/images/finished-cards/039-recto.webp"
+  },
+  {
+    "name": "Épée Demi-Lune",
+    "key": "epee-demi-lune1",
+    "src": "/images/finished-cards/040-recto.webp"
+  },
+  {
+    "name": "Épée Demi-Lune",
+    "key": "epee-demi-lune",
+    "src": "/images/finished-cards/040-recto.webp"
+  },
+  {
+    "name": "Épée Déchiqueteuse",
+    "key": "epee-dechiqueteuse1",
+    "src": "/images/finished-cards/041-recto.webp"
+  },
+  {
+    "name": "Épée Déchiqueteuse",
+    "key": "epee-dechiqueteuse",
+    "src": "/images/finished-cards/041-recto.webp"
+  },
+  {
+    "name": "Épée Fer du Conquérant",
+    "key": "epee-fer-du-conquerant1",
+    "src": "/images/finished-cards/042-recto.webp"
+  },
+  {
+    "name": "Épée Fer du Conquérant",
+    "key": "epee-fer-du-conquerant",
+    "src": "/images/finished-cards/042-recto.webp"
+  },
+  {
+    "name": "Dague de l’Ombre",
+    "key": "dague-de-lombre1",
+    "src": "/images/finished-cards/043-recto.webp"
+  },
+  {
+    "name": "Dague de l’Ombre",
+    "key": "dague-de-lombre",
+    "src": "/images/finished-cards/043-recto.webp"
+  },
+  {
+    "name": "Dague Veuve",
+    "key": "dague-veuve1",
+    "src": "/images/finished-cards/044-recto.webp"
+  },
+  {
+    "name": "Dague Veuve",
+    "key": "dague-veuve",
+    "src": "/images/finished-cards/044-recto.webp"
+  },
+  {
+    "name": "Dague Éclat Sauvage",
+    "key": "dague-eclat-sauvage1",
+    "src": "/images/finished-cards/045-recto.webp"
+  },
+  {
+    "name": "Dague Éclat Sauvage",
+    "key": "dague-eclat-sauvage",
+    "src": "/images/finished-cards/045-recto.webp"
+  },
+  {
+    "name": "Arbalète Mordante",
+    "key": "arbalete-mordante1",
+    "src": "/images/finished-cards/046-recto.webp"
+  },
+  {
+    "name": "Arbalète Mordante",
+    "key": "arbalete-mordante",
+    "src": "/images/finished-cards/046-recto.webp"
+  },
+  {
+    "name": "Arbalète Guillotine",
+    "key": "arbalete-guillotine1",
+    "src": "/images/finished-cards/047-recto.webp"
+  },
+  {
+    "name": "Arbalète Guillotine",
+    "key": "arbalete-guillotine",
+    "src": "/images/finished-cards/047-recto.webp"
+  },
+  {
+    "name": "Arbalète Triplette",
+    "key": "arbalete-triplette1",
+    "src": "/images/finished-cards/048-recto.webp"
+  },
+  {
+    "name": "Arbalète Triplette",
+    "key": "arbalete-triplette",
+    "src": "/images/finished-cards/048-recto.webp"
+  },
+  {
+    "name": "Hache Bois-de-Sang",
+    "key": "hache-bois-de-sang1",
+    "src": "/images/finished-cards/049-recto.webp"
+  },
+  {
+    "name": "Hache Bois-de-Sang",
+    "key": "hache-bois-de-sang",
+    "src": "/images/finished-cards/049-recto.webp"
+  },
+  {
+    "name": "Hache Brise-Mâchoire",
+    "key": "hache-brise-machoire1",
+    "src": "/images/finished-cards/050-recto.webp"
+  },
+  {
+    "name": "Hache Brise-Mâchoire",
+    "key": "hache-brise-machoire",
+    "src": "/images/finished-cards/050-recto.webp"
+  },
+  {
+    "name": "Hache Éclate-Roc",
+    "key": "hache-eclate-roc1",
+    "src": "/images/finished-cards/051-recto.webp"
+  },
+  {
+    "name": "Hache Éclate-Roc",
+    "key": "hache-eclate-roc",
+    "src": "/images/finished-cards/051-recto.webp"
+  },
+  {
+    "name": "Arc Thoracique",
+    "key": "arc-thoracique1",
+    "src": "/images/finished-cards/052-recto.webp"
+  },
+  {
+    "name": "Arc Thoracique",
+    "key": "arc-thoracique",
+    "src": "/images/finished-cards/052-recto.webp"
+  },
+  {
+    "name": "Arc Épineux",
+    "key": "arc-epineux1",
+    "src": "/images/finished-cards/053-recto.webp"
+  },
+  {
+    "name": "Arc Épineux",
+    "key": "arc-epineux",
+    "src": "/images/finished-cards/053-recto.webp"
+  },
+  {
+    "name": "Arc Ramure",
+    "key": "arc-ramure1",
+    "src": "/images/finished-cards/054-recto.webp"
+  },
+  {
+    "name": "Arc Ramure",
+    "key": "arc-ramure",
+    "src": "/images/finished-cards/054-recto.webp"
+  },
+  {
+    "name": "Baguette Entrelacs",
+    "key": "baguette-entrelacs1",
+    "src": "/images/finished-cards/055-recto.webp"
+  },
+  {
+    "name": "Baguette Entrelacs",
+    "key": "baguette-entrelacs",
+    "src": "/images/finished-cards/055-recto.webp"
+  },
+  {
+    "name": "Orbe d’Ambre",
+    "key": "orbe-dambre1",
+    "src": "/images/finished-cards/056-recto.webp"
+  },
+  {
+    "name": "Orbe d’Ambre",
+    "key": "orbe-dambre",
+    "src": "/images/finished-cards/056-recto.webp"
+  },
+  {
+    "name": "Masse Écailleuse",
+    "key": "masse-ecailleuse1",
+    "src": "/images/finished-cards/057-recto.webp"
+  },
+  {
+    "name": "Masse Écailleuse",
+    "key": "masse-ecailleuse",
+    "src": "/images/finished-cards/057-recto.webp"
+  },
+  {
+    "name": "Masse Fongique à deux mains",
+    "key": "masse-fongique-a-deux-mains1",
+    "src": "/images/finished-cards/058-recto.webp"
+  },
+  {
+    "name": "Masse Fongique à deux mains",
+    "key": "masse-fongique-a-deux-mains",
+    "src": "/images/finished-cards/058-recto.webp"
+  },
+  {
+    "name": "Masse Racinaire à deux mains",
+    "key": "masse-racinaire-a-deux-mains1",
+    "src": "/images/finished-cards/059-recto.webp"
+  },
+  {
+    "name": "Masse Racinaire à deux mains",
+    "key": "masse-racinaire-a-deux-mains",
+    "src": "/images/finished-cards/059-recto.webp"
+  },
+  {
+    "name": "Masse Totémique à deux mains",
+    "key": "masse-totemique-a-deux-mains1",
+    "src": "/images/finished-cards/060-recto.webp"
+  },
+  {
+    "name": "Masse Totémique à deux mains",
+    "key": "masse-totemique-a-deux-mains",
+    "src": "/images/finished-cards/060-recto.webp"
+  },
+  {
+    "name": "Baguette Runique",
+    "key": "baguette-runique1",
+    "src": "/images/finished-cards/061-recto.webp"
+  },
+  {
+    "name": "Baguette Runique",
+    "key": "baguette-runique",
+    "src": "/images/finished-cards/061-recto.webp"
+  },
+  {
+    "name": "Orbe Astral",
+    "key": "orbe-astral1",
+    "src": "/images/finished-cards/062-recto.webp"
+  },
+  {
+    "name": "Orbe Astral",
+    "key": "orbe-astral",
+    "src": "/images/finished-cards/062-recto.webp"
+  },
+  {
+    "name": "Épée Fractale",
+    "key": "epee-fractale1",
+    "src": "/images/finished-cards/063-recto.webp"
+  },
+  {
+    "name": "Épée Fractale",
+    "key": "epee-fractale",
+    "src": "/images/finished-cards/063-recto.webp"
+  },
+  {
+    "name": "Bâton du Permafrost à deux mains",
+    "key": "baton-du-permafrost-a-deux-mains1",
+    "src": "/images/finished-cards/064-recto.webp"
+  },
+  {
+    "name": "Bâton du Permafrost à deux mains",
+    "key": "baton-du-permafrost-a-deux-mains",
+    "src": "/images/finished-cards/064-recto.webp"
+  },
+  {
+    "name": "Bâton des Heures à deux mains",
+    "key": "baton-des-heures-a-deux-mains1",
+    "src": "/images/finished-cards/065-recto.webp"
+  },
+  {
+    "name": "Bâton des Heures à deux mains",
+    "key": "baton-des-heures-a-deux-mains",
+    "src": "/images/finished-cards/065-recto.webp"
+  },
+  {
+    "name": "Bâton du Nexus à deux mains",
+    "key": "baton-du-nexus-a-deux-mains1",
+    "src": "/images/finished-cards/066-recto.webp"
+  },
+  {
+    "name": "Bâton du Nexus à deux mains",
+    "key": "baton-du-nexus-a-deux-mains",
+    "src": "/images/finished-cards/066-recto.webp"
+  },
+  {
+    "name": "Baguette Ossuaire",
+    "key": "baguette-ossuaire1",
+    "src": "/images/finished-cards/067-recto.webp"
+  },
+  {
+    "name": "Baguette Ossuaire",
+    "key": "baguette-ossuaire",
+    "src": "/images/finished-cards/067-recto.webp"
+  },
+  {
+    "name": "Orbe des Âmes",
+    "key": "orbe-des-ames1",
+    "src": "/images/finished-cards/068-recto.webp"
+  },
+  {
+    "name": "Orbe des Âmes",
+    "key": "orbe-des-ames",
+    "src": "/images/finished-cards/068-recto.webp"
+  },
+  {
+    "name": "Faucille Fossoyeuse",
+    "key": "faucille-fossoyeuse1",
+    "src": "/images/finished-cards/069-recto.webp"
+  },
+  {
+    "name": "Faucille Fossoyeuse",
+    "key": "faucille-fossoyeuse",
+    "src": "/images/finished-cards/069-recto.webp"
+  },
+  {
+    "name": "Faux du Trépas à deux mains",
+    "key": "faux-du-trepas-a-deux-mains1",
+    "src": "/images/finished-cards/070-recto.webp"
+  },
+  {
+    "name": "Faux du Trépas à deux mains",
+    "key": "faux-du-trepas-a-deux-mains",
+    "src": "/images/finished-cards/070-recto.webp"
+  },
+  {
+    "name": "Faux du Requiem à deux mains",
+    "key": "faux-du-requiem-a-deux-mains1",
+    "src": "/images/finished-cards/071-recto.webp"
+  },
+  {
+    "name": "Faux du Requiem à deux mains",
+    "key": "faux-du-requiem-a-deux-mains",
+    "src": "/images/finished-cards/071-recto.webp"
+  },
+  {
+    "name": "Faux du Voile à deux mains",
+    "key": "faux-du-voile-a-deux-mains1",
+    "src": "/images/finished-cards/072-recto.webp"
+  },
+  {
+    "name": "Faux du Voile à deux mains",
+    "key": "faux-du-voile-a-deux-mains",
+    "src": "/images/finished-cards/072-recto.webp"
+  },
+  {
+    "name": "Masse Mille-Clous",
+    "key": "masse-mille-clous1",
+    "src": "/images/finished-cards/073-recto.webp"
+  },
+  {
+    "name": "Masse Mille-Clous",
+    "key": "masse-mille-clous",
+    "src": "/images/finished-cards/073-recto.webp"
+  },
+  {
+    "name": "Masse du Bastion",
+    "key": "masse-du-bastion1",
+    "src": "/images/finished-cards/074-recto.webp"
+  },
+  {
+    "name": "Masse du Bastion",
+    "key": "masse-du-bastion",
+    "src": "/images/finished-cards/074-recto.webp"
+  },
+  {
+    "name": "Masse Nautile",
+    "key": "masse-nautile1",
+    "src": "/images/finished-cards/075-recto.webp"
+  },
+  {
+    "name": "Masse Nautile",
+    "key": "masse-nautile",
+    "src": "/images/finished-cards/075-recto.webp"
+  },
+  {
+    "name": "Hache Brise-Enclume à deux mains",
+    "key": "hache-brise-enclume-a-deux-mains1",
+    "src": "/images/finished-cards/076-recto.webp"
+  },
+  {
+    "name": "Hache Brise-Enclume à deux mains",
+    "key": "hache-brise-enclume-a-deux-mains",
+    "src": "/images/finished-cards/076-recto.webp"
+  },
+  {
+    "name": "Hache Léviathan à deux mains",
+    "key": "hache-leviathan-a-deux-mains1",
+    "src": "/images/finished-cards/077-recto.webp"
+  },
+  {
+    "name": "Hache Léviathan à deux mains",
+    "key": "hache-leviathan-a-deux-mains",
+    "src": "/images/finished-cards/077-recto.webp"
+  },
+  {
+    "name": "Hache Fétiche à deux mains",
+    "key": "hache-fetiche-a-deux-mains1",
+    "src": "/images/finished-cards/078-recto.webp"
+  },
+  {
+    "name": "Hache Fétiche à deux mains",
+    "key": "hache-fetiche-a-deux-mains",
+    "src": "/images/finished-cards/078-recto.webp"
+  },
+  {
+    "name": "Hache Clairfeuille",
+    "key": "hache-clairfeuille1",
+    "src": "/images/finished-cards/079-recto.webp"
+  },
+  {
+    "name": "Hache Clairfeuille",
+    "key": "hache-clairfeuille",
+    "src": "/images/finished-cards/079-recto.webp"
+  },
+  {
+    "name": "Dague Lunefeuille",
+    "key": "dague-lunefeuille1",
+    "src": "/images/finished-cards/080-recto.webp"
+  },
+  {
+    "name": "Dague Lunefeuille",
+    "key": "dague-lunefeuille",
+    "src": "/images/finished-cards/080-recto.webp"
+  },
+  {
+    "name": "Baguette Brasier",
+    "key": "baguette-brasier1",
+    "src": "/images/finished-cards/081-recto.webp"
+  },
+  {
+    "name": "Baguette Brasier",
+    "key": "baguette-brasier",
+    "src": "/images/finished-cards/081-recto.webp"
+  },
+  {
+    "name": "Étendard des Mille Batailles",
+    "key": "etendard-des-mille-batailles1",
+    "src": "/images/finished-cards/082-recto.webp"
+  },
+  {
+    "name": "Étendard des Mille Batailles",
+    "key": "etendard-des-mille-batailles",
+    "src": "/images/finished-cards/082-recto.webp"
+  },
+  {
+    "name": "Graine de l’Arbre-Vie",
+    "key": "graine-de-larbre-vie1",
+    "src": "/images/finished-cards/083-recto.webp"
+  },
+  {
+    "name": "Graine de l’Arbre-Vie",
+    "key": "graine-de-larbre-vie",
+    "src": "/images/finished-cards/083-recto.webp"
+  },
+  {
+    "name": "Collier des Grandes Chasses",
+    "key": "collier-des-grandes-chasses1",
+    "src": "/images/finished-cards/084-recto.webp"
+  },
+  {
+    "name": "Collier des Grandes Chasses",
+    "key": "collier-des-grandes-chasses",
+    "src": "/images/finished-cards/084-recto.webp"
+  },
+  {
+    "name": "Astrolabe des Arcanes",
+    "key": "astrolabe-des-arcanes1",
+    "src": "/images/finished-cards/085-recto.webp"
+  },
+  {
+    "name": "Astrolabe des Arcanes",
+    "key": "astrolabe-des-arcanes",
+    "src": "/images/finished-cards/085-recto.webp"
+  },
+  {
+    "name": "L’Ombre Dérobée",
+    "key": "lombre-derobee1",
+    "src": "/images/finished-cards/086-recto.webp"
+  },
+  {
+    "name": "L’Ombre Dérobée",
+    "key": "lombre-derobee",
+    "src": "/images/finished-cards/086-recto.webp"
+  },
+  {
+    "name": "Codex des Astres Funèbres",
+    "key": "codex-des-astres-funebres1",
+    "src": "/images/finished-cards/087-recto.webp"
+  },
+  {
+    "name": "Codex des Astres Funèbres",
+    "key": "codex-des-astres-funebres",
+    "src": "/images/finished-cards/087-recto.webp"
+  },
+  {
+    "name": "Peur",
+    "key": "peur1",
+    "src": "/images/finished-cards/088-recto.webp"
+  },
+  {
+    "name": "Peur",
+    "key": "peur",
+    "src": "/images/finished-cards/088-recto.webp"
+  },
+  {
+    "name": "Chance",
+    "key": "chance1",
+    "src": "/images/finished-cards/089-recto.webp"
+  },
+  {
+    "name": "Chance",
+    "key": "chance",
+    "src": "/images/finished-cards/089-recto.webp"
+  },
+  {
+    "name": "Chance",
+    "key": "chance2",
+    "src": "/images/finished-cards/090-recto.webp"
+  },
+  {
+    "name": "Malchance",
+    "key": "malchance1",
+    "src": "/images/finished-cards/091-recto.webp"
+  },
+  {
+    "name": "Malchance",
+    "key": "malchance",
+    "src": "/images/finished-cards/091-recto.webp"
+  },
+  {
+    "name": "Malchance",
+    "key": "malchance2",
+    "src": "/images/finished-cards/092-recto.webp"
+  },
+  {
+    "name": "Faiblesse",
+    "key": "faiblesse1",
+    "src": "/images/finished-cards/093-recto.webp"
+  },
+  {
+    "name": "Faiblesse",
+    "key": "faiblesse",
+    "src": "/images/finished-cards/093-recto.webp"
+  },
+  {
+    "name": "Faiblesse",
+    "key": "faiblesse2",
+    "src": "/images/finished-cards/094-recto.webp"
+  },
+  {
+    "name": "Force",
+    "key": "force1",
+    "src": "/images/finished-cards/095-recto.webp"
+  },
+  {
+    "name": "Force",
+    "key": "force",
+    "src": "/images/finished-cards/095-recto.webp"
+  },
+  {
+    "name": "Force",
+    "key": "force2",
+    "src": "/images/finished-cards/096-recto.webp"
+  },
+  {
+    "name": "Dépossession",
+    "key": "depossession1",
+    "src": "/images/finished-cards/097-recto.webp"
+  },
+  {
+    "name": "Dépossession",
+    "key": "depossession",
+    "src": "/images/finished-cards/097-recto.webp"
+  },
+  {
+    "name": "Brise-armure",
+    "key": "brise-armure1",
+    "src": "/images/finished-cards/098-recto.webp"
+  },
+  {
+    "name": "Brise-armure",
+    "key": "brise-armure",
+    "src": "/images/finished-cards/098-recto.webp"
+  },
+  {
+    "name": "Pillage",
+    "key": "pillage1",
+    "src": "/images/finished-cards/099-recto.webp"
+  },
+  {
+    "name": "Pillage",
+    "key": "pillage",
+    "src": "/images/finished-cards/099-recto.webp"
+  },
+  {
+    "name": "Pillage",
+    "key": "pillage2",
+    "src": "/images/finished-cards/100-recto.webp"
+  },
+  {
+    "name": "Frénésie",
+    "key": "frenesie1",
+    "src": "/images/finished-cards/101-recto.webp"
+  },
+  {
+    "name": "Frénésie",
+    "key": "frenesie",
+    "src": "/images/finished-cards/101-recto.webp"
+  },
+  {
+    "name": "Frénésie",
+    "key": "frenesie2",
+    "src": "/images/finished-cards/102-recto.webp"
+  },
+  {
+    "name": "Frénésie",
+    "key": "frenesie3",
+    "src": "/images/finished-cards/103-recto.webp"
+  },
+  {
+    "name": "Apaiser",
+    "key": "apaiser1",
+    "src": "/images/finished-cards/104-recto.webp"
+  },
+  {
+    "name": "Apaiser",
+    "key": "apaiser",
+    "src": "/images/finished-cards/104-recto.webp"
+  },
+  {
+    "name": "Apaiser",
+    "key": "apaiser2",
+    "src": "/images/finished-cards/105-recto.webp"
+  },
+  {
+    "name": "Apaiser",
+    "key": "apaiser3",
+    "src": "/images/finished-cards/106-recto.webp"
+  },
+  {
+    "name": "Usurpation",
+    "key": "usurpation1",
+    "src": "/images/finished-cards/107-recto.webp"
+  },
+  {
+    "name": "Usurpation",
+    "key": "usurpation",
+    "src": "/images/finished-cards/107-recto.webp"
+  },
+  {
+    "name": "Cupidité",
+    "key": "cupidite1",
+    "src": "/images/finished-cards/108-recto.webp"
+  },
+  {
+    "name": "Cupidité",
+    "key": "cupidite",
+    "src": "/images/finished-cards/108-recto.webp"
+  },
+  {
+    "name": "Cupidité",
+    "key": "cupidite2",
+    "src": "/images/finished-cards/109-recto.webp"
+  },
+  {
+    "name": "Cupidité",
+    "key": "cupidite3",
+    "src": "/images/finished-cards/110-recto.webp"
+  },
+  {
+    "name": "Corrosion",
+    "key": "corrosion1",
+    "src": "/images/finished-cards/111-recto.webp"
+  },
+  {
+    "name": "Corrosion",
+    "key": "corrosion",
+    "src": "/images/finished-cards/111-recto.webp"
+  },
+  {
+    "name": "Corrosion",
+    "key": "corrosion2",
+    "src": "/images/finished-cards/112-recto.webp"
+  },
+  {
+    "name": "Permutation",
+    "key": "permutation1",
+    "src": "/images/finished-cards/113-recto.webp"
+  },
+  {
+    "name": "Permutation",
+    "key": "permutation",
+    "src": "/images/finished-cards/113-recto.webp"
+  },
+  {
+    "name": "Permutation",
+    "key": "permutation2",
+    "src": "/images/finished-cards/114-recto.webp"
+  },
+  {
+    "name": "Interversion",
+    "key": "interversion1",
+    "src": "/images/finished-cards/115-recto.webp"
+  },
+  {
+    "name": "Interversion",
+    "key": "interversion",
+    "src": "/images/finished-cards/115-recto.webp"
+  },
+  {
+    "name": "Interversion",
+    "key": "interversion2",
+    "src": "/images/finished-cards/116-recto.webp"
+  },
+  {
+    "name": "Paralysie",
+    "key": "paralysie1",
+    "src": "/images/finished-cards/117-recto.webp"
+  },
+  {
+    "name": "Paralysie",
+    "key": "paralysie",
+    "src": "/images/finished-cards/117-recto.webp"
+  },
+  {
+    "name": "Exécution",
+    "key": "execution1",
+    "src": "/images/finished-cards/118-recto.webp"
+  },
+  {
+    "name": "Exécution",
+    "key": "execution",
+    "src": "/images/finished-cards/118-recto.webp"
+  },
+  {
+    "name": "Exécution",
+    "key": "execution2",
+    "src": "/images/finished-cards/119-recto.webp"
+  },
+  {
+    "name": "Renoncement",
+    "key": "renoncement1",
+    "src": "/images/finished-cards/120-recto.webp"
+  },
+  {
+    "name": "Renoncement",
+    "key": "renoncement",
+    "src": "/images/finished-cards/120-recto.webp"
+  },
+  {
+    "name": "Trouvaille",
+    "key": "trouvaille1",
+    "src": "/images/finished-cards/121-recto.webp"
+  },
+  {
+    "name": "Trouvaille",
+    "key": "trouvaille",
+    "src": "/images/finished-cards/121-recto.webp"
+  },
+  {
+    "name": "Trouvaille",
+    "key": "trouvaille2",
+    "src": "/images/finished-cards/122-recto.webp"
+  },
+  {
+    "name": "Providence",
+    "key": "providence1",
+    "src": "/images/finished-cards/123-recto.webp"
+  },
+  {
+    "name": "Providence",
+    "key": "providence",
+    "src": "/images/finished-cards/123-recto.webp"
+  },
+  {
+    "name": "Vœu",
+    "key": "voeu1",
+    "src": "/images/finished-cards/124-recto.webp"
+  },
+  {
+    "name": "Vœu",
+    "key": "voeu",
+    "src": "/images/finished-cards/124-recto.webp"
+  },
+  {
+    "name": "Destruction",
+    "key": "destruction1",
+    "src": "/images/finished-cards/125-recto.webp"
+  },
+  {
+    "name": "Destruction",
+    "key": "destruction",
+    "src": "/images/finished-cards/125-recto.webp"
+  },
+  {
+    "name": "Destruction",
+    "key": "destruction2",
+    "src": "/images/finished-cards/126-recto.webp"
+  },
+  {
+    "name": "Contre-sort",
+    "key": "contre-sort1",
+    "src": "/images/finished-cards/127-recto.webp"
+  },
+  {
+    "name": "Contre-sort",
+    "key": "contre-sort",
+    "src": "/images/finished-cards/127-recto.webp"
+  },
+  {
+    "name": "Contre-sort",
+    "key": "contre-sort2",
+    "src": "/images/finished-cards/128-recto.webp"
+  },
+  {
+    "name": "Contre-sort",
+    "key": "contre-sort3",
+    "src": "/images/finished-cards/129-recto.webp"
+  },
+  {
+    "name": "Contre-sort",
+    "key": "contre-sort4",
+    "src": "/images/finished-cards/130-recto.webp"
+  },
+  {
+    "name": "Mimétisme",
+    "key": "mimetisme1",
+    "src": "/images/finished-cards/131-recto.webp"
+  },
+  {
+    "name": "Mimétisme",
+    "key": "mimetisme",
+    "src": "/images/finished-cards/131-recto.webp"
+  },
+  {
+    "name": "Priorité",
+    "key": "priorite1",
+    "src": "/images/finished-cards/132-recto.webp"
+  },
+  {
+    "name": "Priorité",
+    "key": "priorite",
+    "src": "/images/finished-cards/132-recto.webp"
+  },
+  {
+    "name": "Priorité",
+    "key": "priorite2",
+    "src": "/images/finished-cards/133-recto.webp"
+  },
+  {
+    "name": "Priorité",
+    "key": "priorite3",
+    "src": "/images/finished-cards/134-recto.webp"
+  },
+  {
+    "name": "Exclusion",
+    "key": "exclusion1",
+    "src": "/images/finished-cards/135-recto.webp"
+  },
+  {
+    "name": "Exclusion",
+    "key": "exclusion",
+    "src": "/images/finished-cards/135-recto.webp"
+  },
+  {
+    "name": "Exclusion",
+    "key": "exclusion2",
+    "src": "/images/finished-cards/136-recto.webp"
+  },
+  {
+    "name": "Exclusion",
+    "key": "exclusion3",
+    "src": "/images/finished-cards/137-recto.webp"
+  },
+  {
+    "name": "Invocation",
+    "key": "invocation1",
+    "src": "/images/finished-cards/138-recto.webp"
+  },
+  {
+    "name": "Invocation",
+    "key": "invocation",
+    "src": "/images/finished-cards/138-recto.webp"
+  },
+  {
+    "name": "Invocation",
+    "key": "invocation2",
+    "src": "/images/finished-cards/139-recto.webp"
+  },
+  {
+    "name": "Incapacité",
+    "key": "incapacite1",
+    "src": "/images/finished-cards/140-recto.webp"
+  },
+  {
+    "name": "Incapacité",
+    "key": "incapacite",
+    "src": "/images/finished-cards/140-recto.webp"
+  },
+  {
+    "name": "Incapacité",
+    "key": "incapacite2",
+    "src": "/images/finished-cards/141-recto.webp"
+  },
+  {
+    "name": "Achat forcé",
+    "key": "achat-force1",
+    "src": "/images/finished-cards/142-recto.webp"
+  },
+  {
+    "name": "Achat forcé",
+    "key": "achat-force",
+    "src": "/images/finished-cards/142-recto.webp"
+  },
+  {
+    "name": "Achat forcé",
+    "key": "achat-force2",
+    "src": "/images/finished-cards/143-recto.webp"
+  },
+  {
+    "name": "Voie du Guerrier",
+    "key": "voie-du-guerrier1",
+    "src": "/images/finished-cards/144-recto.webp"
+  },
+  {
+    "name": "Voie du Guerrier",
+    "key": "voie-du-guerrier",
+    "src": "/images/finished-cards/144-recto.webp"
+  },
+  {
+    "name": "Voie du Druide",
+    "key": "voie-du-druide1",
+    "src": "/images/finished-cards/145-recto.webp"
+  },
+  {
+    "name": "Voie du Druide",
+    "key": "voie-du-druide",
+    "src": "/images/finished-cards/145-recto.webp"
+  },
+  {
+    "name": "Voie du Chasseur",
+    "key": "voie-du-chasseur1",
+    "src": "/images/finished-cards/146-recto.webp"
+  },
+  {
+    "name": "Voie du Chasseur",
+    "key": "voie-du-chasseur",
+    "src": "/images/finished-cards/146-recto.webp"
+  },
+  {
+    "name": "Voie du Mage",
+    "key": "voie-du-mage1",
+    "src": "/images/finished-cards/147-recto.webp"
+  },
+  {
+    "name": "Voie du Mage",
+    "key": "voie-du-mage",
+    "src": "/images/finished-cards/147-recto.webp"
+  },
+  {
+    "name": "Voie du Voleur",
+    "key": "voie-du-voleur1",
+    "src": "/images/finished-cards/148-recto.webp"
+  },
+  {
+    "name": "Voie du Voleur",
+    "key": "voie-du-voleur",
+    "src": "/images/finished-cards/148-recto.webp"
+  },
+  {
+    "name": "Voie du Nécromancien",
+    "key": "voie-du-necromancien1",
+    "src": "/images/finished-cards/149-recto.webp"
+  },
+  {
+    "name": "Voie du Nécromancien",
+    "key": "voie-du-necromancien",
+    "src": "/images/finished-cards/149-recto.webp"
+  },
+  {
+    "name": "Éveil",
+    "key": "eveil1",
+    "src": "/images/finished-cards/150-recto.webp"
+  },
+  {
+    "name": "Éveil",
+    "key": "eveil",
+    "src": "/images/finished-cards/150-recto.webp"
+  },
+  {
+    "name": "Éveil",
+    "key": "eveil2",
+    "src": "/images/finished-cards/151-recto.webp"
+  },
+  {
+    "name": "Éveil",
+    "key": "eveil3",
+    "src": "/images/finished-cards/152-recto.webp"
+  },
+  {
+    "name": "Réquisition",
+    "key": "requisition1",
+    "src": "/images/finished-cards/153-recto.webp"
+  },
+  {
+    "name": "Réquisition",
+    "key": "requisition",
+    "src": "/images/finished-cards/153-recto.webp"
+  },
+  {
+    "name": "Troc aveugle",
+    "key": "troc-aveugle1",
+    "src": "/images/finished-cards/154-recto.webp"
+  },
+  {
+    "name": "Troc aveugle",
+    "key": "troc-aveugle",
+    "src": "/images/finished-cards/154-recto.webp"
+  },
+  {
+    "name": "Larcin",
+    "key": "larcin1",
+    "src": "/images/finished-cards/155-recto.webp"
+  },
+  {
+    "name": "Larcin",
+    "key": "larcin",
+    "src": "/images/finished-cards/155-recto.webp"
+  },
+  {
+    "name": "Prise de gage",
+    "key": "prise-de-gage1",
+    "src": "/images/finished-cards/156-recto.webp"
+  },
+  {
+    "name": "Prise de gage",
+    "key": "prise-de-gage",
+    "src": "/images/finished-cards/156-recto.webp"
+  },
+  {
+    "name": "Fouisseur",
+    "key": "fouisseur1",
+    "src": "/images/finished-cards/157-recto.webp"
+  },
+  {
+    "name": "Fouisseur",
+    "key": "fouisseur",
+    "src": "/images/finished-cards/157-recto.webp"
+  },
+  {
+    "name": "Fouisseur",
+    "key": "fouisseur2",
+    "src": "/images/finished-cards/158-recto.webp"
+  },
+  {
+    "name": "Lacéreur",
+    "key": "lacereur1",
+    "src": "/images/finished-cards/159-recto.webp"
+  },
+  {
+    "name": "Lacéreur",
+    "key": "lacereur",
+    "src": "/images/finished-cards/159-recto.webp"
+  },
+  {
+    "name": "Lacéreur",
+    "key": "lacereur2",
+    "src": "/images/finished-cards/160-recto.webp"
+  },
+  {
+    "name": "Tranchebec",
+    "key": "tranchebec1",
+    "src": "/images/finished-cards/161-recto.webp"
+  },
+  {
+    "name": "Tranchebec",
+    "key": "tranchebec",
+    "src": "/images/finished-cards/161-recto.webp"
+  },
+  {
+    "name": "Tranchebec",
+    "key": "tranchebec2",
+    "src": "/images/finished-cards/162-recto.webp"
+  },
+  {
+    "name": "Gobeur",
+    "key": "gobeur1",
+    "src": "/images/finished-cards/163-recto.webp"
+  },
+  {
+    "name": "Gobeur",
+    "key": "gobeur",
+    "src": "/images/finished-cards/163-recto.webp"
+  },
+  {
+    "name": "Raseciel",
+    "key": "raseciel1",
+    "src": "/images/finished-cards/164-recto.webp"
+  },
+  {
+    "name": "Raseciel",
+    "key": "raseciel",
+    "src": "/images/finished-cards/164-recto.webp"
+  },
+  {
+    "name": "Cuirassé",
+    "key": "cuirasse1",
+    "src": "/images/finished-cards/165-recto.webp"
+  },
+  {
+    "name": "Cuirassé",
+    "key": "cuirasse",
+    "src": "/images/finished-cards/165-recto.webp"
+  },
+  {
+    "name": "Wyrm",
+    "key": "wyrm1",
+    "src": "/images/finished-cards/166-recto.webp"
   },
   {
     "name": "Wyrm",
     "key": "wyrm",
-    "src": "/images/cards/wyrm.webp"
+    "src": "/images/finished-cards/166-recto.webp"
   },
   {
-    "name": "Zénith ",
+    "name": "Broyeur",
+    "key": "broyeur1",
+    "src": "/images/finished-cards/167-recto.webp"
+  },
+  {
+    "name": "Broyeur",
+    "key": "broyeur",
+    "src": "/images/finished-cards/167-recto.webp"
+  },
+  {
+    "name": "Reliquaire",
+    "key": "reliquaire1",
+    "src": "/images/finished-cards/168-recto.webp"
+  },
+  {
+    "name": "Reliquaire",
+    "key": "reliquaire",
+    "src": "/images/finished-cards/168-recto.webp"
+  },
+  {
+    "name": "Reliquaire",
+    "key": "reliquaire2",
+    "src": "/images/finished-cards/169-recto.webp"
+  },
+  {
+    "name": "Rapiécé",
+    "key": "rapiece1",
+    "src": "/images/finished-cards/170-recto.webp"
+  },
+  {
+    "name": "Rapiécé",
+    "key": "rapiece",
+    "src": "/images/finished-cards/170-recto.webp"
+  },
+  {
+    "name": "Rapiécé",
+    "key": "rapiece2",
+    "src": "/images/finished-cards/171-recto.webp"
+  },
+  {
+    "name": "Nécropode",
+    "key": "necropode1",
+    "src": "/images/finished-cards/172-recto.webp"
+  },
+  {
+    "name": "Nécropode",
+    "key": "necropode",
+    "src": "/images/finished-cards/172-recto.webp"
+  },
+  {
+    "name": "Nécropode",
+    "key": "necropode2",
+    "src": "/images/finished-cards/173-recto.webp"
+  },
+  {
+    "name": "Hurlemort",
+    "key": "hurlemort1",
+    "src": "/images/finished-cards/174-recto.webp"
+  },
+  {
+    "name": "Hurlemort",
+    "key": "hurlemort",
+    "src": "/images/finished-cards/174-recto.webp"
+  },
+  {
+    "name": "Usurpateur",
+    "key": "usurpateur1",
+    "src": "/images/finished-cards/175-recto.webp"
+  },
+  {
+    "name": "Usurpateur",
+    "key": "usurpateur",
+    "src": "/images/finished-cards/175-recto.webp"
+  },
+  {
+    "name": "Réanimateur",
+    "key": "reanimateur1",
+    "src": "/images/finished-cards/176-recto.webp"
+  },
+  {
+    "name": "Réanimateur",
+    "key": "reanimateur",
+    "src": "/images/finished-cards/176-recto.webp"
+  },
+  {
+    "name": "Dévoreur",
+    "key": "devoreur1",
+    "src": "/images/finished-cards/177-recto.webp"
+  },
+  {
+    "name": "Dévoreur",
+    "key": "devoreur",
+    "src": "/images/finished-cards/177-recto.webp"
+  },
+  {
+    "name": "Nécroptère",
+    "key": "necroptere1",
+    "src": "/images/finished-cards/178-recto.webp"
+  },
+  {
+    "name": "Nécroptère",
+    "key": "necroptere",
+    "src": "/images/finished-cards/178-recto.webp"
+  },
+  {
+    "name": "Féticheur",
+    "key": "feticheur1",
+    "src": "/images/finished-cards/179-recto.webp"
+  },
+  {
+    "name": "Féticheur",
+    "key": "feticheur",
+    "src": "/images/finished-cards/179-recto.webp"
+  },
+  {
+    "name": "Féticheur",
+    "key": "feticheur2",
+    "src": "/images/finished-cards/180-recto.webp"
+  },
+  {
+    "name": "Céramid",
+    "key": "ceramid1",
+    "src": "/images/finished-cards/181-recto.webp"
+  },
+  {
+    "name": "Céramid",
+    "key": "ceramid",
+    "src": "/images/finished-cards/181-recto.webp"
+  },
+  {
+    "name": "Céramid",
+    "key": "ceramid2",
+    "src": "/images/finished-cards/182-recto.webp"
+  },
+  {
+    "name": "Sans-Visage",
+    "key": "sans-visage1",
+    "src": "/images/finished-cards/183-recto.webp"
+  },
+  {
+    "name": "Sans-Visage",
+    "key": "sans-visage",
+    "src": "/images/finished-cards/183-recto.webp"
+  },
+  {
+    "name": "Sans-Visage",
+    "key": "sans-visage2",
+    "src": "/images/finished-cards/184-recto.webp"
+  },
+  {
+    "name": "Cisailleur",
+    "key": "cisailleur1",
+    "src": "/images/finished-cards/185-recto.webp"
+  },
+  {
+    "name": "Cisailleur",
+    "key": "cisailleur",
+    "src": "/images/finished-cards/185-recto.webp"
+  },
+  {
+    "name": "Tressefer",
+    "key": "tressefer1",
+    "src": "/images/finished-cards/186-recto.webp"
+  },
+  {
+    "name": "Tressefer",
+    "key": "tressefer",
+    "src": "/images/finished-cards/186-recto.webp"
+  },
+  {
+    "name": "Orant",
+    "key": "orant1",
+    "src": "/images/finished-cards/187-recto.webp"
+  },
+  {
+    "name": "Orant",
+    "key": "orant",
+    "src": "/images/finished-cards/187-recto.webp"
+  },
+  {
+    "name": "Sauvageonne",
+    "key": "sauvageonne1",
+    "src": "/images/finished-cards/188-recto.webp"
+  },
+  {
+    "name": "Sauvageonne",
+    "key": "sauvageonne",
+    "src": "/images/finished-cards/188-recto.webp"
+  },
+  {
+    "name": "Exarque",
+    "key": "exarque1",
+    "src": "/images/finished-cards/189-recto.webp"
+  },
+  {
+    "name": "Exarque",
+    "key": "exarque",
+    "src": "/images/finished-cards/189-recto.webp"
+  },
+  {
+    "name": "Inachevé",
+    "key": "inacheve1",
+    "src": "/images/finished-cards/190-recto.webp"
+  },
+  {
+    "name": "Inachevé",
+    "key": "inacheve",
+    "src": "/images/finished-cards/190-recto.webp"
+  },
+  {
+    "name": "Inachevé",
+    "key": "inacheve2",
+    "src": "/images/finished-cards/191-recto.webp"
+  },
+  {
+    "name": "Souriant",
+    "key": "souriant1",
+    "src": "/images/finished-cards/192-recto.webp"
+  },
+  {
+    "name": "Souriant",
+    "key": "souriant",
+    "src": "/images/finished-cards/192-recto.webp"
+  },
+  {
+    "name": "Souriant",
+    "key": "souriant2",
+    "src": "/images/finished-cards/193-recto.webp"
+  },
+  {
+    "name": "Encloué",
+    "key": "encloue1",
+    "src": "/images/finished-cards/194-recto.webp"
+  },
+  {
+    "name": "Encloué",
+    "key": "encloue",
+    "src": "/images/finished-cards/194-recto.webp"
+  },
+  {
+    "name": "Encloué",
+    "key": "encloue2",
+    "src": "/images/finished-cards/195-recto.webp"
+  },
+  {
+    "name": "Fournaise",
+    "key": "fournaise1",
+    "src": "/images/finished-cards/196-recto.webp"
+  },
+  {
+    "name": "Fournaise",
+    "key": "fournaise",
+    "src": "/images/finished-cards/196-recto.webp"
+  },
+  {
+    "name": "Vitrail",
+    "key": "vitrail1",
+    "src": "/images/finished-cards/197-recto.webp"
+  },
+  {
+    "name": "Vitrail",
+    "key": "vitrail",
+    "src": "/images/finished-cards/197-recto.webp"
+  },
+  {
+    "name": "Souverain",
+    "key": "souverain1",
+    "src": "/images/finished-cards/198-recto.webp"
+  },
+  {
+    "name": "Souverain",
+    "key": "souverain",
+    "src": "/images/finished-cards/198-recto.webp"
+  },
+  {
+    "name": "Arachnarque",
+    "key": "arachnarque1",
+    "src": "/images/finished-cards/199-recto.webp"
+  },
+  {
+    "name": "Arachnarque",
+    "key": "arachnarque",
+    "src": "/images/finished-cards/199-recto.webp"
+  },
+  {
+    "name": "Immaculée",
+    "key": "immaculee1",
+    "src": "/images/finished-cards/200-recto.webp"
+  },
+  {
+    "name": "Immaculée",
+    "key": "immaculee",
+    "src": "/images/finished-cards/200-recto.webp"
+  },
+  {
+    "name": "Sporule",
+    "key": "sporule1",
+    "src": "/images/finished-cards/201-recto.webp"
+  },
+  {
+    "name": "Sporule",
+    "key": "sporule",
+    "src": "/images/finished-cards/201-recto.webp"
+  },
+  {
+    "name": "Sporule",
+    "key": "sporule2",
+    "src": "/images/finished-cards/202-recto.webp"
+  },
+  {
+    "name": "Fumefange",
+    "key": "fumefange1",
+    "src": "/images/finished-cards/203-recto.webp"
+  },
+  {
+    "name": "Fumefange",
+    "key": "fumefange",
+    "src": "/images/finished-cards/203-recto.webp"
+  },
+  {
+    "name": "Fumefange",
+    "key": "fumefange2",
+    "src": "/images/finished-cards/204-recto.webp"
+  },
+  {
+    "name": "Sème-Peste",
+    "key": "seme-peste1",
+    "src": "/images/finished-cards/205-recto.webp"
+  },
+  {
+    "name": "Sème-Peste",
+    "key": "seme-peste",
+    "src": "/images/finished-cards/205-recto.webp"
+  },
+  {
+    "name": "Sème-Peste",
+    "key": "seme-peste2",
+    "src": "/images/finished-cards/206-recto.webp"
+  },
+  {
+    "name": "Fielpeau",
+    "key": "fielpeau1",
+    "src": "/images/finished-cards/207-recto.webp"
+  },
+  {
+    "name": "Fielpeau",
+    "key": "fielpeau",
+    "src": "/images/finished-cards/207-recto.webp"
+  },
+  {
+    "name": "Aiguemorte",
+    "key": "aiguemorte1",
+    "src": "/images/finished-cards/208-recto.webp"
+  },
+  {
+    "name": "Aiguemorte",
+    "key": "aiguemorte",
+    "src": "/images/finished-cards/208-recto.webp"
+  },
+  {
+    "name": "Mordefiel",
+    "key": "mordefiel1",
+    "src": "/images/finished-cards/209-recto.webp"
+  },
+  {
+    "name": "Mordefiel",
+    "key": "mordefiel",
+    "src": "/images/finished-cards/209-recto.webp"
+  },
+  {
+    "name": "Venimeur",
+    "key": "venimeur1",
+    "src": "/images/finished-cards/210-recto.webp"
+  },
+  {
+    "name": "Venimeur",
+    "key": "venimeur",
+    "src": "/images/finished-cards/210-recto.webp"
+  },
+  {
+    "name": "Cataclysme",
+    "key": "cataclysme1",
+    "src": "/images/finished-cards/211-recto.webp"
+  },
+  {
+    "name": "Cataclysme",
+    "key": "cataclysme",
+    "src": "/images/finished-cards/211-recto.webp"
+  },
+  {
+    "name": "Rouage",
+    "key": "rouage1",
+    "src": "/images/finished-cards/212-recto.webp"
+  },
+  {
+    "name": "Rouage",
+    "key": "rouage",
+    "src": "/images/finished-cards/212-recto.webp"
+  },
+  {
+    "name": "Rouage",
+    "key": "rouage2",
+    "src": "/images/finished-cards/213-recto.webp"
+  },
+  {
+    "name": "Balancier",
+    "key": "balancier1",
+    "src": "/images/finished-cards/214-recto.webp"
+  },
+  {
+    "name": "Balancier",
+    "key": "balancier",
+    "src": "/images/finished-cards/214-recto.webp"
+  },
+  {
+    "name": "Balancier",
+    "key": "balancier2",
+    "src": "/images/finished-cards/215-recto.webp"
+  },
+  {
+    "name": "Molosse",
+    "key": "molosse1",
+    "src": "/images/finished-cards/216-recto.webp"
+  },
+  {
+    "name": "Molosse",
+    "key": "molosse",
+    "src": "/images/finished-cards/216-recto.webp"
+  },
+  {
+    "name": "Molosse",
+    "key": "molosse2",
+    "src": "/images/finished-cards/217-recto.webp"
+  },
+  {
+    "name": "Golem",
+    "key": "golem1",
+    "src": "/images/finished-cards/218-recto.webp"
+  },
+  {
+    "name": "Golem",
+    "key": "golem",
+    "src": "/images/finished-cards/218-recto.webp"
+  },
+  {
+    "name": "Vigile",
+    "key": "vigile1",
+    "src": "/images/finished-cards/219-recto.webp"
+  },
+  {
+    "name": "Vigile",
+    "key": "vigile",
+    "src": "/images/finished-cards/219-recto.webp"
+  },
+  {
+    "name": "Sans-Maître",
+    "key": "sans-maitre1",
+    "src": "/images/finished-cards/220-recto.webp"
+  },
+  {
+    "name": "Sans-Maître",
+    "key": "sans-maitre",
+    "src": "/images/finished-cards/220-recto.webp"
+  },
+  {
+    "name": "Rafistolé",
+    "key": "rafistole1",
+    "src": "/images/finished-cards/221-recto.webp"
+  },
+  {
+    "name": "Rafistolé",
+    "key": "rafistole",
+    "src": "/images/finished-cards/221-recto.webp"
+  },
+  {
+    "name": "Le Créateur",
+    "key": "le-createur1",
+    "src": "/images/finished-cards/222-recto.webp"
+  },
+  {
+    "name": "Le Créateur",
+    "key": "le-createur",
+    "src": "/images/finished-cards/222-recto.webp"
+  },
+  {
+    "name": "L’Invaincu",
+    "key": "linvaincu1",
+    "src": "/images/finished-cards/223-recto.webp"
+  },
+  {
+    "name": "L’Invaincu",
+    "key": "linvaincu",
+    "src": "/images/finished-cards/223-recto.webp"
+  },
+  {
+    "name": "Le Parfait",
+    "key": "le-parfait1",
+    "src": "/images/finished-cards/224-recto.webp"
+  },
+  {
+    "name": "Le Parfait",
+    "key": "le-parfait",
+    "src": "/images/finished-cards/224-recto.webp"
+  },
+  {
+    "name": "La Suzeraine",
+    "key": "la-suzeraine1",
+    "src": "/images/finished-cards/225-recto.webp"
+  },
+  {
+    "name": "La Suzeraine",
+    "key": "la-suzeraine",
+    "src": "/images/finished-cards/225-recto.webp"
+  },
+  {
+    "name": "Le Martyr",
+    "key": "le-martyr1",
+    "src": "/images/finished-cards/226-recto.webp"
+  },
+  {
+    "name": "Le Martyr",
+    "key": "le-martyr",
+    "src": "/images/finished-cards/226-recto.webp"
+  },
+  {
+    "name": "L’Envers",
+    "key": "lenvers1",
+    "src": "/images/finished-cards/227-recto.webp"
+  },
+  {
+    "name": "L’Envers",
+    "key": "lenvers",
+    "src": "/images/finished-cards/227-recto.webp"
+  },
+  {
+    "name": "Zénith",
+    "key": "zenith1",
+    "src": "/images/finished-cards/228-recto.webp"
+  },
+  {
+    "name": "Zénith",
     "key": "zenith",
-    "src": "/images/cards/zenith.webp"
+    "src": "/images/finished-cards/228-recto.webp"
+  },
+  {
+    "name": "Serment du Silence",
+    "key": "serment-du-silence1",
+    "src": "/images/finished-cards/229-recto.webp"
+  },
+  {
+    "name": "Serment du Silence",
+    "key": "serment-du-silence",
+    "src": "/images/finished-cards/229-recto.webp"
+  },
+  {
+    "name": "Serment du Fardeau",
+    "key": "serment-du-fardeau1",
+    "src": "/images/finished-cards/230-recto.webp"
+  },
+  {
+    "name": "Serment du Fardeau",
+    "key": "serment-du-fardeau",
+    "src": "/images/finished-cards/230-recto.webp"
+  },
+  {
+    "name": "Serment de l’Infortune",
+    "key": "serment-de-linfortune1",
+    "src": "/images/finished-cards/231-recto.webp"
+  },
+  {
+    "name": "Serment de l’Infortune",
+    "key": "serment-de-linfortune",
+    "src": "/images/finished-cards/231-recto.webp"
+  },
+  {
+    "name": "Serment de la Seconde Peau",
+    "key": "serment-de-la-seconde-peau1",
+    "src": "/images/finished-cards/232-recto.webp"
+  },
+  {
+    "name": "Serment de la Seconde Peau",
+    "key": "serment-de-la-seconde-peau",
+    "src": "/images/finished-cards/232-recto.webp"
+  },
+  {
+    "name": "Serment du Fer Étranger",
+    "key": "serment-du-fer-etranger1",
+    "src": "/images/finished-cards/233-recto.webp"
+  },
+  {
+    "name": "Serment du Fer Étranger",
+    "key": "serment-du-fer-etranger",
+    "src": "/images/finished-cards/233-recto.webp"
+  },
+  {
+    "name": "Serment du Dépouillement",
+    "key": "serment-du-depouillement1",
+    "src": "/images/finished-cards/234-recto.webp"
+  },
+  {
+    "name": "Serment du Dépouillement",
+    "key": "serment-du-depouillement",
+    "src": "/images/finished-cards/234-recto.webp"
+  },
+  {
+    "name": "Serment du Conquérant",
+    "key": "serment-du-conquerant1",
+    "src": "/images/finished-cards/235-recto.webp"
+  },
+  {
+    "name": "Serment du Conquérant",
+    "key": "serment-du-conquerant",
+    "src": "/images/finished-cards/235-recto.webp"
+  },
+  {
+    "name": "Serment de l’Éveil refusé",
+    "key": "serment-de-leveil-refuse1",
+    "src": "/images/finished-cards/236-recto.webp"
+  },
+  {
+    "name": "Serment de l’Éveil refusé",
+    "key": "serment-de-leveil-refuse",
+    "src": "/images/finished-cards/236-recto.webp"
+  },
+  {
+    "name": "Serment des Arcanes épuisées",
+    "key": "serment-des-arcanes-epuisees1",
+    "src": "/images/finished-cards/237-recto.webp"
+  },
+  {
+    "name": "Serment des Arcanes épuisées",
+    "key": "serment-des-arcanes-epuisees",
+    "src": "/images/finished-cards/237-recto.webp"
+  },
+  {
+    "name": "Serment du Pacte des Cendres",
+    "key": "serment-du-pacte-des-cendres1",
+    "src": "/images/finished-cards/238-recto.webp"
+  },
+  {
+    "name": "Serment du Pacte des Cendres",
+    "key": "serment-du-pacte-des-cendres",
+    "src": "/images/finished-cards/238-recto.webp"
+  },
+  {
+    "name": "Serment de la Dette de sang",
+    "key": "serment-de-la-dette-de-sang1",
+    "src": "/images/finished-cards/239-recto.webp"
+  },
+  {
+    "name": "Serment de la Dette de sang",
+    "key": "serment-de-la-dette-de-sang",
+    "src": "/images/finished-cards/239-recto.webp"
+  },
+  {
+    "name": "Serment de la Main invisible",
+    "key": "serment-de-la-main-invisible1",
+    "src": "/images/finished-cards/240-recto.webp"
+  },
+  {
+    "name": "Serment de la Main invisible",
+    "key": "serment-de-la-main-invisible",
+    "src": "/images/finished-cards/240-recto.webp"
   }
 ]

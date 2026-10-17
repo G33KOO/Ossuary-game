@@ -39,7 +39,7 @@ export function CardShowcase({ cardType, eyebrow, title, description }: CardShow
               <li key={card.id}>
                 <button
                   aria-label={`${t('catalog.openCard')} ${localized.name}`}
-                  className="frame-card"
+                  className="frame-card printed-card"
                   onClick={(event) => openCard(card, showcased, event.currentTarget)}
                   type="button"
                 >

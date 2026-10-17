@@ -9,10 +9,8 @@ import { isMasteredWeapon } from '../game/power'
 import type { Locale } from '../i18n/LocaleProvider'
 import { localizeCard } from '../i18n/cardTranslations'
 import { getCardIllustration } from '../utils/cardIllustration'
-import { CardClassBadge } from './CardClassBadge'
 import { slugify } from '../utils/slugify'
 import { ModalHeader } from './ModalHeader'
-import { MonsterRewards } from './MonsterRewards'
 
 type GameCardProps = {
   unavailableReason?: string
@@ -86,10 +84,6 @@ export function GameCard({
         <span aria-hidden="true" className="gb-art">
           {art ? <img alt="" draggable={false} loading="lazy" src={art.src} /> : <span>{TYPE_ICON[entry.type] ?? '✦'}</span>}
         </span>
-        <CardClassBadge card={entry} className="gb-class-icon" />
-        {entry.value ? <span className={`gb-orb${boosted ? ' is-boosted' : ''}`} title={powerLabel || undefined} key={`power-${equipmentPower ?? entry.value}`}>{equipmentPower ?? entry.value}</span> : null}
-        <span className="gb-name">{localized.name}</span>
-        <MonsterRewards card={entry} locale={locale} />
       </button>
       {unavailableReason ? <span className="gb-unavailable-hint" role="tooltip">{unavailableReason}</span> : null}
       {actions ? <div className="gb-card-actions">{actions}</div> : null}

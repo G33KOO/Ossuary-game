@@ -458,11 +458,12 @@
 
 .gb-art img {
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
 }
 
 .gb-art::after {
+  display: none;
   background: linear-gradient(180deg, transparent 55%, rgb(8 5 3 / 92%));
   content: '';
   inset: 0;
@@ -470,6 +471,7 @@
 }
 
 .gb-name {
+  display: none;
   bottom: 0;
   font-family: var(--display);
   font-size: 1.05em;

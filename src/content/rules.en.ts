@@ -19,7 +19,7 @@ export const rulesEn: RulesContent = {
         {
           kind: 'callout',
           title: 'Your goal',
-          text: 'Reach the maximum level (10), fulfill and reveal your Oath, gather your Equipment, then challenge a Boss. The first hero to defeat a Boss immediately wins the game.',
+          text: 'Reach the maximum level (10), gather your Equipment, then challenge a Boss. Fulfilling your Oath is not required to challenge it. The first hero to defeat a Boss immediately wins the game.',
         },
         {
           kind: 'steps',
@@ -119,7 +119,7 @@ export const rulesEn: RulesContent = {
             { title: 'Equip', text: 'You may handle your Equipment at any time.' },
             {
               title: 'Choose an adventure',
-              text: 'Reveal a Monster, draw 1 Loot, or challenge a Boss if you are level 10 and your Oath is fulfilled and revealed.',
+              text: 'Reveal a Monster, draw 1 Loot, or challenge a Boss if you are level 10.',
             },
             { title: 'Resolve', text: 'Completely finish the adventure, its effects, and its rewards.' },
             { title: 'Adjust', text: 'Freely rearrange your Equipment.' },
@@ -266,7 +266,7 @@ export const rulesEn: RulesContent = {
       blocks: [
         {
           kind: 'paragraph',
-          text: 'Reveal your Oath as soon as its Fulfillment is verified and apply its permanent Reward. An Oath never wins the game directly, but a hero must have fulfilled and revealed theirs to challenge a Boss.',
+          text: 'Reveal your Oath as soon as its Fulfillment is verified and apply its permanent Reward. An Oath never wins the game directly. Fulfilling it is not required to challenge a Boss: only level 10 is required.',
         },
         {
           kind: 'callout',
@@ -323,7 +323,7 @@ export const rulesEn: RulesContent = {
       blocks: [
         {
           kind: 'paragraph',
-          text: 'At level 10, a hero whose Oath is fulfilled and revealed may challenge a Boss instead of their turn’s adventure. They are never forced to.',
+          text: 'At level 10, a hero may challenge a Boss instead of their turn’s adventure. They are never forced to.',
         },
         {
           kind: 'steps',
@@ -426,7 +426,7 @@ export const rulesEn: RulesContent = {
             ['Turn', 'One adventure, full resolution, hand limit.'],
             ['Combat', 'Total without die, effects, optional current die if needed, comparison.'],
             ['Tavern', 'Returns, Merchant, Trades, then Spirits.'],
-            ['Boss', 'Level 10 + fulfilled Oath; 5 non-Artifact Loot; closed duel.'],
+            ['Boss', 'Level 10; 5 non-Artifact Loot; closed duel.'],
           ],
         },
         {

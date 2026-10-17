@@ -20,7 +20,7 @@ export function CardTile({ card, locale, onSelect }: CardTileProps) {
   return (
     <button
       aria-label={`${t('catalog.openCard')} ${localizedCard.name}, ${localizedCard.type}`}
-      className={`lore-card type-${slugify(card.type)}`}
+      className={`lore-card printed-card type-${slugify(card.type)}`}
       onClick={(event) => onSelect(card, event.currentTarget)}
       type="button"
     >
