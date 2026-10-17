@@ -694,7 +694,13 @@ h2 em {
 .dialog-tilt-card { position: relative; display: grid; width: 100%; max-width: 100%; transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); transform-origin: center center; transition: transform 260ms ease; cursor: grab; touch-action: none; user-select: none; border-radius: 14px; }
 .dialog-tilt-card.is-dragging { cursor: grabbing; transition: none; }
 .dialog-tilt-card .dialog-art { display: block; pointer-events: none; width: auto; }
-.dialog-tilt-card:has(.card-face-help) { width: fit-content; }
+.dialog-tilt-card:has(.card-face-help) { width: fit-content; transform-style: preserve-3d; }
+.dialog-flip-card { position: relative; transform-style: preserve-3d; transition: transform 650ms cubic-bezier(.22,.68,.2,1); }
+.dialog-flip-card.is-back { transform: rotateY(180deg); }
+.dialog-card-face { position: relative; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.dialog-card-face.face-back { position: absolute; inset: 0; transform: rotateY(180deg); }
+.dialog-card-face.face-back .dialog-art { width: 100%; height: 100%; object-fit: contain; }
+@media (prefers-reduced-motion: reduce) { .dialog-flip-card { transition: none; } }
 .card-face-help { position: absolute; inset: 0; pointer-events: none; font-family: var(--serif); font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.5; text-shadow: none; }
 .card-help-region { position: absolute; pointer-events: auto; cursor: help; border-radius: 4px; }
 .card-help-region:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

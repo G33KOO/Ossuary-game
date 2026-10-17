@@ -112,8 +112,9 @@ export function CardDetailsDialog({ card, onClose, onPrevious, onNext, origin, a
       <div className="dialog-layout">
         <div className="dialog-visual">
           {visualSrc ? (
-            <TiltableCard key={`${card.id}-${gender}-${showingBack}`} src={visualSrc} label={t('card.tilt')}>
-              {(!showingBack || card.type === 'Race') && <CardFaceHelp card={card} locale={locale} />}
+            <TiltableCard key={`${card.id}-${gender}`} src={illustration?.src ?? visualSrc} backSrc={backSrc} showingBack={showingBack} label={t('card.tilt')}
+              backHelp={card.type === 'Race' ? <CardFaceHelp card={card} locale={locale} /> : undefined}>
+              <CardFaceHelp card={card} locale={locale} />
             </TiltableCard>
           ) : (
             showingBack && backKind ? <div className="dialog-back-preview"><CardBack kind={backKind} size="lg" /></div> : <div className="dialog-static-card"><span aria-hidden="true" className="dialog-symbol">{symbolFor(card.type)}</span></div>
@@ -191,7 +192,7 @@ function ClassAbilityPreview({ name, icon, effect, title, duration }: { name: st
   </span>
 }
 
-function TiltableCard({ src, label, children }: { src: string; label: string; children?: ReactNode }) {
+function TiltableCard({ src, backSrc, showingBack, backHelp, label, children }: { src: string; backSrc?: string; showingBack: boolean; backHelp?: ReactNode; label: string; children?: ReactNode }) {
   const [tilt, setTilt] = useState({ x: 0, y: 0, dragging: false })
   const pointer = useRef<{ id: number; x: number; y: number; width: number; height: number; startX: number; startY: number } | null>(null)
   const clamp = (value: number) => Math.max(-12, Math.min(12, value))
@@ -229,8 +230,16 @@ function TiltableCard({ src, label, children }: { src: string; label: string; ch
           else setTilt((current) => ({ x: clamp(current.x + (event.key === 'ArrowUp' ? 3 : event.key === 'ArrowDown' ? -3 : 0)), y: clamp(current.y + (event.key === 'ArrowRight' ? 3 : event.key === 'ArrowLeft' ? -3 : 0)), dragging: false }))
         }
       }}>
-      <img alt="" className="dialog-art" src={src} draggable={false} />
-      {children}
+      <div className={`dialog-flip-card${showingBack ? ' is-back' : ''}`}>
+        <div className="dialog-card-face face-front" inert={showingBack} aria-hidden={showingBack}>
+          <img alt="" className="dialog-art" src={src} draggable={false} loading="eager" />
+          {children}
+        </div>
+        {backSrc && <div className="dialog-card-face face-back" inert={!showingBack} aria-hidden={!showingBack}>
+          <img alt="" className="dialog-art" src={backSrc} draggable={false} loading="eager" />
+          {backHelp}
+        </div>}
+      </div>
       <span aria-hidden="true" className="dialog-card-reflection" />
     </div>
   </div>
